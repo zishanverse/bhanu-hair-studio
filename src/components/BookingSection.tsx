@@ -59,11 +59,11 @@ export function BookingSection() {
             target="_blank"
             rel="noopener noreferrer"
             id="booking-whatsapp-cta"
-            className="w-full sm:w-auto justify-center group relative inline-flex items-center gap-3 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 hover:shadow-[0_0_35px_rgba(197,164,119,0.6)] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+            className="w-full sm:w-auto justify-center group relative inline-flex items-center gap-3 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full overflow-hidden text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 hover:shadow-[0_0_35px_rgba(197,164,119,0.6)] transition-all transform hover:-translate-y-0.5 active:translate-y-0"
           >
-            <MessageCircle className="w-4 h-4 fill-obsidian-950" />
-            <span>Book on WhatsApp</span>
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full duration-1000 bg-gradient-to-r from-transparent via-white/40 to-transparent transform -skew-x-12 transition-transform" />
+            <MessageCircle className="w-4 h-4 fill-obsidian-950 relative z-10" />
+            <span className="relative z-10">Book on WhatsApp</span>
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full duration-1000 bg-gradient-to-r from-transparent via-white/40 to-transparent transform -skew-x-12 transition-transform pointer-events-none" />
           </a>
 
           {/* Call Studio Button */}
@@ -185,13 +185,24 @@ export function BookingSection() {
                       onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/20 text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
                     >
-                      <option value="Hair Cut & Styling">Hair Cut & Styling</option>
-                      <option value="Advanced Hair Cut">Advanced Hair Cut</option>
-                      <option value="Hair Highlights & Balayage">Hair Highlights & Balayage</option>
-                      <option value="Volume Explosion Hair Treatment">Volume Explosion Hair Treatment</option>
-                      <option value="Hair Spa & Scalp Detox">Hair Spa & Scalp Detox</option>
-                      <option value="Facial / Clean Up">Signature Facial / Clean Up</option>
-                      <option value="Complete Bespoke Makeover">Complete Bespoke Makeover</option>
+                      <option value="Haircut & Styling">Haircut & Styling</option>
+                      <option value="Beard Cutting & Beard Trimming">Beard Cutting & Beard Trimming</option>
+                      <option value="Blow dry & Hairstyling">Blow dry & Hairstyling</option>
+                      <option value="Keratin Treatment">Keratin Treatment</option>
+                      <option value="Hair Rebonding & Hair Smoothing">Hair Rebonding & Hair Smoothing</option>
+                      <option value="Hair Colouring & Balayage">Hair Colouring & Balayage</option>
+                      <option value="Texture Services & Herbal Treat">Texture Services & Herbal Treat</option>
+                      <option value="Hair Studio Care & Hair Treatments">Hair Studio Care & Hair Treatments</option>
+                      <option value="Bridal Services & Make-up Services">Bridal Services & Make-up Services</option>
+                      <option value="Eyelashes & Eyebrow Beautification">Eyelashes & Eyebrow Beautification</option>
+                      <option value="Nail Art">Nail Art</option>
+                      <option value="Facials & Clean Up">Facials & Clean Up</option>
+                      <option value="Acne Treatments">Acne Treatments</option>
+                      <option value="Spa Services & Pedicure">Spa Services & Pedicure</option>
+                      <option value="Relaxing Massage">Relaxing Massage</option>
+                      <option value="Body Waxing & Waxing Oil Wax">Body Waxing & Waxing Oil Wax</option>
+                      <option value="Men's Salon Grooming">Men&apos;s Salon Grooming</option>
+                      <option value="Home Services">Home Services (Bespoke In-Residence)</option>
                     </select>
                   </div>
                   <div>

@@ -107,11 +107,11 @@ export function AtelierTeaser() {
               <div className="flex flex-col sm:flex-row gap-6 pt-2 text-xs text-ivory-200/80 tracking-wider">
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-champagne-400" />
-                  <span>Scheme 54 / Vijay Nagar, Indore, MP</span>
+                  <span>Shop No.4, Sewak Ave, Manik Bagh Rd, Palsikar Colony, Indore</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-champagne-400" />
-                  <span>Tue – Sun: 10:00 AM – 8:30 PM</span>
+                  <span>Open Daily: 10:00 AM – 10:00 PM (Closes 10 PM)</span>
                 </div>
               </div>
             </div>

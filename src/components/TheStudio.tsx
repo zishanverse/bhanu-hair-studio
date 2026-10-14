@@ -170,7 +170,7 @@ export function TheStudio() {
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="w-3.5 h-3.5 text-champagne-400" />
-                  <span>SCHEME NO. 54, VIJAY NAGAR</span>
+                  <span>MANIK BAGH RD, PALSIKAR COLONY</span>
                 </div>
               </div>
 
@@ -198,7 +198,7 @@ export function TheStudio() {
               <div className="relative rounded-2xl overflow-hidden border border-champagne-500/20 shadow-2xl aspect-[4/5] bg-obsidian-900">
                 <Image
                   src={theStudio.featuredImage}
-                  alt="Bhanu Hair Studio Atelier Interior"
+                  alt="Bhanu's The Hair Studio Palsikar Interior"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover object-center filter brightness-[0.92] contrast-[1.04]"
@@ -209,13 +209,13 @@ export function TheStudio() {
                 <div className="absolute bottom-6 left-6 right-6 p-5 rounded-xl glass-panel border border-champagne-500/20 flex items-center justify-between">
                   <div className="space-y-0.5">
                     <div className="text-[10px] tracking-widest uppercase text-champagne-400 font-mono">
-                      INDORE FLAGSHIP
+                      INDORE SANCTUARY
                     </div>
                     <div className="text-sm font-serif text-ivory-100 font-light">
-                      Vijay Nagar Atelier Sanctuary
+                      Palsikar Colony Atelier Sanctuary
                     </div>
                   </div>
-                  <span className="text-xs font-mono text-champagne-300">EST. {identity.establishedYear}</span>
+                  <span className="text-xs font-mono text-champagne-300">OPEN TILL 10 PM</span>
                 </div>
               </div>
             </div>

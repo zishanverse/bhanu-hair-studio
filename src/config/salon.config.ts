@@ -45,6 +45,7 @@ export interface SalonConfiguration {
   identity: {
     brandName: string;
     brandSub: string;
+    branch: string;
     establishedYear: number;
     city: string;
     state: string;
@@ -68,11 +69,13 @@ export interface SalonConfiguration {
       city: string;
       state: string;
       pincode: string;
+      fullAddress: string;
       mapsUrl: string;
     };
     hours: {
       days: string;
       time: string;
+      status: string;
       note?: string;
     }[];
   };
@@ -158,50 +161,48 @@ export interface SalonConfiguration {
 
 export const SALON_CONFIG: SalonConfiguration = {
   identity: {
-    brandName: "BHANU",
-    brandSub: "HAIR STUDIO",
+    brandName: "BHANU'S",
+    brandSub: "THE HAIR STUDIO PALSIKAR",
+    branch: "Palsikar Colony, Indore",
     establishedYear: 2018,
     city: "Indore",
     state: "Madhya Pradesh",
     country: "India",
     tagline: "Where Style Becomes Art.",
     coordinates: {
-      lat: "22.7196° N",
-      lng: "75.8577° E",
-      display: "22.7196° N, 75.8577° E — INDORE",
+      lat: "22.7058° N",
+      lng: "75.8567° E",
+      display: "22.7058° N, 75.8567° E — PALSIKAR COLONY, INDORE",
     },
   },
   contact: {
     phone: "+919876543210",
     displayPhone: "+91 98765 43210",
     whatsappNumber: "919876543210",
-    whatsappPrefill: "Hello Bhanu Hair Studio, I would like to schedule an appointment consultation.",
+    whatsappPrefill: "Hello Bhanu's The Hair Studio Palsikar, I would like to schedule an appointment consultation.",
     email: "atelier@bhanuhairstudio.com",
     address: {
-      line1: "Scheme No. 54, PU-4 Commercial Complex",
-      line2: "Near Vijay Nagar Square, AB Road",
+      line1: "Shop No.4, Sewak Avenue, 7, Manik Bagh Rd",
+      line2: "Palsikar Colony",
       city: "Indore",
       state: "Madhya Pradesh",
-      pincode: "452010",
-      mapsUrl: "https://maps.google.com/?q=Vijay+Nagar+Indore",
+      pincode: "452007",
+      fullAddress: "Shop No.4, Sewak Avenue, 7, Manik Bagh Rd, Palsikar Colony, Indore, Madhya Pradesh 452007",
+      mapsUrl: "https://maps.google.com/?q=Shop+No.4,+Sewak+Avenue,+7,+Manik+Bagh+Rd,+Palsikar+Colony,+Indore,+Madhya+Pradesh+452007",
     },
     hours: [
       {
-        days: "Tuesday – Sunday",
-        time: "10:00 AM – 8:30 PM",
-        note: "Walk-ins subject to stylist availability",
-      },
-      {
-        days: "Monday",
-        time: "By Prior Appointment Only",
-        note: "VIP Master Sessions",
+        days: "Monday – Sunday (Open Daily)",
+        time: "10:00 AM – 10:00 PM",
+        status: "Open · Closes 10 pm",
+        note: "Open Daily · Closes 10 PM",
       },
     ],
   },
   social: {
     instagram: "https://instagram.com/bhanuhairstudio",
     facebook: "https://facebook.com/bhanuhairstudio",
-    maps: "https://maps.google.com/?q=Vijay+Nagar+Indore",
+    maps: "https://maps.google.com/?q=Shop+No.4,+Sewak+Avenue,+7,+Manik+Bagh+Rd,+Palsikar+Colony,+Indore,+Madhya+Pradesh+452007",
   },
   theStudio: {
     sectionNum: "01",
@@ -209,20 +210,20 @@ export const SALON_CONFIG: SalonConfiguration = {
     headingLine1: "MORE THAN",
     headingLine2: "A HAIRCUT.",
     description:
-      "Precision cuts, exceptional styling, and personalized care. Discover a space where your individuality inspires every detail.",
+      "Precision cuts, exceptional styling, and personalized care at Bhanu's The Hair Studio Palsikar. Discover a space where your individuality inspires every detail.",
     philosophy: [
-      "Every appointment begins with an anatomical consultation tailored to facial architecture and natural hair movement.",
-      "We fuse European precision techniques with contemporary bespoke grooming to craft enduring personal aesthetics.",
-      "Our Indore atelier provides an intentional calm away from the bustle, curated with warm acoustics, champagne accents, and discreet luxury.",
+      "Every appointment begins with an anatomical consultation tailored to facial architecture, personal aesthetic, and natural hair movement.",
+      "We fuse European precision techniques with contemporary bespoke grooming to craft enduring personal elegance for men and women.",
+      "Our Palsikar Colony studio provides an intentional sanctuary on Manik Bagh Road, curated with warm acoustics, champagne accents, and discreet unisex luxury.",
     ],
     featuredImage:
       "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80",
     accentImage:
       "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80",
     stats: [
-      { value: "08+", label: "Years of Master Artistry" },
-      { value: "100%", label: "Bespoke Anatomical Analysis" },
-      { value: "Indore", label: "Premier Unisex Flagship" },
+      { value: "10 PM", label: "Open Daily Until 10:00 PM" },
+      { value: "30+", label: "Unisex Hair & Beauty Disciplines" },
+      { value: "Palsikar", label: "Colony, Manik Bagh Rd, Indore" },
     ],
   },
   servicesCatalog: {
@@ -231,148 +232,230 @@ export const SALON_CONFIG: SalonConfiguration = {
     headingLine1: "YOUR STYLE.",
     headingLine2: "OUR CRAFT.",
     description:
-      "Explore our four dedicated craft disciplines. Each ritual combines master-grade tools, organic botanical infusions, and sculptural refinement.",
+      "Comprehensive unisex salon & aesthetic rituals at Bhanu's The Hair Studio Palsikar. Combining master Japanese shears, organic formulations, and couture styling.",
     categories: [
       {
-        id: "haircuts-styling",
+        id: "haircuts-styling-men",
         num: "01",
-        title: "Haircuts & Styling",
-        eyebrow: "SCULPTURAL PRECISION",
+        title: "Haircut, Beard & Men's Salon",
+        eyebrow: "SCULPTURAL PRECISION & MEN'S SALON",
         description:
-          "Master haircuts crafted to harmonize with your cranial geometry, lifestyle, and natural texture.",
+          "Master haircutting, beard contouring, blow dry, and precision styling for discerning unisex clientele.",
         image:
           "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=1000&q=80",
         featured: true,
         services: [
           {
             id: "hc-1",
-            name: "Hair Cut",
+            name: "Haircut",
             description: "Signature structural wash, scissor balance, perimeter detailing, and directional finish.",
             duration: "40 min",
             tag: "Core",
           },
           {
             id: "hc-2",
-            name: "Advanced Hair Cut",
-            description: "High-precision texturizing, architectural skin fade, razor etching, and hot-towel ritual.",
-            duration: "60 min",
-            tag: "Signature",
+            name: "Beard Cutting & Trimming",
+            description: "Sculpted beard shaping, line-up razor edging, hot herbal towel press, and nourishing beard oil ritual.",
+            duration: "30 min",
+            tag: "Men's Salon",
           },
           {
             id: "hc-3",
-            name: "Hair Dressing",
-            description: "Bespoke styling for galas, weddings, and high-fashion editorial presentations.",
-            duration: "50 min",
-            tag: "Editorial",
+            name: "Blow dry & Hairstyling",
+            description: "Couture blow dry, ceramic tong waves, thermal volume contouring, and weightless silk mist.",
+            duration: "45 min",
+            tag: "Styling",
           },
           {
             id: "hc-4",
-            name: "Hair Styling",
-            description: "Thermal contouring, volume lift, ceramic tong waves, and weightless silk mist.",
-            duration: "45 min",
-            tag: "Express",
+            name: "Hair Studio Signature Session",
+            description: "Complete bespoke makeover combining master cut, scalp cleanse, and customized day-to-evening style.",
+            duration: "60 min",
+            tag: "Signature",
           },
         ],
       },
       {
-        id: "hair-treatments",
+        id: "hair-treatments-rebonding",
         num: "02",
-        title: "Hair Treatments",
-        eyebrow: "BIOLOGICAL RESTORATION",
+        title: "Hair Treatments & Texture Services",
+        eyebrow: "BIOLOGICAL RESTORATION & SMOOTHING",
         description:
-          "Advanced bond-rebuilding and moisture therapy engineered to restore damaged cuticle integrity.",
+          "Specialized Keratin Treatment, Hair Rebonding, Hair Smoothing, and Herbal Treat rituals for glossy resilience.",
         image:
           "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1000&q=80",
         featured: false,
         services: [
           {
             id: "ht-1",
-            name: "Hair Care",
-            description: "Deep scalp detox, micro-follicle stimulation, and essential peptide infusion.",
-            duration: "45 min",
-            tag: "Restorative",
+            name: "Keratin Treatment",
+            description: "Deep nano-keratin protein infusion eliminating frizz and infusing brilliant gloss for up to 4 months.",
+            duration: "120 min",
+            tag: "Bestseller",
           },
           {
             id: "ht-2",
-            name: "Hair Spa",
-            description: "Therapeutic steam infusion, intensive nutrient cream bath, and cranial pressure point massage.",
-            duration: "60 min",
-            tag: "Sensory",
-          },
-          {
-            id: "ht-3",
-            name: "Hair Rebonding",
-            description: "Precision thermal restructuring delivering mirror-flat, permanent silky straight alignment.",
+            name: "Hair Rebonding & Hair Smoothing",
+            description: "Permanent structural thermal alignment delivering mirror-straight, fluid silk texture and softness.",
             duration: "150 min",
             tag: "Transformative",
           },
           {
+            id: "ht-3",
+            name: "Texture Services",
+            description: "Bespoke hair texture modification, volume smoothing, relaxers, and natural curl contouring.",
+            duration: "90 min",
+            tag: "Custom",
+          },
+          {
             id: "ht-4",
-            name: "Volume Explosion Hair Treatment",
-            description: "Multi-molecular collagen plump therapy for thinning or limp hair requiring structural density.",
-            duration: "75 min",
-            tag: "Exclusive",
+            name: "Hair Treatments & Herbal Treat",
+            description: "Organic botanical scalp and hair treatments infused with ayurvedic herbs to strengthen follicles.",
+            duration: "60 min",
+            tag: "Holistic",
           },
         ],
       },
       {
-        id: "hair-colour",
+        id: "hair-colouring",
         num: "03",
-        title: "Hair Colour",
-        eyebrow: "DIMENSIONAL TONING",
+        title: "Hair Colouring & Creative Balayage",
+        eyebrow: "DIMENSIONAL TONING & COUTURE HUES",
         description:
-          "French balayage, custom contour foils, and chromatic tones calibrated to complement skin undertones.",
+          "Full spectrum hair colouring, French balayage, multidimensional highlights, and root touch-ups.",
         image:
           "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=1000&q=80",
         featured: false,
         services: [
           {
             id: "hcol-1",
-            name: "Hair Highlights",
-            description: "Multi-dimensional baby-lights, face-framing money pieces, and seamless sun-kissed blending.",
+            name: "Hair Colouring (Global & Highlights)",
+            description: "Custom formulated rich ammonia-free tones, dimensional baby-lights, and seamless gray coverage.",
             duration: "90 – 150 min",
             tag: "Couture",
+          },
+          {
+            id: "hcol-2",
+            name: "Balayage & Ombré Artistry",
+            description: "Freehand hand-painted gradient transitions from deep roots to luminous sunkissed champagne tips.",
+            duration: "120 min",
+            tag: "Signature",
           },
         ],
       },
       {
-        id: "skin-care",
+        id: "bridal-makeup-beauty",
         num: "04",
-        title: "Skin Care",
-        eyebrow: "DERMAL CLARITY",
+        title: "Bridal Services, Make-up & Nail Art",
+        eyebrow: "COUTURE BEAUTY & CELEBRATION",
         description:
-          "Medical-grade botanical skincare formulated to deeply cleanse, refine pores, and restore dermal glow.",
+          "Exquisite Bridal services, Make-up services, Eyelashes, Eyebrow beautification, and Nail Art.",
+        image:
+          "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1000&q=80",
+        featured: true,
+        services: [
+          {
+            id: "bm-1",
+            name: "Bridal Services & Make-up",
+            description: "High-definition bridal makeover, bespoke hair ornamentation, draping, and waterproof camera-ready glow.",
+            duration: "180 min",
+            tag: "Bridal",
+          },
+          {
+            id: "bm-2",
+            name: "Make-up & Make-up Services",
+            description: "Glamour, reception, cocktail, and editorial party makeup tailored to your outfit and undertones.",
+            duration: "75 min",
+            tag: "Glamour",
+          },
+          {
+            id: "bm-3",
+            name: "Eyelashes & Eyebrow Beautification",
+            description: "Precision eyebrow threading, mapping, tinting, micro-sculpting, and classic/volume eyelash extensions.",
+            duration: "45 min",
+            tag: "Aesthetics",
+          },
+          {
+            id: "bm-4",
+            name: "Nail Art & Extensions",
+            description: "Gel extensions, French tips, chrome mirror finishes, and hand-painted miniature luxury nail art.",
+            duration: "60 min",
+            tag: "Nails",
+          },
+        ],
+      },
+      {
+        id: "skin-facials-acne",
+        num: "05",
+        title: "Facials, Clean Up & Acne Treatments",
+        eyebrow: "CLINICAL DERMAL THERAPY",
+        description:
+          "Advanced Facials, deep Clean Up, and clinical Acne treatments formulated for long-lasting complexion radiance.",
         image:
           "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1000&q=80",
-        featured: true,
+        featured: false,
         services: [
           {
             id: "sk-1",
             name: "Clean Up",
-            description: "Aqueous exfoliation, vacuum blackhead extraction, and calming zinc mask.",
+            description: "Aqueous exfoliation, manual blackhead vacuum extraction, pore refining pack, and calming mist.",
             duration: "40 min",
             tag: "Essential",
           },
           {
             id: "sk-2",
-            name: "Facial",
-            description: "Multi-step antioxidant infusion, lymphatic drainage, and luminous collagen veil.",
+            name: "Facials (Radiance & Anti-Oxidant)",
+            description: "Multi-stage brightening facial with lymphatic drainage, collagen booster, and cold quartz seal.",
             duration: "60 min",
             tag: "Radiance",
           },
           {
             id: "sk-3",
-            name: "Anti Acne Facial",
-            description: "Salicylic clarification, blue light therapy, and sebum-regulating botanical serums.",
+            name: "Acne Treatments",
+            description: "Targeted salicylic peel, blue light clarification, and sebum-balancing organic tea tree compresses.",
             duration: "75 min",
             tag: "Purifying",
           },
+        ],
+      },
+      {
+        id: "spa-pedicure-waxing",
+        num: "06",
+        title: "Spa Services, Pedicure, Massage & Waxing",
+        eyebrow: "SENSORY RELAXATION & DEPILATION",
+        description:
+          "Indulgent Spa services, Pedicure, relaxing Massage, Body waxing, Waxing Oil Wax, and Home Services.",
+        image:
+          "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80",
+        featured: true,
+        services: [
           {
-            id: "sk-4",
-            name: "Tan Removal Facial",
-            description: "Enzymatic melanin reduction, vitamin C lightening mask, and SPF moisture shield.",
-            duration: "65 min",
-            tag: "Brightening",
+            id: "sp-1",
+            name: "Spa Services & Massage",
+            description: "Therapeutic hair spa, cranial acupressure, and tension-melting shoulder and neck massage.",
+            duration: "60 min",
+            tag: "Sensory",
+          },
+          {
+            id: "sp-2",
+            name: "Pedicure & Hand Ritual",
+            description: "Sea salt soak, cuticle therapy, exfoliating scrub, and soothing botanical massage with glossy finish.",
+            duration: "50 min",
+            tag: "Care",
+          },
+          {
+            id: "sp-3",
+            name: "Body Waxing & Waxing Oil Wax",
+            description: "Gentle liposoluble waxing and nourishing waxing oil wax formulation for irritation-free silky smooth skin.",
+            duration: "45 min",
+            tag: "Smooth",
+          },
+          {
+            id: "sp-4",
+            name: "Home Services",
+            description: "Exclusive bespoke salon services delivered in the convenience and privacy of your residence in Indore.",
+            duration: "Custom",
+            tag: "VIP Service",
           },
         ],
       },
@@ -388,12 +471,12 @@ export const SALON_CONFIG: SalonConfiguration = {
         id: "precision",
         num: "01",
         title: "PRECISION",
-        subtitle: "Professional haircutting and master barbering",
+        subtitle: "Professional haircutting, beard trimming and men's salon",
         description:
-          "Every millimeter is intentional. Using Japanese steel shears and calibrated electric clippers, our master cutters craft clean geometry tailored to your skull shape.",
+          "Every millimeter is intentional at Bhanu's The Hair Studio Palsikar. Using Japanese steel shears and calibrated clippers, our master cutters craft clean geometry tailored to your skull shape.",
         keyPoints: [
           "Micro-adjusted Japanese stainless steel shears",
-          "Zero-gap foil fade and tapered transition line",
+          "Zero-gap beard contouring and razor fade",
           "Hot herbal towel and beard perimeter refinement",
         ],
         image:
@@ -403,12 +486,12 @@ export const SALON_CONFIG: SalonConfiguration = {
         id: "transformation",
         num: "02",
         title: "TRANSFORMATION",
-        subtitle: "Hair treatments, styling and dimensional colour",
+        subtitle: "Keratin, rebonding, hair smoothing and balayage",
         description:
-          "From restorative keratin infusions to dimensional French highlights, we transmute tired follicles into liquid silk with luminous movement and health.",
+          "From restorative keratin treatments and permanent rebonding to hand-painted balayage, we transmute hair fibers into liquid silk with luminous health.",
         keyPoints: [
-          "Custom bond multipliers preventing chemical fatigue",
-          "Bespoke chromatic toner matched to iris and skin tone",
+          "Keratin and smoothing infusions with long-lasting frizz protection",
+          "Bespoke chromatic balayage matched to iris and skin tone",
           "Silky thermal lock ensuring weeks of humidity resistance",
         ],
         image:
@@ -418,13 +501,13 @@ export const SALON_CONFIG: SalonConfiguration = {
         id: "rejuvenation",
         num: "03",
         title: "REJUVENATION",
-        subtitle: "Skin care, hair spa and facial wellness",
+        subtitle: "Facials, clean up, acne treatments, spa & pedicure",
         description:
-          "Step into complete sensory stillness. Our dedicated private therapy lounge treats the mind and skin together with soothing steam, ice rollers, and acupressure.",
+          "Step into complete sensory stillness in Palsikar Colony. Our therapy lounge treats mind and skin together with soothing steam, ice rollers, massage, and gentle waxing oil wax.",
         keyPoints: [
-          "Ultrasonic deep pore extraction and cold quartz rollers",
-          "Cranial massage releasing tension along the temple lines",
-          "High-potency botanical serums restoring skin barrier",
+          "Ultrasonic deep pore extraction and acne clarification",
+          "Therapeutic spa services and luxury pedicure",
+          "Body waxing with nourishing waxing oil wax",
         ],
         image:
           "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80",
@@ -437,7 +520,7 @@ export const SALON_CONFIG: SalonConfiguration = {
     headingLine1: "EVERY LOOK",
     headingLine2: "TELLS A STORY.",
     description:
-      "A curated archive of transformations crafted in our Indore atelier. Each portrait captures authenticity, structural balance, and radiant texture.",
+      "A curated archive of transformations crafted at Bhanu's The Hair Studio Palsikar. Each portrait captures authenticity, structural balance, and radiant texture.",
     items: [
       {
         id: "look-1",
@@ -447,7 +530,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         image:
           "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=1000&q=80",
         aspect: "tall",
-        description: "Matte texturizing clay finish with seamless low skin fade.",
+        description: "Matte texturizing finish with seamless low skin fade.",
         transformation: {
           beforeImage:
             "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80",
@@ -468,7 +551,7 @@ export const SALON_CONFIG: SalonConfiguration = {
       },
       {
         id: "look-3",
-        title: "Couture Curtain Layers",
+        title: "Couture Curtain Layers & Blowout",
         category: "womens",
         categoryLabel: "Women's Hair",
         image:
@@ -478,13 +561,13 @@ export const SALON_CONFIG: SalonConfiguration = {
       },
       {
         id: "look-4",
-        title: "Volume Explosion Protein Reset",
+        title: "Keratin & Smoothing Glass Reset",
         category: "treatments",
         categoryLabel: "Treatments",
         image:
           "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=1000&q=80",
         aspect: "square",
-        description: "Complete cuticle sealing and frizz elimination.",
+        description: "Complete cuticle sealing, hair smoothing, and frizz elimination.",
         transformation: {
           beforeImage:
             "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=600&q=80",
@@ -495,7 +578,7 @@ export const SALON_CONFIG: SalonConfiguration = {
       },
       {
         id: "look-5",
-        title: "Sharp Geometric Pompadour",
+        title: "Sharp Beard Contour & Pompadour",
         category: "mens",
         categoryLabel: "Men's Hair",
         image:
@@ -505,13 +588,13 @@ export const SALON_CONFIG: SalonConfiguration = {
       },
       {
         id: "look-6",
-        title: "Champagne Blonde Dimension",
+        title: "Bridal Glow & Artistry Finish",
         category: "colour",
-        categoryLabel: "Hair Colour",
+        categoryLabel: "Bridal & Make-up",
         image:
-          "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=1000&q=80",
+          "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1000&q=80",
         aspect: "wide",
-        description: "Seamless root shadow and luminous platinum micro-babylights.",
+        description: "High-definition makeup and couture hair ornamentation for grand celebration.",
       },
     ],
   },
@@ -521,7 +604,7 @@ export const SALON_CONFIG: SalonConfiguration = {
     headingLine1: "CARE THAT",
     headingLine2: "GOES DEEPER.",
     description:
-      "A quiet oasis dedicated to dermal restoration. Our therapies combine clinical-grade botanical active serums with sensory massage techniques to detoxify, soothe, and illuminate your complexion.",
+      "A quiet oasis dedicated to dermal restoration at Palsikar Colony. Our therapies combine clinical-grade botanical active serums with sensory massage techniques to detoxify, soothe, and illuminate your complexion.",
     services: [
       {
         id: "clean-up",
@@ -537,7 +620,7 @@ export const SALON_CONFIG: SalonConfiguration = {
       {
         id: "facial",
         num: "02",
-        name: "Facial",
+        name: "Facials (Gold & Radiance)",
         tagline: "The Signature Illuminating Radiance Ritual",
         description:
           "A multi-stage sensory journey including lymphatic neck drainage, customized hydro-jelly mask, and deeply hydrating peptides that leave the skin plump and radiant.",
@@ -548,7 +631,7 @@ export const SALON_CONFIG: SalonConfiguration = {
       {
         id: "anti-acne-facial",
         num: "03",
-        name: "Anti Acne Facial",
+        name: "Acne Treatments",
         tagline: "Targeted Clarification & Sebum Stabilization",
         description:
           "Designed specifically for congested or inflammation-prone skin. Infuses anti-bacterial tea tree and salicylic actives while soothing erythema with cold botanical compresses.",
@@ -557,13 +640,13 @@ export const SALON_CONFIG: SalonConfiguration = {
           "https://images.unsplash.com/photo-1512290900672-1f417551980a?auto=format&fit=crop&w=800&q=80",
       },
       {
-        id: "tan-removal-facial",
+        id: "body-waxing-oil",
         num: "04",
-        name: "Tan Removal Facial",
-        tagline: "Enzymatic Melanin Balance & Sun Damage Repair",
+        name: "Waxing Oil Wax & Body Waxing",
+        tagline: "Gentle Hair Removal & Lipid Protective Shield",
         description:
-          "Reverses oxidative sun exposure and dullness. Potent stabilized Vitamin C and licorice root gently lift stubborn hyperpigmentation without irritating sensitive barriers.",
-        protocol: "Kojic & lactic exfoliant → Vitamin C ultrasonic infusion → Licorice root brighten mask → Mineral SPF shield",
+          "Premium waxing enriched with pre-wax soothing oil and post-wax cooling chamomile to ensure completely smooth, painless hair removal without redness.",
+        protocol: "Skin prep oil → Hot liposoluble wax strip → Soothing calendula balm → Hydrating silk finish",
         image:
           "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
       },
@@ -578,10 +661,10 @@ export const SALON_CONFIG: SalonConfiguration = {
       {
         id: "t-1",
         clientName: "Aarav Sharma",
-        clientRole: "Architect & Creative Director, Indore",
+        clientRole: "Client, Palsikar Colony, Indore",
         quote:
-          "Bhanu Hair Studio is on another level. The scissor work and attention to facial structure is something you usually only find at high-end studios in Milan or Mumbai. The space is calm, intentional, and genuinely luxurious.",
-        service: "Advanced Hair Cut & Beard Architecture",
+          "Bhanu's The Hair Studio Palsikar is on another level. The haircut and beard trimming attention to facial structure is unparalleled. The space is calm, intentional, and genuinely luxurious.",
+        service: "Haircut & Beard Trimming",
         rating: 5,
       },
       {
@@ -589,17 +672,17 @@ export const SALON_CONFIG: SalonConfiguration = {
         clientName: "Pooja Singhania",
         clientRole: "Fashion Stylist, Indore",
         quote:
-          "My balayage has never looked this seamless. The caramel transition looks completely natural in sunlight, and my hair felt healthier after the session than before. Truly Indore's finest atelier.",
-        service: "French Balayage & Volume Treatment",
+          "My balayage and hair smoothing have never looked this seamless. The caramel transition looks completely natural in sunlight, and my hair felt healthier after the session. Truly Indore's finest unisex studio.",
+        service: "Balayage & Hair Smoothing",
         rating: 5,
       },
       {
         id: "t-3",
         clientName: "Rohan Varma",
-        clientRole: "Entrepreneur, Indore",
+        clientRole: "Client, Manik Bagh Road, Indore",
         quote:
-          "The facial and scalp ritual is my essential monthly reset. Zero rushing, incredible technique, and an atmosphere that lets you unwind completely. An effortless 5-star experience.",
-        service: "Signature Facial & Hair Spa",
+          "The facial, clean up and spa services are my essential monthly reset. Zero rushing, open until 10 PM, incredible technique, and an atmosphere that lets you unwind completely.",
+        service: "Facials & Spa Services",
         rating: 5,
       },
     ],
@@ -608,6 +691,6 @@ export const SALON_CONFIG: SalonConfiguration = {
     headingLine1: "YOUR NEXT LOOK",
     headingLine2: "STARTS HERE.",
     subtext:
-      "Reserve your bespoke styling session with our master artists. Advance appointments recommended for personalized consultations.",
+      "Reserve your bespoke styling session at Bhanu's The Hair Studio Palsikar. Open daily until 10:00 PM for personalized consultations.",
   },
 };

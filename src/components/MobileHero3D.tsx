@@ -246,13 +246,13 @@ export function MobileHero3D() {
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel border border-champagne-500/30 backdrop-blur-xl shadow-[0_4px_25px_rgba(0,0,0,0.6)]">
             <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
             <span className="text-[9px] tracking-ultra uppercase text-champagne-300 font-mono font-medium">
-              HAUTE COIFFURE · INDORE
+              PALSIKAR COLONY · OPEN TILL 10 PM
             </span>
           </div>
 
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-champagne-500/20 text-[9px] font-mono text-champagne-400/80 bg-obsidian-950/60 backdrop-blur-md">
             <Compass className="w-2.5 h-2.5" />
-            <span>EST. 2018</span>
+            <span>INDORE</span>
           </div>
         </div>
 
@@ -261,7 +261,7 @@ export function MobileHero3D() {
           <div className="inline-flex items-center gap-2 mx-auto">
             <span className="w-6 h-[1px] bg-champagne-400 inline-block" />
             <span className="text-[10px] uppercase tracking-[0.25em] text-champagne-400 font-semibold drop-shadow-md">
-              THE UNISEX ATELIER
+              BHANU&apos;S THE HAIR STUDIO
             </span>
             <span className="w-6 h-[1px] bg-champagne-400 inline-block" />
           </div>
@@ -272,7 +272,7 @@ export function MobileHero3D() {
           </h1>
 
           <p className="text-[11px] tracking-[0.16em] uppercase text-ivory-100 font-light max-w-xs mx-auto drop-shadow-md leading-relaxed">
-            Sculpted geometric precision, liquid silk textures & sensory calm in Vijay Nagar.
+            Sculpted geometric precision, liquid silk textures & sensory calm in Palsikar Colony.
           </p>
 
           <div className="pt-1 flex items-center justify-center gap-2 text-[9px] text-champagne-400/70 font-mono tracking-widest uppercase">
@@ -304,11 +304,11 @@ export function MobileHero3D() {
           <div className="grid grid-cols-2 gap-2.5 pt-1">
             <a
               href={`https://wa.me/${SALON_CONFIG.contact.whatsappNumber}?text=${encodeURIComponent(
-                "Hello Bhanu Hair Studio, I would like to reserve a luxury hair experience."
+                "Hello Bhanu's The Hair Studio Palsikar, I would like to reserve a luxury hair experience."
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative flex items-center justify-center gap-2 py-3.5 rounded-full text-[11px] uppercase tracking-wider font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 shadow-[0_0_25px_rgba(197,164,119,0.5)] active:scale-95 transition-all text-center"
+              className="group relative flex items-center justify-center gap-2 py-3.5 rounded-full overflow-hidden text-[11px] uppercase tracking-wider font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 shadow-[0_0_25px_rgba(197,164,119,0.5)] active:scale-95 transition-all text-center"
             >
               <MessageCircle className="w-3.5 h-3.5 fill-obsidian-950" />
               <span>Book Session</span>
