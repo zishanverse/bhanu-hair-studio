@@ -35,7 +35,7 @@ export interface VideoHeroConfig {
 
 export const HERO_CONFIG: VideoHeroConfig = {
   // Fast Cloudflare CDN Cloudinary streaming URL with byte-range seek and compressed bitrate
-  videoSrc: "https://res.cloudinary.com/deepcnbrz/video/upload/q_auto,w_1280/v1791915745/Untitled_Scene_10-13_13_11_50_20261013184548_em2l0g.mp4",
+  videoSrc: "https://res.cloudinary.com/deepcnbrz/video/upload/v1791999245/gemini_generated_video_91c3ab41_kukymd.mp4",
   posterSrc: "",
   scrollDistanceVh: 750, // Extended long scroll to scrub the full 44-second film smoothly to the end
   scrubSmoothing: 0.5,

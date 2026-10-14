@@ -12,7 +12,7 @@ export function CinematicHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
-  // Throttled UI state to protect decoder performance
+  // UI state for scene captions and progress
   const [currentProgress, setCurrentProgress] = useState(0);
   const [activeSceneIndex, setActiveSceneIndex] = useState(0);
 
@@ -38,7 +38,7 @@ export function CinematicHero() {
     video.pause();
 
     const onMeta = () => {
-      // Warm up ready state
+      // video is ready
     };
 
     if (video.readyState >= 1) {
@@ -54,7 +54,7 @@ export function CinematicHero() {
     };
   }, []);
 
-  // 2. Hardware-Accelerated Non-Blocking Video Scrub Loop (Desktop only)
+  // 2. Hardware-Accelerated Smooth Non-Blocking Video Scrub Loop (Desktop only)
   useEffect(() => {
     if (typeof window !== "undefined" && window.innerWidth < 768) return;
 
@@ -64,64 +64,53 @@ export function CinematicHero() {
     isLoopActiveRef.current = true;
     let isSeeking = false;
     let pendingSeekTime: number | null = null;
-    let lastSeekTime = 0;
-    let seekTimeout: ReturnType<typeof setTimeout> | null = null;
+    let lerpedTime = 0;
+    let seekWatchdog: ReturnType<typeof setTimeout> | null = null;
 
-    const performSeek = (targetTime: number) => {
+    // Strict non-blocking seek dispatcher:
+    // Never calls fastSeek (which snaps to sparse keyframes and stutters);
+    // Directly seeks to exact frame without stalling decoder queues.
+    const dispatchSeek = (targetTime: number) => {
       if (!v || isNaN(targetTime)) return;
       const dur = v.duration || 44.011;
-      const clamped = Math.max(0, Math.min(dur - 0.05, targetTime));
-      const diff = clamped - v.currentTime;
+      const clamped = Math.max(0, Math.min(dur - 0.04, targetTime));
+      const diff = Math.abs(clamped - v.currentTime);
 
-      // Skip micro deltas below single-frame threshold (~16ms)
-      if (Math.abs(diff) < 0.018) return;
+      // Skip negligible micro deltas below 1 frame (~16ms)
+      if (diff < 0.016) return;
 
-      const now = performance.now();
-
-      // If decoder is currently seeking and was invoked within 50ms,
-      // store the newest target in pendingSeekTime and drop intermediate obsolete seeks.
-      if ((v.seeking || isSeeking) && now - lastSeekTime < 50) {
+      if (isSeeking || v.seeking) {
         pendingSeekTime = clamped;
         return;
       }
 
       isSeeking = true;
-      lastSeekTime = now;
-      if (seekTimeout) clearTimeout(seekTimeout);
+      if (seekWatchdog) clearTimeout(seekWatchdog);
 
       try {
-        // FastSeek hardware keyframe acceleration for fast scroll leaps
-        if (Math.abs(diff) > 0.35 && "fastSeek" in v && typeof (v as any).fastSeek === "function") {
-          (v as any).fastSeek(clamped);
-        } else {
-          v.currentTime = clamped;
-        }
-      } catch (e) {
-        try {
-          v.currentTime = clamped;
-        } catch {
-          // Fallback ignore
-        }
+        v.currentTime = clamped;
+      } catch {
+        isSeeking = false;
       }
 
-      // Safety watchdog: ensure isSeeking is never permanently locked if decoder drops event
-      seekTimeout = setTimeout(() => {
+      // Safety watchdog: ensure decoder lock is cleared even if browser drops event
+      seekWatchdog = setTimeout(() => {
         isSeeking = false;
         if (pendingSeekTime !== null) {
           const next = pendingSeekTime;
           pendingSeekTime = null;
-          performSeek(next);
+          dispatchSeek(next);
         }
-      }, 55);
+      }, 45);
     };
 
     const onSeeked = () => {
       isSeeking = false;
-      if (seekTimeout) clearTimeout(seekTimeout);
+      if (seekWatchdog) clearTimeout(seekWatchdog);
       if (pendingSeekTime !== null) {
         const next = pendingSeekTime;
         pendingSeekTime = null;
-        performSeek(next);
+        dispatchSeek(next);
       }
     };
 
@@ -131,8 +120,11 @@ export function CinematicHero() {
       if (!isLoopActiveRef.current) return;
 
       if (v && v.readyState >= 1 && v.duration) {
-        const targetTime = targetTimeRef.current;
-        performSeek(targetTime);
+        const rawTarget = targetTimeRef.current;
+
+        // Smooth exponential lerp towards targetTime for silky interpolation even during fast wheel turns
+        lerpedTime += (rawTarget - lerpedTime) * 0.35;
+        dispatchSeek(lerpedTime);
 
         const current = v.currentTime;
         const dur = v.duration;
@@ -171,13 +163,12 @@ export function CinematicHero() {
     return () => {
       isLoopActiveRef.current = false;
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-      if (seekTimeout) clearTimeout(seekTimeout);
+      if (seekWatchdog) clearTimeout(seekWatchdog);
       v.removeEventListener("seeked", onSeeked);
     };
   }, []);
 
-  // 3. GSAP ScrollTrigger Pinned Scrubbing + Lenis Engine (Desktop only)
-  // On mobile viewports, we DO NOT pin so users enjoy instant native touch scrolling
+  // 3. Fast & Responsive GSAP ScrollTrigger Scrubbing + Lenis Engine (Desktop only)
   useEffect(() => {
     if (typeof window === "undefined" || !containerRef.current) return;
     if (window.innerWidth < 768) return; // Skip pinning for mobile
@@ -185,10 +176,11 @@ export function CinematicHero() {
     gsap.registerPlugin(ScrollTrigger);
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    // Fast, crisp Lenis smooth wheel configuration
     const lenis = new Lenis({
-      lerp: prefersReducedMotion ? 1 : 0.09,
+      lerp: prefersReducedMotion ? 1 : 0.14,
       smoothWheel: true,
-      wheelMultiplier: 1.0,
+      wheelMultiplier: 1.25, // Snappy response to wheel turns
     });
     lenisRef.current = lenis;
 
@@ -200,13 +192,14 @@ export function CinematicHero() {
     gsap.ticker.add(tickerCallback);
     gsap.ticker.lagSmoothing(0);
 
-    const scrollLength = 8000;
+    // Optimized scroll length: 3800px instead of 8000px so scrolling is 2x+ faster & natural
+    const scrollLength = 3800;
 
     const st = ScrollTrigger.create({
       trigger: containerRef.current,
       start: "top top",
       end: `+=${scrollLength}`,
-      scrub: 0.6,
+      scrub: 0.18, // Fast, direct tracking with minimal sluggish lag
       pin: true,
       pinSpacing: true,
       anticipatePin: 1,
@@ -240,7 +233,7 @@ export function CinematicHero() {
   const jumpToScene = (targetProgress: number) => {
     if (stRef.current && lenisRef.current) {
       const targetScroll = stRef.current.start + targetProgress * (stRef.current.end - stRef.current.start);
-      lenisRef.current.scrollTo(targetScroll, { duration: 1.0 });
+      lenisRef.current.scrollTo(targetScroll, { duration: 0.8 });
     }
   };
 
@@ -249,7 +242,7 @@ export function CinematicHero() {
     if (lenisRef.current) {
       const studioEl = document.getElementById("studio");
       if (studioEl) {
-        lenisRef.current.scrollTo(studioEl, { duration: 1.2 });
+        lenisRef.current.scrollTo(studioEl, { duration: 1.0 });
       }
     }
   };
