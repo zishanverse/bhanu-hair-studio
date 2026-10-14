@@ -8,6 +8,7 @@ export function Navbar() {
   const { identity, contact } = SALON_CONFIG;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isOpenNow, setIsOpenNow] = useState(true);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,6 +16,20 @@ export function Navbar() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const checkStatus = () => {
+      // Calculate Indian Standard Time (UTC + 5:30)
+      const now = new Date();
+      const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+      const ist = new Date(utc + 3600000 * 5.5);
+      const hour = ist.getHours();
+      setIsOpenNow(hour >= 10 && hour < 22);
+    };
+    checkStatus();
+    const interval = setInterval(checkStatus, 60000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -26,25 +41,41 @@ export function Navbar() {
             : "bg-transparent py-5"
         }`}
       >
-        {/* Brand Logo */}
-        <a
-          href="#"
-          id="nav-brand-logo"
-          className="group flex items-center gap-2.5 sm:gap-3 text-ivory-50 transition-opacity hover:opacity-90 min-w-0"
-          aria-label="Bhanu Hair Studio Home"
-        >
-          <div className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-full border border-champagne-500/40 flex items-center justify-center bg-obsidian-900/60 backdrop-blur-md group-hover:border-champagne-400 group-hover:shadow-[0_0_15px_rgba(197,164,119,0.3)] transition-all duration-300">
-            <Scissors className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-champagne-400 transform -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
-          </div>
-          <div className="flex flex-col min-w-0">
-            <span className="font-serif text-lg sm:text-xl md:text-2xl tracking-[0.18em] sm:tracking-[0.2em] uppercase font-light text-ivory-100 group-hover:text-champagne-300 transition-colors truncate">
-              {identity.brandName}
+        {/* Brand Logo & Live Status */}
+        <div className="flex items-center gap-4 min-w-0">
+          <a
+            href="#"
+            id="nav-brand-logo"
+            className="group flex items-center gap-2.5 sm:gap-3 text-ivory-50 transition-opacity hover:opacity-90 min-w-0"
+            aria-label="Bhanu Hair Studio Home"
+          >
+            <div className="w-8 h-8 sm:w-9 sm:h-9 shrink-0 rounded-full border border-champagne-500/40 flex items-center justify-center bg-obsidian-900/60 backdrop-blur-md group-hover:border-champagne-400 group-hover:shadow-[0_0_15px_rgba(197,164,119,0.3)] transition-all duration-300">
+              <Scissors className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-champagne-400 transform -rotate-45 group-hover:rotate-0 transition-transform duration-500" />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="font-serif text-lg sm:text-xl md:text-2xl tracking-[0.18em] sm:tracking-[0.2em] uppercase font-light text-ivory-100 group-hover:text-champagne-300 transition-colors truncate">
+                {identity.brandName}
+              </span>
+              <span className="text-[8px] sm:text-[9px] tracking-[0.25em] sm:tracking-[0.3em] uppercase text-champagne-400/90 -mt-0.5 sm:-mt-1 font-sans truncate">
+                {identity.brandSub} · {identity.city.toUpperCase()}
+              </span>
+            </div>
+          </a>
+
+          {/* Live Salon Status Pill (Indore Local Time) */}
+          <div className="hidden xl:inline-flex items-center gap-2 px-3 py-1 rounded-full border border-champagne-500/25 glass-panel text-[10px] font-mono tracking-wider shrink-0">
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                isOpenNow
+                  ? "bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"
+                  : "bg-amber-400"
+              }`}
+            />
+            <span className="text-ivory-100">
+              {isOpenNow ? "OPEN NOW · CLOSES 10 PM" : "OPENS 10:00 AM"}
             </span>
-            <span className="text-[8px] sm:text-[9px] tracking-[0.25em] sm:tracking-[0.3em] uppercase text-champagne-400/90 -mt-0.5 sm:-mt-1 font-sans truncate">
-              {identity.brandSub} · {identity.city.toUpperCase()}
-            </span>
           </div>
-        </a>
+        </div>
 
         {/* Center Navigation Links - Desktop */}
         <nav

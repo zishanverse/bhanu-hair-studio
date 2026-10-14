@@ -87,6 +87,7 @@ export function GallerySection() {
                 key={item.id}
                 tabIndex={0}
                 role="button"
+                data-cursor="INSPECT"
                 aria-label={`View look: ${item.title}`}
                 onClick={() => setActiveLightboxIndex(index)}
                 onKeyDown={(e) => {
@@ -99,21 +100,27 @@ export function GallerySection() {
                   isWide ? "md:col-span-2 aspect-[16/10]" : "aspect-[4/5]"
                 } flex flex-col justify-end p-6 md:p-8 transform hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.8)] focus:outline-none focus:ring-1 focus:ring-champagne-400`}
               >
-                {/* Background Image */}
+                {/* Background Image with Unified Champagne Tone Grading */}
                 <Image
                   src={item.image}
                   alt={item.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover object-center filter brightness-[0.82] contrast-[1.1] transition-transform duration-1000 group-hover:scale-105"
+                  className="object-cover object-center filter brightness-[0.85] contrast-[1.08] transition-transform duration-1000 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/40 to-transparent pointer-events-none" />
+                {/* Film Grade Duotone Overlay to eliminate stock photo temperature clash */}
+                <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/40 to-champagne-900/10 pointer-events-none" />
 
-                {/* Top Corner Badge */}
+                {/* Top Corner Badge & Editorial Plate Number */}
                 <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-10">
-                  <span className="text-[10px] tracking-ultra uppercase px-3 py-1 rounded-full glass-pill border border-champagne-500/25 text-champagne-300">
-                    {item.categoryLabel}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] tracking-ultra uppercase px-3 py-1 rounded-full glass-pill border border-champagne-500/25 text-champagne-300 font-mono">
+                      {item.categoryLabel}
+                    </span>
+                    <span className="text-[9px] font-mono tracking-widest text-champagne-400/70 uppercase hidden sm:inline">
+                      PLATE 0{index + 1}
+                    </span>
+                  </div>
                   <div className="w-8 h-8 rounded-full glass-panel border border-champagne-500/30 flex items-center justify-center text-champagne-300 group-hover:bg-champagne-400 group-hover:text-obsidian-950 transition-all">
                     <ZoomIn className="w-3.5 h-3.5" />
                   </div>
@@ -128,7 +135,7 @@ export function GallerySection() {
                     {item.description}
                   </p>
                   {item.transformation && (
-                    <div className="pt-2 flex items-center gap-1.5 text-[10px] tracking-widest uppercase text-champagne-400">
+                    <div className="pt-2 flex items-center gap-1.5 text-[10px] tracking-widest uppercase text-champagne-400 font-mono">
                       <Sparkles className="w-3 h-3" />
                       <span>Before / After Transformation Available</span>
                     </div>

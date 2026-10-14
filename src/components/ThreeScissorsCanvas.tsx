@@ -5,11 +5,14 @@ import * as THREE from "three";
 
 interface ThreeScissorsCanvasProps {
   className?: string;
+  snipCount?: number;
+  onSnip?: () => void;
 }
 
-export function ThreeScissorsCanvas({ className = "" }: ThreeScissorsCanvasProps) {
+export function ThreeScissorsCanvas({ className = "", snipCount, onSnip }: ThreeScissorsCanvasProps) {
   const mountRef = useRef<HTMLDivElement>(null);
   const [isSupported, setIsSupported] = useState(true);
+  const snipTriggerTimeRef = useRef<number>(0);
 
   useEffect(() => {
     const mount = mountRef.current;
@@ -326,6 +329,14 @@ export function ThreeScissorsCanvas({ className = "" }: ThreeScissorsCanvasProps
       isInteracting = false;
     };
 
+    const triggerMechanicalSnip = () => {
+      snipTriggerTimeRef.current = performance.now();
+      if (onSnip) {
+        onSnip();
+      }
+    };
+
+    mount.addEventListener("click", triggerMechanicalSnip);
     window.addEventListener("mousemove", handlePointerMove);
     mount.addEventListener("touchmove", handleTouchMove, { passive: true });
     mount.addEventListener("mouseleave", handlePointerLeave);
@@ -344,7 +355,9 @@ export function ThreeScissorsCanvas({ className = "" }: ThreeScissorsCanvasProps
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      const elapsedTime = (performance.now() - startTime) * 0.001;
+      const now = performance.now();
+      const elapsedTime = (now - startTime) * 0.001;
+      const timeSinceSnip = (now - snipTriggerTimeRef.current) * 0.001;
 
       // Smooth floating idle posture
       masterScissorsGroup.rotation.x +=
@@ -355,11 +368,23 @@ export function ThreeScissorsCanvas({ className = "" }: ThreeScissorsCanvasProps
         (targetRotZ - masterScissorsGroup.rotation.z) * 0.05;
 
       // Realistic scissor blade action:
-      // Combines a slow rhythmic breathing opening with responsive snip snip reaction to pointer interaction
-      const baseSnipCycle = Math.sin(elapsedTime * 1.8);
-      // Half-wave rectified snip: mostly closed/slight open, opens gracefully then snips shut
-      const openAmount = Math.max(0, baseSnipCycle) * 0.16 + (isInteracting ? pointerVelocity * 0.35 : 0.02);
-      const clampedAngle = THREE.MathUtils.clamp(openAmount, 0.015, 0.22);
+      let clampedAngle = 0.02;
+
+      // If active mechanical snip triggered within 0.45s:
+      if (timeSinceSnip < 0.45) {
+        // Fast dual snappy snip curve
+        const snipProgress = timeSinceSnip / 0.45;
+        // Two snaps: opens and snaps shut twice
+        const snipWave = Math.sin(snipProgress * Math.PI * 2.5);
+        clampedAngle = THREE.MathUtils.clamp(Math.abs(snipWave) * 0.32, 0.01, 0.35);
+        glintLight.intensity = 2.2 + Math.max(0, Math.sin(snipProgress * Math.PI)) * 4.0;
+      } else {
+        // Subtle ambient idle breathing snip
+        glintLight.intensity = 2.2;
+        const baseSnipCycle = Math.sin(elapsedTime * 1.8);
+        const openAmount = Math.max(0, baseSnipCycle) * 0.16 + (isInteracting ? pointerVelocity * 0.35 : 0.02);
+        clampedAngle = THREE.MathUtils.clamp(openAmount, 0.015, 0.22);
+      }
 
       fingerPivotGroup.rotation.z = -clampedAngle * 0.6;
       thumbPivotGroup.rotation.z = clampedAngle * 0.6;
@@ -371,6 +396,7 @@ export function ThreeScissorsCanvas({ className = "" }: ThreeScissorsCanvasProps
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      mount.removeEventListener("click", triggerMechanicalSnip);
       window.removeEventListener("mousemove", handlePointerMove);
       mount.removeEventListener("touchmove", handleTouchMove);
       mount.removeEventListener("mouseleave", handlePointerLeave);
@@ -381,7 +407,14 @@ export function ThreeScissorsCanvas({ className = "" }: ThreeScissorsCanvasProps
       renderer.dispose();
       scene.clear();
     };
-  }, []);
+  }, [onSnip]);
+
+  // Handle external snip trigger updates
+  useEffect(() => {
+    if (snipCount && snipCount > 0) {
+      snipTriggerTimeRef.current = performance.now();
+    }
+  }, [snipCount]);
 
   if (!isSupported) {
     return (

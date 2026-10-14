@@ -53,6 +53,15 @@ export default {
         ultra: "0.3em",
         editorial: "0.15em",
       },
+      animation: {
+        marquee: "marquee 42s linear infinite",
+      },
+      keyframes: {
+        marquee: {
+          "0%": { transform: "translateX(0%)" },
+          "100%": { transform: "translateX(-33.333%)" },
+        },
+      },
     },
   },
   plugins: [],

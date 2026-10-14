@@ -9,8 +9,17 @@ import { Sparkles, Check, ChevronRight, RotateCcw } from "lucide-react";
 export function SignatureExperience() {
   const { signatureExperience } = SALON_CONFIG;
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
+  const [snipCount, setSnipCount] = useState(0);
+  const [tensionMode, setTensionMode] = useState<"Precision" | "Texturize" | "Scissor-Over-Comb">("Precision");
+  const [snipFlashed, setSnipFlashed] = useState(false);
 
   const activeChapter = signatureExperience.chapters[activeChapterIndex];
+
+  const handleTriggerSnip = () => {
+    setSnipCount((prev) => prev + 1);
+    setSnipFlashed(true);
+    setTimeout(() => setSnipFlashed(false), 400);
+  };
 
   return (
     <section
@@ -119,24 +128,72 @@ export function SignatureExperience() {
           {/* Center/Right Column: Interactive 3D Object & Cinematic Imagery */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8">
             {/* Interactive 3D Japanese Barber Scissors Canvas */}
-            <div className="rounded-3xl glass-card border border-champagne-500/20 p-6 flex flex-col justify-between relative overflow-hidden min-h-[380px] bg-gradient-to-b from-surface via-obsidian-950 to-obsidian-950">
+            <div className={`rounded-3xl glass-card border p-6 flex flex-col justify-between relative overflow-hidden min-h-[420px] bg-gradient-to-b from-surface via-obsidian-950 to-obsidian-950 transition-all duration-300 ${
+              snipFlashed ? "border-champagne-300 shadow-[0_0_35px_rgba(197,164,119,0.35)]" : "border-champagne-500/20"
+            }`}>
               <div className="flex items-center justify-between z-10">
-                <span className="text-[10px] tracking-widest uppercase text-champagne-400 font-mono">
-                  TOOLING // 440C JAPANESE STEEL
-                </span>
-                <span className="text-[10px] text-muted tracking-wider uppercase font-mono">
-                  INTERACTIVE
-                </span>
+                <div className="space-y-0.5">
+                  <span className="text-[10px] tracking-widest uppercase text-champagne-400 font-mono block">
+                    HITACHI 440C COBALT ALLOY
+                  </span>
+                  <span className="text-[9px] text-muted tracking-wider uppercase font-mono">
+                    Tension: 4.8 N·m · Hamaguri-ba
+                  </span>
+                </div>
+                
+                {/* Snip Action Button */}
+                <button
+                  type="button"
+                  onClick={handleTriggerSnip}
+                  className="group relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 active:scale-95 transition-all shadow-md"
+                  aria-label="Trigger mechanical snip"
+                >
+                  <Sparkles className="w-3 h-3 animate-spin text-obsidian-950" style={{ animationDuration: "6s" }} />
+                  <span>Snip Shears ✂️</span>
+                  {snipCount > 0 && (
+                    <span className="ml-1 px-1.5 py-0.2 rounded-full bg-obsidian-950 text-champagne-300 text-[9px] font-mono">
+                      {snipCount}
+                    </span>
+                  )}
+                </button>
               </div>
 
               {/* Three.js Canvas Element */}
-              <div className="absolute inset-0 flex items-center justify-center z-0 pt-6">
-                <ThreeScissorsCanvas className="w-full h-full" />
+              <div className="absolute inset-0 flex items-center justify-center z-0 pt-10 pb-12 cursor-pointer">
+                <ThreeScissorsCanvas
+                  className="w-full h-full"
+                  snipCount={snipCount}
+                  onSnip={handleTriggerSnip}
+                />
               </div>
 
-              <div className="relative z-10 pt-4 flex items-center justify-between text-[10px] text-muted tracking-widest uppercase">
-                <span>Forged Japanese Steel</span>
-                <span className="text-champagne-300">Drag / Hover to Inspect</span>
+              {/* Bottom Interactive Dial & Controls */}
+              <div className="relative z-10 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[10px] text-muted tracking-widest uppercase border-t border-champagne-500/15">
+                <div className="flex items-center gap-2">
+                  <span className="text-champagne-300">Blade Angle:</span>
+                  <div className="flex items-center gap-1">
+                    {(["Precision", "Texturize", "Scissor-Over-Comb"] as const).map((m) => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => {
+                          setTensionMode(m);
+                          handleTriggerSnip();
+                        }}
+                        className={`px-2 py-0.5 rounded text-[8px] transition-colors ${
+                          tensionMode === m
+                            ? "bg-champagne-400/20 text-champagne-300 border border-champagne-400/40"
+                            : "hover:text-ivory-100 text-muted"
+                        }`}
+                      >
+                        {m}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <span className="text-champagne-400/90 text-right font-mono text-[9px]">
+                  Click / Drag 3D Canvas
+                </span>
               </div>
             </div>
 

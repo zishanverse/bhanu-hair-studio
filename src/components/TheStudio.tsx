@@ -110,19 +110,31 @@ export function TheStudio() {
       id="studio"
       className="relative z-20 w-full bg-obsidian-950 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 overflow-hidden border-t border-champagne-500/15"
     >
-      {/* Visual Bridge: subtle warm amber / obsidian ambient connection */}
+      {/* Visual Bridge & Ambient Glow */}
       <div className="absolute top-0 left-1/3 w-[600px] h-[250px] bg-champagne-500/5 blur-[140px] pointer-events-none -translate-y-1/2" />
+      
+      {/* Background Architectural Monogram Watermark */}
+      <div className="absolute right-0 top-1/4 select-none pointer-events-none text-[15vw] font-serif font-light text-champagne-500/[0.025] leading-none tracking-tighter whitespace-nowrap z-0">
+        PALSIKAR
+      </div>
 
-      <div className="max-w-7xl mx-auto">
-        {/* Section Label */}
-        <div className="flex items-center gap-3 mb-8 sm:mb-10 md:mb-14">
-          <span className="w-6 sm:w-8 h-[1px] bg-champagne-500/80 inline-block" />
-          <span className="text-[10px] sm:text-xs uppercase tracking-ultra text-champagne-400 font-medium">
-            {theStudio.sectionNum} / {theStudio.sectionLabel}
-          </span>
-          <span className="text-[9px] sm:text-[10px] tracking-widest text-muted uppercase hidden sm:inline">
-            — INDORE ATELIER
-          </span>
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Section Label & Architectural Header */}
+        <div className="flex items-center justify-between border-b border-champagne-500/15 pb-6 mb-10 sm:mb-14">
+          <div className="flex items-center gap-3">
+            <span className="w-6 sm:w-8 h-[1px] bg-champagne-500/80 inline-block" />
+            <span className="text-[10px] sm:text-xs uppercase tracking-ultra text-champagne-400 font-medium">
+              {theStudio.sectionNum} / {theStudio.sectionLabel}
+            </span>
+            <span className="text-[9px] sm:text-[10px] tracking-widest text-muted uppercase hidden sm:inline">
+              — INDORE ATELIER
+            </span>
+          </div>
+          <div className="hidden md:flex items-center gap-4 text-[10px] font-mono text-champagne-400/80 tracking-widest uppercase">
+            <span>ELEV: 553M MSL</span>
+            <span>·</span>
+            <span>MMXXIV ARCHIVE</span>
+          </div>
         </div>
 
         {/* Asymmetric Editorial Composition */}
@@ -154,16 +166,39 @@ export function TheStudio() {
                 {theStudio.description}
               </p>
 
-              <div className="space-y-4 pt-2 text-sm text-muted font-light leading-relaxed">
+              {/* Master Stylist's Manifesto Blockquote */}
+              <div className="p-6 rounded-2xl glass-card border-l-2 border-champagne-400 border-t border-r border-b border-champagne-500/15 space-y-3 relative overflow-hidden">
+                <div className="text-champagne-400/20 font-serif text-5xl absolute -top-1 right-3 leading-none select-none">
+                  “
+                </div>
+                <p className="font-serif italic text-base sm:text-lg text-champagne-100/90 leading-relaxed relative z-10">
+                  Precision cutting is not merely subtracting length; it is sculpting light, anatomy, and personality into organic harmony.
+                </p>
+                <div className="flex items-center justify-between pt-2 border-t border-champagne-500/10">
+                  <div>
+                    <div className="font-medium text-xs tracking-wider uppercase text-ivory-100">
+                      Bhanu
+                    </div>
+                    <div className="text-[10px] tracking-widest text-muted font-mono uppercase">
+                      Master Stylist & Atelier Founder
+                    </div>
+                  </div>
+                  <div className="w-6 h-6 rounded-full border border-champagne-400/40 flex items-center justify-center text-[10px] font-serif italic text-champagne-300">
+                    B
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3 pt-1 text-sm text-muted font-light leading-relaxed">
                 {theStudio.philosophy.map((para, i) => (
-                  <p key={i} className="border-l border-champagne-500/30 pl-4 py-1">
+                  <p key={i} className="border-l border-champagne-500/25 pl-4 py-0.5">
                     {para}
                   </p>
                 ))}
               </div>
 
               {/* Studio Coordinates & Heritage */}
-              <div className="pt-4 flex flex-wrap items-center gap-6 text-xs text-champagne-400/80 tracking-widest uppercase font-mono">
+              <div className="pt-2 flex flex-wrap items-center gap-6 text-xs text-champagne-400/80 tracking-widest uppercase font-mono">
                 <div className="flex items-center gap-2">
                   <Compass className="w-3.5 h-3.5 text-champagne-400" />
                   <span>{identity.coordinates.lat}, {identity.coordinates.lng}</span>
@@ -175,13 +210,13 @@ export function TheStudio() {
               </div>
 
               {/* Explore Link */}
-              <div className="pt-4">
+              <div className="pt-2">
                 <a
                   href="#services"
                   className="group inline-flex items-center gap-3 text-xs uppercase tracking-widest text-champagne-300 hover:text-ivory-50 transition-colors"
                 >
                   <span className="relative">
-                    Explore The Disciplines
+                    Explore The 30 Disciplines
                     <span className="absolute bottom-0 left-0 w-0 h-[1px] bg-champagne-400 group-hover:w-full transition-all duration-300" />
                   </span>
                   <div className="w-7 h-7 rounded-full border border-champagne-500/40 flex items-center justify-center group-hover:border-champagne-300 group-hover:bg-champagne-500/10 transition-all">
@@ -192,21 +227,26 @@ export function TheStudio() {
             </div>
           </div>
 
-          {/* Right Column: Architectural Photography (Clean, No AI-Badges) */}
-          <div className="lg:col-span-6 relative mt-6 lg:mt-0">
+          {/* Right Column: Architectural Photography & Overlapping Detail Card */}
+          <div className="lg:col-span-6 relative mt-8 lg:mt-0">
             <div ref={imageWrapperRef} className="relative z-10">
-              <div className="relative rounded-2xl overflow-hidden border border-champagne-500/20 shadow-2xl aspect-[4/5] bg-obsidian-900">
+              {/* Primary Architectural Image */}
+              <div className="relative rounded-3xl overflow-hidden border border-champagne-500/20 shadow-2xl aspect-[4/5] bg-obsidian-900 group">
                 <Image
                   src={theStudio.featuredImage}
                   alt="Bhanu's The Hair Studio Palsikar Interior"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover object-center filter brightness-[0.92] contrast-[1.04]"
+                  className="object-cover object-center filter brightness-[0.92] contrast-[1.04] transition-transform duration-1000 group-hover:scale-105"
                   priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/80 via-transparent to-transparent pointer-events-none" />
 
-                <div className="absolute bottom-6 left-6 right-6 p-5 rounded-xl glass-panel border border-champagne-500/20 flex items-center justify-between">
+                <div className="absolute top-6 left-6 text-[10px] tracking-widest uppercase px-3.5 py-1.5 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 font-mono">
+                  FIG 01 // INTERIOR SANCTUARY
+                </div>
+
+                <div className="absolute bottom-6 left-6 right-6 p-5 rounded-2xl glass-panel border border-champagne-500/20 flex items-center justify-between">
                   <div className="space-y-0.5">
                     <div className="text-[10px] tracking-widest uppercase text-champagne-400 font-mono">
                       INDORE SANCTUARY
@@ -215,7 +255,29 @@ export function TheStudio() {
                       Palsikar Colony Atelier Sanctuary
                     </div>
                   </div>
-                  <span className="text-xs font-mono text-champagne-300">OPEN TILL 10 PM</span>
+                  <span className="text-xs font-mono text-champagne-300 px-3 py-1 rounded-full bg-champagne-400/10 border border-champagne-400/30">
+                    OPEN TILL 10 PM
+                  </span>
+                </div>
+              </div>
+
+              {/* Overlapping Floating Architectural Vignette (Breaks AI Template Symmetry) */}
+              <div className="hidden sm:flex absolute -bottom-8 -left-8 lg:-bottom-10 lg:-left-12 z-20 w-64 rounded-2xl glass-card border border-champagne-400/40 p-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.85)] flex-col gap-2.5 backdrop-blur-xl">
+                <div className="flex items-center justify-between text-[9px] font-mono tracking-widest text-champagne-400 uppercase">
+                  <span>DISCIPLINE PRECISION</span>
+                  <span>440C HITACHI</span>
+                </div>
+                <div className="relative w-full h-24 rounded-lg overflow-hidden border border-champagne-500/20">
+                  <Image
+                    src="/images/gallery/mens-fade.jpg"
+                    alt="Precision Master Craftsmanship"
+                    fill
+                    className="object-cover filter contrast-[1.08] brightness-[0.88]"
+                  />
+                  <div className="absolute inset-0 bg-champagne-950/20 mix-blend-color" />
+                </div>
+                <div className="text-[11px] font-serif text-ivory-100 font-light leading-snug">
+                  Artisanal taper & organic texture sculpting in Palsikar.
                 </div>
               </div>
             </div>
