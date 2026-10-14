@@ -1,0 +1,168 @@
+"use client";
+
+import React, { useState } from "react";
+import Image from "next/image";
+import { SALON_CONFIG } from "@/config/salon.config";
+import { ThreeScissorsCanvas } from "@/components/ThreeScissorsCanvas";
+import { Sparkles, Check, ChevronRight, RotateCcw } from "lucide-react";
+
+export function SignatureExperience() {
+  const { signatureExperience } = SALON_CONFIG;
+  const [activeChapterIndex, setActiveChapterIndex] = useState(0);
+
+  const activeChapter = signatureExperience.chapters[activeChapterIndex];
+
+  return (
+    <section
+      id="experience"
+      className="relative w-full bg-obsidian-950 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden"
+    >
+      {/* Background ambient gold gradient glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-champagne-500/5 blur-[160px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto space-y-12 sm:space-y-16 relative z-10">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8">
+          <div className="space-y-3 sm:space-y-4 max-w-2xl">
+            <div className="flex items-center gap-3">
+              <span className="w-6 sm:w-8 h-[1px] bg-champagne-500/80 inline-block" />
+              <span className="text-[10px] sm:text-xs uppercase tracking-ultra text-champagne-400 font-medium">
+                {signatureExperience.sectionNum} / {signatureExperience.sectionLabel}
+              </span>
+            </div>
+            <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-ivory-50 tracking-tight leading-[1.05] sm:leading-[0.96]">
+              {signatureExperience.headingLine1} <br />
+              <span className="italic font-normal text-champagne-300 font-serif">
+                {signatureExperience.headingLine2}
+              </span>
+            </h2>
+          </div>
+
+          {/* Chapter Selector Tabs / Gold Progress Bar */}
+          <div className="flex items-center gap-2 sm:gap-3 bg-surface p-1.5 rounded-full border border-champagne-500/20 max-w-full overflow-x-auto no-scrollbar">
+            {signatureExperience.chapters.map((ch, idx) => (
+              <button
+                key={ch.id}
+                type="button"
+                onClick={() => setActiveChapterIndex(idx)}
+                className={`relative px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest font-medium transition-all duration-300 whitespace-nowrap ${
+                  activeChapterIndex === idx
+                    ? "text-obsidian-950 bg-champagne-400 shadow-[0_0_20px_rgba(197,164,119,0.4)]"
+                    : "text-muted hover:text-ivory-100"
+                }`}
+              >
+                <span>{ch.num} / {ch.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Cinematic Chapter Showcase Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          {/* Left Column: Chapter Editorial Narrative */}
+          <div className="lg:col-span-5 rounded-3xl glass-card border border-champagne-500/15 p-6 sm:p-8 md:p-12 flex flex-col justify-between space-y-6 sm:space-y-8">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs tracking-widest text-champagne-400 font-semibold">
+                  CHAPTER {activeChapter.num}
+                </span>
+                <span className="text-[10px] tracking-widest uppercase px-3 py-1 rounded-full border border-champagne-500/25 text-champagne-300 font-mono">
+                  ACTIVE ATELIER RITUAL
+                </span>
+              </div>
+
+              <h3 className="font-serif text-3xl md:text-4xl text-ivory-50 leading-tight">
+                {activeChapter.title}
+              </h3>
+
+              <p className="text-sm text-champagne-300/90 font-light tracking-wide">
+                {activeChapter.subtitle}
+              </p>
+
+              <p className="text-sm text-muted font-light leading-relaxed">
+                {activeChapter.description}
+              </p>
+
+              {/* Ritual Discipline Checklist */}
+              <div className="pt-4 space-y-3 border-t border-champagne-500/15">
+                {activeChapter.keyPoints.map((point, i) => (
+                  <div key={i} className="flex items-start gap-3 text-xs text-ivory-200/90 font-light">
+                    <div className="w-4 h-4 rounded-full border border-champagne-400/50 flex items-center justify-center shrink-0 mt-0.5 text-champagne-300">
+                      <Check className="w-2.5 h-2.5" />
+                    </div>
+                    <span>{point}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Bottom Actions */}
+            <div className="pt-6 border-t border-champagne-500/15 flex items-center justify-between">
+              <div className="text-[11px] uppercase tracking-widest text-muted">
+                0{activeChapterIndex + 1} OF 0{signatureExperience.chapters.length} CHAPTERS
+              </div>
+              <button
+                type="button"
+                onClick={() =>
+                  setActiveChapterIndex((prev) =>
+                    prev + 1 < signatureExperience.chapters.length ? prev + 1 : 0
+                  )
+                }
+                className="group flex items-center gap-2 text-xs uppercase tracking-widest text-champagne-400 hover:text-ivory-50 transition-colors"
+              >
+                <span>Next Chapter</span>
+                <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+
+          {/* Center/Right Column: Interactive 3D Object & Cinematic Imagery */}
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8">
+            {/* Interactive 3D Japanese Barber Scissors Canvas */}
+            <div className="rounded-3xl glass-card border border-champagne-500/20 p-6 flex flex-col justify-between relative overflow-hidden min-h-[380px] bg-gradient-to-b from-surface via-obsidian-950 to-obsidian-950">
+              <div className="flex items-center justify-between z-10">
+                <span className="text-[10px] tracking-widest uppercase text-champagne-400 font-mono">
+                  TOOLING // 440C JAPANESE STEEL
+                </span>
+                <span className="text-[10px] text-muted tracking-wider uppercase font-mono">
+                  INTERACTIVE
+                </span>
+              </div>
+
+              {/* Three.js Canvas Element */}
+              <div className="absolute inset-0 flex items-center justify-center z-0 pt-6">
+                <ThreeScissorsCanvas className="w-full h-full" />
+              </div>
+
+              <div className="relative z-10 pt-4 flex items-center justify-between text-[10px] text-muted tracking-widest uppercase">
+                <span>Forged Japanese Steel</span>
+                <span className="text-champagne-300">Drag / Hover to Inspect</span>
+              </div>
+            </div>
+
+            {/* Chapter Photographic Visual */}
+            <div className="rounded-3xl overflow-hidden border border-champagne-500/20 relative aspect-square sm:aspect-auto min-h-[380px] bg-obsidian-900 group">
+              <Image
+                src={activeChapter.image}
+                alt={activeChapter.title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 35vw"
+                className="object-cover object-center filter brightness-[0.85] contrast-[1.08] transition-transform duration-1000 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/80 via-transparent to-transparent pointer-events-none" />
+
+              <div className="absolute bottom-6 left-6 right-6 p-4 rounded-xl glass-panel border border-champagne-500/25">
+                <div className="text-[10px] tracking-widest uppercase text-champagne-400 font-mono">
+                  ATELIER RITUAL
+                </div>
+                <div className="text-sm font-serif text-ivory-100">
+                  {activeChapter.subtitle}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

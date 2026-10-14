@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-obsidian: #0B0B0C;
+  --color-surface: #171719;
+  --color-champagne: #C5A477;
+  --color-champagne-light: #DEC7A9;
+  --color-ivory: #F4EFE8;
+  --color-muted: #A9A29B;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  background-color: #0B0B0C;
+  color: #F4EFE8;
+  scroll-behavior: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  overflow-x: hidden;
+  background-color: #0B0B0C;
+  color: #F4EFE8;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Custom luxury scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0B0C;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(197, 164, 119, 0.35);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(197, 164, 119, 0.65);
+}
+
+/* Editorial selection */
+::selection {
+  background: rgba(197, 164, 119, 0.25);
+  color: #F4EFE8;
+}
+
+/* Glassmorphism styling */
+.glass-panel {
+  background: rgba(23, 23, 25, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(197, 164, 119, 0.15);
+}
+
+.glass-pill {
+  background: rgba(23, 23, 25, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(197, 164, 119, 0.2);
+}
+
+.glass-card {
+  background: linear-gradient(145deg, rgba(23, 23, 25, 0.85) 0%, rgba(14, 14, 16, 0.95) 100%);
+  border: 1px solid rgba(197, 164, 119, 0.12);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Subtle cinematic film grain overlay */
+.film-grain {
+  pointer-events: none;
+  background-image: radial-gradient(rgba(197, 164, 119, 0.035) 1px, transparent 0);
+  background-size: 28px 28px;
+}
+
+/* Champagne text gradient */
+.text-champagne-gradient {
+  background: linear-gradient(135deg, #FAF7F2 0%, #C5A477 50%, #8F6E43 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-ivory-gradient {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F4EFE8 70%, #A9A29B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Subtle image depth and masks */
+.editorial-mask {
+  clip-path: polygon(0 0, 100% 0, 100% 96%, 0 100%);
+}
