@@ -64,26 +64,47 @@ export function CinematicHero() {
     isLoopActiveRef.current = true;
     let isSeeking = false;
     let pendingSeekTime: number | null = null;
+    let lastSeekTime = 0;
     let seekTimeout: ReturnType<typeof setTimeout> | null = null;
 
-    const performSeek = (time: number) => {
-      if (!v || isNaN(time)) return;
+    const performSeek = (targetTime: number) => {
+      if (!v || isNaN(targetTime)) return;
       const dur = v.duration || 44.011;
-      const clamped = Math.max(0, Math.min(dur, time));
+      const clamped = Math.max(0, Math.min(dur - 0.05, targetTime));
+      const diff = clamped - v.currentTime;
 
-      if (v.seeking || isSeeking) {
+      // Skip micro deltas below single-frame threshold (~16ms)
+      if (Math.abs(diff) < 0.018) return;
+
+      const now = performance.now();
+
+      // If decoder is currently seeking and was invoked within 50ms,
+      // store the newest target in pendingSeekTime and drop intermediate obsolete seeks.
+      if ((v.seeking || isSeeking) && now - lastSeekTime < 50) {
         pendingSeekTime = clamped;
         return;
       }
 
       isSeeking = true;
+      lastSeekTime = now;
+      if (seekTimeout) clearTimeout(seekTimeout);
+
       try {
-        v.currentTime = clamped;
+        // FastSeek hardware keyframe acceleration for fast scroll leaps
+        if (Math.abs(diff) > 0.35 && "fastSeek" in v && typeof (v as any).fastSeek === "function") {
+          (v as any).fastSeek(clamped);
+        } else {
+          v.currentTime = clamped;
+        }
       } catch (e) {
-        isSeeking = false;
+        try {
+          v.currentTime = clamped;
+        } catch {
+          // Fallback ignore
+        }
       }
 
-      if (seekTimeout) clearTimeout(seekTimeout);
+      // Safety watchdog: ensure isSeeking is never permanently locked if decoder drops event
       seekTimeout = setTimeout(() => {
         isSeeking = false;
         if (pendingSeekTime !== null) {
@@ -91,7 +112,7 @@ export function CinematicHero() {
           pendingSeekTime = null;
           performSeek(next);
         }
-      }, 100);
+      }, 55);
     };
 
     const onSeeked = () => {
@@ -111,21 +132,17 @@ export function CinematicHero() {
 
       if (v && v.readyState >= 1 && v.duration) {
         const targetTime = targetTimeRef.current;
-        const currentTime = v.currentTime;
-        const diff = targetTime - currentTime;
+        performSeek(targetTime);
 
-        if (Math.abs(diff) > 0.02) {
-          const step = Math.max(Math.min(0.45 * diff, 1.0), -1.0);
-          performSeek(currentTime + step);
-        }
-
-        const progress = Math.max(0, Math.min(1, v.currentTime / v.duration));
+        const current = v.currentTime;
+        const dur = v.duration;
+        const progress = Math.max(0, Math.min(1, current / dur));
 
         if (progressBarRef.current) {
           progressBarRef.current.style.width = `${progress * 100}%`;
         }
 
-        if (Math.abs(progress - lastProgressRef.current) > 0.003) {
+        if (Math.abs(progress - lastProgressRef.current) > 0.002) {
           lastProgressRef.current = progress;
           setCurrentProgress(progress);
         }
@@ -169,9 +186,9 @@ export function CinematicHero() {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const lenis = new Lenis({
-      lerp: prefersReducedMotion ? 1 : 0.08,
+      lerp: prefersReducedMotion ? 1 : 0.09,
       smoothWheel: true,
-      wheelMultiplier: 0.9,
+      wheelMultiplier: 1.0,
     });
     lenisRef.current = lenis;
 
@@ -183,13 +200,13 @@ export function CinematicHero() {
     gsap.ticker.add(tickerCallback);
     gsap.ticker.lagSmoothing(0);
 
-    const scrollLength = 9000;
+    const scrollLength = 8000;
 
     const st = ScrollTrigger.create({
       trigger: containerRef.current,
       start: "top top",
       end: `+=${scrollLength}`,
-      scrub: 1.2,
+      scrub: 0.6,
       pin: true,
       pinSpacing: true,
       anticipatePin: 1,
