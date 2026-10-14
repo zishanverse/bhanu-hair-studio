@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { HERO_CONFIG } from "@/config/scenes";
+import { MobileHero3D } from "@/components/MobileHero3D";
 
 export function CinematicHero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,8 +25,10 @@ export function CinematicHero() {
   const lastProgressRef = useRef<number>(0);
   const activeSceneRef = useRef<number>(0);
 
-  // 1. Strict Mute & Video Metadata Initialization
+  // 1. Strict Mute & Video Metadata Initialization (Desktop only)
   useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) return;
+
     const video = videoRef.current;
     if (!video) return;
 
@@ -51,9 +54,10 @@ export function CinematicHero() {
     };
   }, []);
 
-  // 2. Hardware-Accelerated Non-Blocking Video Scrub Loop
-  // Fixes video freezing/stuttering by never interrupting in-flight hardware decodes
+  // 2. Hardware-Accelerated Non-Blocking Video Scrub Loop (Desktop only)
   useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) return;
+
     const v = videoRef.current;
     if (!v) return;
 
@@ -67,7 +71,6 @@ export function CinematicHero() {
       const dur = v.duration || 44.011;
       const clamped = Math.max(0, Math.min(dur, time));
 
-      // If hardware decoder is busy seeking, queue the newest target
       if (v.seeking || isSeeking) {
         pendingSeekTime = clamped;
         return;
@@ -80,7 +83,6 @@ export function CinematicHero() {
         isSeeking = false;
       }
 
-      // Safety watchdog: if seeked event doesn't fire within 100ms, unlock seeking
       if (seekTimeout) clearTimeout(seekTimeout);
       seekTimeout = setTimeout(() => {
         isSeeking = false;
@@ -112,7 +114,6 @@ export function CinematicHero() {
         const currentTime = v.currentTime;
         const diff = targetTime - currentTime;
 
-        // Bidirectional lerp (forward & reverse)
         if (Math.abs(diff) > 0.02) {
           const step = Math.max(Math.min(0.45 * diff, 1.0), -1.0);
           performSeek(currentTime + step);
@@ -120,18 +121,15 @@ export function CinematicHero() {
 
         const progress = Math.max(0, Math.min(1, v.currentTime / v.duration));
 
-        // 60fps direct DOM progress bar (Zero React re-render overhead)
         if (progressBarRef.current) {
           progressBarRef.current.style.width = `${progress * 100}%`;
         }
 
-        // Throttle React state update for editorial text opacity (renders at ~30fps when scrolling)
         if (Math.abs(progress - lastProgressRef.current) > 0.003) {
           lastProgressRef.current = progress;
           setCurrentProgress(progress);
         }
 
-        // Active scene check
         const scenes = HERO_CONFIG.scenes;
         let found = 0;
         for (let i = 0; i < scenes.length; i++) {
@@ -161,14 +159,15 @@ export function CinematicHero() {
     };
   }, []);
 
-  // 3. GSAP ScrollTrigger Pinned Scrubbing + Lenis Engine
+  // 3. GSAP ScrollTrigger Pinned Scrubbing + Lenis Engine (Desktop only)
+  // On mobile viewports, we DO NOT pin so users enjoy instant native touch scrolling
   useEffect(() => {
     if (typeof window === "undefined" || !containerRef.current) return;
+    if (window.innerWidth < 768) return; // Skip pinning for mobile
 
     gsap.registerPlugin(ScrollTrigger);
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Initialize Lenis Smooth Scrolling Engine
     const lenis = new Lenis({
       lerp: prefersReducedMotion ? 1 : 0.08,
       smoothWheel: true,
@@ -184,9 +183,7 @@ export function CinematicHero() {
     gsap.ticker.add(tickerCallback);
     gsap.ticker.lagSmoothing(0);
 
-    // Responsive scroll length for natural scrubbing feel
-    const isMobile = window.innerWidth < 768;
-    const scrollLength = isMobile ? 6500 : 9000;
+    const scrollLength = 9000;
 
     const st = ScrollTrigger.create({
       trigger: containerRef.current,
@@ -201,7 +198,6 @@ export function CinematicHero() {
         const dur = video?.duration || 44.011;
         targetTimeRef.current = self.progress * dur;
 
-        // When scrolled past hero, pause video
         if (self.progress >= 1.0) {
           if (video && !video.paused) {
             video.pause();
@@ -223,7 +219,7 @@ export function CinematicHero() {
     };
   }, []);
 
-  // Jump to Scene Handler
+  // Jump to Scene Handler (Desktop)
   const jumpToScene = (targetProgress: number) => {
     if (stRef.current && lenisRef.current) {
       const targetScroll = stRef.current.start + targetProgress * (stRef.current.end - stRef.current.start);
@@ -242,162 +238,169 @@ export function CinematicHero() {
   };
 
   return (
-    <section
-      ref={containerRef}
-      id="cinematic-hero-section"
-      className="relative z-10 w-full h-[100dvh] min-h-[100dvh] bg-obsidian-950 text-ivory-50 select-none overflow-hidden"
-    >
-      {/* FULLSCREEN PURE CINEMATIC VIDEO */}
-      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-obsidian-950">
-        <video
-          ref={videoRef}
-          src={HERO_CONFIG.videoSrc}
-          muted
-          playsInline
-          preload="auto"
-          webkit-playsinline="true"
-          x5-playsinline="true"
-          id="cinematic-hero-video"
-          className="w-full h-full object-cover object-center filter brightness-[0.98] contrast-[1.04]"
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "block",
-          }}
-        />
-
-        {/* Minimal Subtle Edge Vignette */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-obsidian-950/85 via-transparent to-obsidian-950/40 opacity-70" />
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-obsidian-950/30 via-transparent to-obsidian-950/30 opacity-40" />
+    <div id="cinematic-hero-section">
+      {/* ============================================================== */}
+      {/* 1. DEDICATED 3D LUXURY HERO SECTION FOR MOBILE DEVICES (< 768px) */}
+      {/* ============================================================== */}
+      <div className="block md:hidden">
+        <MobileHero3D />
       </div>
 
-      {/* EDITORIAL FLOATING TYPOGRAPHY OVERLAY */}
-      <div className="absolute inset-0 w-full h-full z-10 pointer-events-none flex flex-col justify-between p-4 sm:p-8 md:p-12 lg:p-16">
-        {/* Top spacer to accommodate fixed Navbar */}
-        <div className="pt-16 sm:pt-20 md:pt-24" />
+      {/* ============================================================== */}
+      {/* 2. PINNED GSAP SCROLL-CONTROLLED VIDEO HERO (DESKTOP >= 768px)  */}
+      {/* ============================================================== */}
+      <div className="hidden md:block">
+        <section
+          ref={containerRef}
+          className="relative z-10 w-full h-[100dvh] min-h-[100dvh] bg-obsidian-950 text-ivory-50 select-none overflow-hidden"
+        >
+          {/* Fullscreen Pure Cinematic Video */}
+          <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-obsidian-950">
+            <video
+              ref={videoRef}
+              src={HERO_CONFIG.videoSrc}
+              muted
+              playsInline
+              preload="auto"
+              webkit-playsinline="true"
+              x5-playsinline="true"
+              id="cinematic-hero-video"
+              className="w-full h-full object-cover object-center filter brightness-[0.98] contrast-[1.04]"
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "block",
+              }}
+            />
 
-        {/* Center Dynamic Typography Overlays */}
-        <div className="relative w-full max-w-5xl mx-auto my-auto py-8 sm:py-12 pointer-events-none">
-          {HERO_CONFIG.scenes.map((scene) => {
-            const { start, peak, end } = scene;
-            let opacity = 0;
-            let translateY = 20;
-
-            if (currentProgress >= start && currentProgress <= end) {
-              if (currentProgress < peak) {
-                const t = (currentProgress - start) / Math.max(0.001, peak - start);
-                opacity = Math.sin((t * Math.PI) / 2);
-                translateY = (1 - t) * 20;
-              } else {
-                const t = (currentProgress - peak) / Math.max(0.001, end - peak);
-                opacity = Math.cos((t * Math.PI) / 2);
-                translateY = -t * 20;
-              }
-            }
-
-            const isVisible = opacity > 0.03;
-            const isLeft = scene.position.desktop.align === "left";
-            const isRight = scene.position.desktop.align === "right";
-
-            return (
-              <div
-                key={scene.id}
-                className={`transition-opacity duration-300 ${
-                  isVisible ? "block" : "hidden"
-                } ${isLeft ? "text-left" : isRight ? "text-right ml-auto" : "text-center mx-auto"}`}
-                style={{
-                  opacity: isVisible ? opacity : 0,
-                  transform: `translateY(${translateY}px)`,
-                }}
-              >
-                <div className="space-y-3 sm:space-y-4 max-w-3xl inline-block px-2">
-                  {/* Chapter Eyebrow */}
-                  <div className="inline-flex items-center gap-2 sm:gap-3">
-                    <span className="w-4 sm:w-6 h-[1px] bg-champagne-400 inline-block" />
-                    <span className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-ultra text-champagne-400 font-semibold drop-shadow-md">
-                      {scene.chapter}
-                    </span>
-                    <span className="w-4 sm:w-6 h-[1px] bg-champagne-400 inline-block" />
-                  </div>
-
-                  {/* Main Editorial Headline */}
-                  <h1 className="font-serif text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-light text-ivory-50 tracking-tight leading-[1.06] sm:leading-[1.02] drop-shadow-[0_10px_35px_rgba(0,0,0,0.9)]">
-                    {scene.italicWord ? (
-                      scene.title.split(scene.italicWord).map((part, i, arr) => (
-                        <React.Fragment key={i}>
-                          <span>{part}</span>
-                          {i < arr.length - 1 && (
-                            <span className="italic font-normal text-champagne-300 font-serif px-1">
-                              {scene.italicWord}
-                            </span>
-                          )}
-                        </React.Fragment>
-                      ))
-                    ) : (
-                      <span>{scene.title}</span>
-                    )}
-                  </h1>
-
-                  {/* Tagline */}
-                  {scene.subtext && (
-                    <p className="text-[10px] sm:text-xs md:text-sm tracking-[0.18em] sm:tracking-[0.25em] uppercase text-ivory-100 font-light max-w-xl drop-shadow-md">
-                      {scene.subtext}
-                    </p>
-                  )}
-
-                  {/* Scene 4 Finale CTA */}
-                  {scene.id === "finale" && (
-                    <div className="pt-4 sm:pt-6 pointer-events-auto flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center w-full max-w-md mx-auto">
-                      <a
-                        href="#book"
-                        className="w-full sm:w-auto text-center px-6 sm:px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 hover:shadow-[0_0_35px_rgba(197,164,119,0.7)] transition-all transform hover:scale-105 active:scale-95"
-                      >
-                        Reserve Your Session
-                      </a>
-                      <button
-                        type="button"
-                        onClick={handleExploreStudio}
-                        className="w-full sm:w-auto text-center px-6 sm:px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-light text-champagne-200 border border-champagne-500/40 glass-panel hover:border-champagne-400 hover:text-white transition-all cursor-pointer"
-                      >
-                        Explore The Studio ↓
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Minimal Bottom Chapter Navigation Selector */}
-        <div className="flex items-center justify-center pointer-events-auto pb-4 sm:pb-6 px-2">
-          <div className="flex items-center gap-1 sm:gap-1.5 glass-panel px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full border border-champagne-500/20 backdrop-blur-md max-w-full overflow-x-auto no-scrollbar">
-            {HERO_CONFIG.scenes.map((s, i) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => jumpToScene(s.start)}
-                className={`px-2.5 sm:px-3 py-1 rounded-full text-[9px] sm:text-[10px] uppercase font-mono tracking-wider transition-all whitespace-nowrap ${
-                  activeSceneIndex === i
-                    ? "bg-champagne-400 text-obsidian-950 font-semibold shadow-[0_0_15px_rgba(197,164,119,0.4)]"
-                    : "text-muted hover:text-ivory-100"
-                }`}
-              >
-                ACT 0{i + 1}
-              </button>
-            ))}
+            {/* Subtle Vignettes */}
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-obsidian-950/85 via-transparent to-obsidian-950/40 opacity-70" />
+            <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-obsidian-950/30 via-transparent to-obsidian-950/30 opacity-40" />
           </div>
-        </div>
-      </div>
 
-      {/* Subtle Progress Bar at the very bottom edge */}
-      <div className="absolute bottom-0 left-0 w-full h-[2px] bg-obsidian-900/40 z-20 pointer-events-none">
-        <div
-          ref={progressBarRef}
-          className="h-full bg-champagne-400/80 transition-all duration-75"
-          style={{ width: "0%" }}
-        />
+          {/* Floating Editorial Overlays */}
+          <div className="absolute inset-0 w-full h-full z-10 pointer-events-none flex flex-col justify-between p-8 md:p-12 lg:p-16">
+            <div className="pt-20 md:pt-24" />
+
+            <div className="relative w-full max-w-5xl mx-auto my-auto py-12 pointer-events-none">
+              {HERO_CONFIG.scenes.map((scene) => {
+                const { start, peak, end } = scene;
+                let opacity = 0;
+                let translateY = 20;
+
+                if (currentProgress >= start && currentProgress <= end) {
+                  if (currentProgress < peak) {
+                    const t = (currentProgress - start) / Math.max(0.001, peak - start);
+                    opacity = Math.sin((t * Math.PI) / 2);
+                    translateY = (1 - t) * 20;
+                  } else {
+                    const t = (currentProgress - peak) / Math.max(0.001, end - peak);
+                    opacity = Math.cos((t * Math.PI) / 2);
+                    translateY = -t * 20;
+                  }
+                }
+
+                const isVisible = opacity > 0.03;
+                const isLeft = scene.position.desktop.align === "left";
+                const isRight = scene.position.desktop.align === "right";
+
+                return (
+                  <div
+                    key={scene.id}
+                    className={`transition-opacity duration-300 ${
+                      isVisible ? "block" : "hidden"
+                    } ${isLeft ? "text-left" : isRight ? "text-right ml-auto" : "text-center mx-auto"}`}
+                    style={{
+                      opacity: isVisible ? opacity : 0,
+                      transform: `translateY(${translateY}px)`,
+                    }}
+                  >
+                    <div className="space-y-4 max-w-3xl inline-block px-2">
+                      <div className="inline-flex items-center gap-3">
+                        <span className="w-6 h-[1px] bg-champagne-400 inline-block" />
+                        <span className="text-xs uppercase tracking-ultra text-champagne-400 font-semibold drop-shadow-md">
+                          {scene.chapter}
+                        </span>
+                        <span className="w-6 h-[1px] bg-champagne-400 inline-block" />
+                      </div>
+
+                      <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-light text-ivory-50 tracking-tight leading-[1.02] drop-shadow-[0_10px_35px_rgba(0,0,0,0.9)]">
+                        {scene.italicWord ? (
+                          scene.title.split(scene.italicWord).map((part, i, arr) => (
+                            <React.Fragment key={i}>
+                              <span>{part}</span>
+                              {i < arr.length - 1 && (
+                                <span className="italic font-normal text-champagne-300 font-serif px-1">
+                                  {scene.italicWord}
+                                </span>
+                              )}
+                            </React.Fragment>
+                          ))
+                        ) : (
+                          <span>{scene.title}</span>
+                        )}
+                      </h1>
+
+                      {scene.subtext && (
+                        <p className="text-xs md:text-sm tracking-[0.25em] uppercase text-ivory-100 font-light max-w-xl drop-shadow-md">
+                          {scene.subtext}
+                        </p>
+                      )}
+
+                      {scene.id === "finale" && (
+                        <div className="pt-6 pointer-events-auto flex gap-4 justify-center items-center w-full max-w-md mx-auto">
+                          <a
+                            href="#book"
+                            className="px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 hover:shadow-[0_0_35px_rgba(197,164,119,0.7)] transition-all transform hover:scale-105 active:scale-95"
+                          >
+                            Reserve Your Session
+                          </a>
+                          <button
+                            type="button"
+                            onClick={handleExploreStudio}
+                            className="px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-light text-champagne-200 border border-champagne-500/40 glass-panel hover:border-champagne-400 hover:text-white transition-all cursor-pointer"
+                          >
+                            Explore The Studio ↓
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Minimal Bottom Act Selector */}
+            <div className="flex items-center justify-center pointer-events-auto pb-6 px-2">
+              <div className="flex items-center gap-1.5 glass-panel px-3 py-1.5 rounded-full border border-champagne-500/20 backdrop-blur-md">
+                {HERO_CONFIG.scenes.map((s, i) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => jumpToScene(s.start)}
+                    className={`px-3 py-1 rounded-full text-[10px] uppercase font-mono tracking-wider transition-all whitespace-nowrap ${
+                      activeSceneIndex === i
+                        ? "bg-champagne-400 text-obsidian-950 font-semibold shadow-[0_0_15px_rgba(197,164,119,0.4)]"
+                        : "text-muted hover:text-ivory-100"
+                    }`}
+                  >
+                    ACT 0{i + 1}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Progress Line */}
+          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-obsidian-900/40 z-20 pointer-events-none">
+            <div
+              ref={progressBarRef}
+              className="h-full bg-champagne-400/80 transition-all duration-75"
+              style={{ width: "0%" }}
+            />
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
   );
 }
