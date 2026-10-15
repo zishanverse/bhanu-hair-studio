@@ -37,8 +37,8 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-4">
         <div
           className={`w-full rounded-full flex items-center justify-between px-5 sm:px-7 py-2.5 sm:py-3 pointer-events-auto transition-all duration-500 ${isScrolled
-              ? "bg-obsidian-950/85 backdrop-blur-2xl border border-champagne-500/20 shadow-[0_12px_36px_rgba(0,0,0,0.85)]"
-              : "bg-obsidian-950/40 backdrop-blur-md border border-white/5"
+            ? "bg-obsidian-950/85 backdrop-blur-2xl border border-champagne-500/20 shadow-[0_12px_36px_rgba(0,0,0,0.85)]"
+            : "bg-obsidian-950/40 backdrop-blur-md border border-white/5"
             }`}
         >
           {/* 1. Brand Logo & Integrated Live Status Indicator */}
@@ -64,8 +64,8 @@ export function Navbar() {
                 >
                   <span
                     className={`w-1.5 h-1.5 rounded-full ${isOpenNow
-                        ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse"
-                        : "bg-amber-400"
+                      ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse"
+                      : "bg-amber-400"
                       }`}
                   />
                   <span className="hidden xl:inline text-[9px] font-mono tracking-wider text-champagne-400">
