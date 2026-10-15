@@ -98,103 +98,93 @@ const st = ScrollTrigger.create({
 
 ---
 
-### 4.2. Forward Playback & Soft Drift Trimming
-Traditional video scrubs freeze because they continuously assign `video.currentTime = value`. In H.264/H.265 video encoding, frames are stored as **I-frames** (keyframes) and **P/B-frames** (deltas). Seeking to non-keyframes forces the browser decoder to discard its hardware buffer, seek back to the nearest keyframe, and decode forward. This stalls the pipeline.
+### 4.2. Deterministic Scroll Synchronization & Lerp Easing
+Instead of running a non-deterministic video playback velocity engine, the hero uses **deterministic position mapping**:
+$$\text{targetTime} = \text{clamp}(\text{scrollProgress}, 0, 1) \times \text{videoDuration}$$
 
-**Our Solution:** The video plays natively via `video.play()`. As the user scrolls, we vary `video.playbackRate`:
+Scroll position is the single source of truth. The video element is kept strictly **paused** (`v.pause()`) at all times.
 
+To give mouse-wheel notches and trackpad impulses a silky, physical feel without causing desynchronization, the engine applies sub-pixel exponential convergence (Apple-style inertia) in the unified RAF loop:
 ```ts
-const velocity = self.getVelocity(); // Pixels per second
-
-if (velocity > 20) {
-  isScrollingRef.current = true;
-  // Velocity is mapped to playback rate between 0.6x and 2.6x
-  targetPlaybackRateRef.current = Math.min(2.6, Math.max(0.6, velocity * 0.0013));
-}
-```
-
-In the RAF loop:
-```ts
-currentRate += (targetRate - currentRate) * 0.18; // Smooth acceleration easing
-
-// Soft Drift Trimming
-if (timeDelta > 0.1) {
-  const driftBias = Math.max(-0.4, Math.min(0.6, timeDelta * 0.45));
-  currentRate = Math.max(0.1, currentRate + driftBias);
-}
-
-v.playbackRate = Math.min(2.8, Math.max(0.2, currentRate));
-if (v.paused) v.play().catch(() => {});
-```
-* If the video lags behind the scroll position (`timeDelta > 0.1`), `driftBias` temporarily elevates `playbackRate` by up to `+0.6x`, seamlessly catching up to the scroll position without ever issuing a hard seek!
-* If the video gets slightly ahead, `driftBias` gently reduces speed to allow the scroll to catch up.
-
----
-
-### 4.3. The Flywheel Deceleration Model (Spin-Down on Scroll Stop)
-When the user ceases scrolling:
-1. `scrollStopTimerRef` fires after `140ms` of inactivity, setting `isScrollingRef.current = false` and `targetPlaybackRateRef.current = 0`.
-2. The engine switches into flywheel decay:
-```ts
-currentRate *= 0.90; // Exponential friction decay per frame
-currentPlaybackRateRef.current = currentRate;
-
-if (currentRate > 0.08) {
-  v.playbackRate = Math.min(2.8, Math.max(0.2, currentRate));
-  if (v.paused) v.play().catch(() => {});
+const diff = targetProgressRef.current - currentProgressRef.current;
+if (Math.abs(diff) > 0.00008) {
+  currentProgressRef.current += diff * 0.14; // Smooth exponential convergence
 } else {
-  if (!v.paused) v.pause();
-  currentPlaybackRateRef.current = 0;
+  currentProgressRef.current = targetProgressRef.current;
 }
+
+const progress = Math.max(0, Math.min(1, currentProgressRef.current));
+const targetTime = Math.max(0, Math.min(dur - 0.05, progress * dur));
+requestSeek(targetTime);
 ```
-* **Visual Result:** Instead of snapping or jerking to a stop, the video visibly decelerates across ~300–400ms (`1.8x` → `1.4x` → `0.9x` → `0.4x` → `0.1x` → `0.0x`), simulating physical rotational inertia.
+* When scrolling ceases, `diff` drops exponentially to zero, settling the video frame precisely on the target time with zero lingering drift or overshoot.
+* Both forward and backward scroll share the exact same mathematical convergence.
 
 ---
 
-### 4.4. Adaptive Reverse Scrubbing
-Because web browsers do not support negative playback rates (`v.playbackRate = -1.0` throws `NotSupportedError` in Chromium and WebKit), reverse scrolling must manipulate `v.currentTime`.
+### 4.3. Coalesced Hardware Video Seeking Engine (Single-Flight Lock)
+Standard video scrubs freeze because assigning `video.currentTime` on every frame floods the browser's hardware video decoder. While a seek is in flight (`video.seeking === true`), subsequent seek commands cause decoder pipeline stalls, keyframe decode latency, and frame drops.
 
+**The Solution:** A coalesced, single-flight seek engine with zero seek queue backlog:
 ```ts
-if (timeDelta < -0.04) {
-  if (!v.paused) v.pause();
-  currentPlaybackRateRef.current = 0;
+const requestSeek = (time: number) => {
+  const video = videoRef.current;
+  if (!video || video.readyState < 1) return;
 
-  const dist = Math.abs(timeDelta);
-  if (!v.seeking && currentTime > 0.02) {
-    // Adaptive step: scales with distance, decays as it converges
-    const rewindStep = Math.min(dist, Math.max(0.05, dist * 0.32));
-    const nextTime = Math.max(0, currentTime - rewindStep);
-    try {
-      v.currentTime = nextTime;
-    } catch {}
+  // Skip micro-jitter (< 1/120th second)
+  if (Math.abs(time - lastRequestedTimeRef.current) < 0.008) return;
+  lastRequestedTimeRef.current = time;
+
+  // If a hardware seek is currently in flight, COALESCE: queue the latest time
+  if (isSeekingRef.current) {
+    pendingTimeRef.current = time;
+    return;
   }
-}
+
+  // No seek in flight: issue immediately and lock
+  isSeekingRef.current = true;
+  pendingTimeRef.current = null;
+
+  try {
+    if ("fastSeek" in video && typeof (video as any).fastSeek === "function") {
+      (video as any).fastSeek(time);
+    } else {
+      video.currentTime = time;
+    }
+  } catch {
+    video.currentTime = time;
+  }
+};
+
+const onSeeked = () => {
+  isSeekingRef.current = false;
+  // If a newer scroll position arrived while the decoder was processing the previous frame:
+  if (pendingTimeRef.current !== null) {
+    const nextTime = pendingTimeRef.current;
+    pendingTimeRef.current = null;
+    requestSeek(nextTime);
+  }
+};
 ```
-* **Adaptive Scaling:** If the user scrolls up vigorously (`dist = 5s`), `rewindStep` is large (`~1.6s` per step), rewinding the video in real time.
-* **Convergence Deceleration:** As `currentTime` approaches `targetTime`, `dist` approaches `0`, causing `rewindStep` to smoothly shrink down to `0.05s`, eliminating overshoot and jitter.
+* **Performance Guarantee:** At most **ONE** seek request is ever in flight at any given moment.
+* **Rapid Scrolling:** Intermediate obsolete seeks are discarded automatically; only the latest frame is processed.
+* **Stop Scrolling:** The decoder immediately settles on the exact resting scroll position without lagging or rolling.
 
 ---
 
-### 4.5. Hard Boundary Protection (Zero Scroll Leaking)
-To prevent the video from playing beyond the pinned section into the rest of the website:
-```ts
-// End boundary: Lock video to end frame and pause
-if (targetProgress >= 0.99) {
-  currentPlaybackRateRef.current = 0;
-  if (!v.paused) v.pause();
-  if (Math.abs(v.currentTime - (dur - 0.05)) > 0.2 && !v.seeking) {
-    try { v.currentTime = dur - 0.05; } catch {}
-  }
-} 
-// Start boundary: Lock video to first frame and pause
-else if (targetProgress <= 0.005) {
-  currentPlaybackRateRef.current = 0;
-  if (!v.paused) v.pause();
-  if (v.currentTime > 0.05 && !v.seeking) {
-    try { v.currentTime = 0; } catch {}
-  }
-}
-```
+### 4.4. Zero React 19 Re-rendering During Scroll
+In high-frequency scroll animations, calling `setState` inside 60/120fps loops triggers continuous virtual DOM reconciliations, resulting in main-thread jank.
+
+The engine uses direct DOM refs for:
+* **Bottom progress line:** `progressBarRef.current.style.transform = \`scaleX(\${progress})\`` (Hardware GPU layer, zero reflow).
+* **Scene Overlays:** `sceneRefs.current[i].style.opacity` and `transform = translate3d(0, \${translateY}px, 0)`.
+* **Act Buttons:** Cached button classList toggles that only update when `activeIdx` changes.
+
+---
+
+### 4.5. Boundary Protection & Unpinning
+* Clamping is continuous via `Math.max(0, Math.min(dur - 0.05, progress * dur))`.
+* At `progress = 1.0`, the video rests on the final frame, unpinning naturally into the next section (`#studio`) with zero jump, zero white space, and zero scroll locking.
 
 ---
 

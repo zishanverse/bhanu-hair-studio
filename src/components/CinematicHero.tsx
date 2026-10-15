@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,209 +12,90 @@ export function CinematicHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
-  // UI state for scene captions and progress
-  const [currentProgress, setCurrentProgress] = useState(0);
-  const [activeSceneIndex, setActiveSceneIndex] = useState(0);
+  // Cached DOM element refs to eliminate React 19 60fps re-rendering during scroll
+  const sceneRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const actButtonsRef = useRef<(HTMLButtonElement | null)[]>([]);
+  const activeSceneIndexRef = useRef<number>(0);
 
-  // Internal high-performance tracking refs
+  // High-performance animation & seek tracking refs
   const lenisRef = useRef<Lenis | null>(null);
   const stRef = useRef<ScrollTrigger | null>(null);
   const targetProgressRef = useRef<number>(0);
+  const currentProgressRef = useRef<number>(0);
   const isLoopActiveRef = useRef<boolean>(false);
   const rafIdRef = useRef<number | null>(null);
-  const lastProgressRef = useRef<number>(0);
-  const activeSceneRef = useRef<number>(0);
 
-  // Momentum playback control refs
-  const currentPlaybackRateRef = useRef<number>(0);
-  const targetPlaybackRateRef = useRef<number>(0);
-  const isScrollingRef = useRef<boolean>(false);
-  const scrollStopTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Coalesced Hardware Video Seeking Engine (Strict Single-Flight Seek Lock)
+  const isSeekingRef = useRef<boolean>(false);
+  const pendingTimeRef = useRef<number | null>(null);
+  const lastRequestedTimeRef = useRef<number>(-1);
 
-  // 1. Strict Mute & Video Metadata Initialization (Desktop only)
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth < 768) return;
-
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.muted = true;
-    video.defaultMuted = true;
-    video.volume = 0;
-    video.playsInline = true;
-    video.pause();
-
-    const onMeta = () => {
-      // Warm ready
-    };
-
-    if (video.readyState >= 1) {
-      onMeta();
-    }
-
-    video.addEventListener("loadedmetadata", onMeta);
-    video.addEventListener("canplay", onMeta);
-
-    return () => {
-      video.removeEventListener("loadedmetadata", onMeta);
-      video.removeEventListener("canplay", onMeta);
-    };
-  }, []);
-
-  // 2. Momentum-Driven Smooth Video Playback Engine (Hardware-Accelerated with Flywheel Deceleration)
-  // When scrolling, video plays forward with speed proportional to scroll velocity.
-  // When scroll stops, instead of freezing or keyframe-seeking, it gradually slows down
-  // its playback rate to 0 like an organic flywheel, coming to a gentle cinematic rest.
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth < 768) return;
-
-    const v = videoRef.current;
-    if (!v) return;
-
-    isLoopActiveRef.current = true;
-
-    const loop = () => {
-      if (!isLoopActiveRef.current) return;
-
-      if (v && v.readyState >= 1 && v.duration) {
-        const dur = v.duration || 44.011;
-        const targetProgress = targetProgressRef.current;
-        const targetTime = Math.max(0, Math.min(dur - 0.05, targetProgress * dur));
-        const currentTime = v.currentTime;
-        const timeDelta = targetTime - currentTime;
-
-        let currentRate = currentPlaybackRateRef.current;
-        const targetRate = targetPlaybackRateRef.current;
-
-        // --- BIDIRECTIONAL VIDEO ENGINE ---
-        if (timeDelta < -0.04) {
-          // 1. REVERSE SCROLL: Video is ahead of target scroll time
-          // Pause forward hardware playback immediately
-          if (!v.paused) v.pause();
-          currentPlaybackRateRef.current = 0;
-
-          // Smoothly ease currentTime backward toward targetTime with organic deceleration
-          const dist = Math.abs(timeDelta);
-          if (!v.seeking && currentTime > 0.02) {
-            // Adaptive step: larger when scrolling fast, smoothly easing down to 0 as it approaches targetTime
-            const rewindStep = Math.min(dist, Math.max(0.05, dist * 0.32));
-            const nextTime = Math.max(0, currentTime - rewindStep);
-            try {
-              v.currentTime = nextTime;
-            } catch {}
-          }
-        } else if (isScrollingRef.current && targetRate > 0) {
-          // 2. FORWARD SCROLL: User actively scrolling down
-          currentRate += (targetRate - currentRate) * 0.18;
-
-          // Soft drift trimming: gently bias forward rate so video stays locked to scroll position
-          if (timeDelta > 0.1) {
-            const driftBias = Math.max(-0.4, Math.min(0.6, timeDelta * 0.45));
-            currentRate = Math.max(0.1, currentRate + driftBias);
-          }
-
-          currentPlaybackRateRef.current = currentRate;
-
-          if (currentRate > 0.08) {
-            try {
-              v.playbackRate = Math.min(2.8, Math.max(0.2, currentRate));
-              if (v.paused) {
-                v.play().catch(() => {});
-              }
-            } catch {}
-          }
-        } else {
-          // 3. SCROLL STOPPED / RESTING: Apply flywheel friction deceleration to gentle stop
-          currentRate *= 0.90;
-          currentPlaybackRateRef.current = currentRate;
-
-          if (currentRate > 0.08) {
-            try {
-              v.playbackRate = Math.min(2.8, Math.max(0.2, currentRate));
-              if (v.paused) {
-                v.play().catch(() => {});
-              }
-            } catch {}
-          } else {
-            if (!v.paused) {
-              v.pause();
-            }
-            currentPlaybackRateRef.current = 0;
-          }
-        }
-
-        // Hard boundary protection (prevent video leaking past hero start or end)
-        if (targetProgress >= 0.99) {
-          currentPlaybackRateRef.current = 0;
-          if (!v.paused) v.pause();
-          if (Math.abs(v.currentTime - (dur - 0.05)) > 0.2 && !v.seeking) {
-            try {
-              v.currentTime = dur - 0.05;
-            } catch {}
-          }
-        } else if (targetProgress <= 0.005) {
-          currentPlaybackRateRef.current = 0;
-          if (!v.paused) v.pause();
-          if (v.currentTime > 0.05 && !v.seeking) {
-            try {
-              v.currentTime = 0;
-            } catch {}
-          }
-        }
-
-        // Progress indicators & Scene overlay synchronization
-        const progress = Math.max(0, Math.min(1, currentTime / dur));
-
-        if (progressBarRef.current) {
-          progressBarRef.current.style.width = `${progress * 100}%`;
-        }
-
-        if (Math.abs(progress - lastProgressRef.current) > 0.002) {
-          lastProgressRef.current = progress;
-          setCurrentProgress(progress);
-        }
-
-        const scenes = HERO_CONFIG.scenes;
-        let found = 0;
-        for (let i = 0; i < scenes.length; i++) {
-          if (progress >= scenes[i].start && progress <= scenes[i].end) {
-            found = i;
-            break;
-          } else if (progress > scenes[i].end) {
-            found = i;
-          }
-        }
-        if (found !== activeSceneRef.current) {
-          activeSceneRef.current = found;
-          setActiveSceneIndex(found);
-        }
-      }
-
-      rafIdRef.current = requestAnimationFrame(loop);
-    };
-
-    rafIdRef.current = requestAnimationFrame(loop);
-
-    return () => {
-      isLoopActiveRef.current = false;
-      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-      if (scrollStopTimerRef.current) clearTimeout(scrollStopTimerRef.current);
-    };
-  }, []);
-
-  // 3. Fast & Responsive GSAP ScrollTrigger Scrubbing + Lenis Engine (Desktop only)
   useEffect(() => {
     if (typeof window === "undefined" || !containerRef.current) return;
-    if (window.innerWidth < 768) return; // Skip pinning for mobile
+    if (window.innerWidth < 768) return; // Dedicated WebGL Mobile Engine for < 768px
 
     gsap.registerPlugin(ScrollTrigger);
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const v = videoRef.current;
 
-    // Fast, responsive Lenis smooth wheel
+    // 1. Strict Video Initialization: Hardware Paused at all times
+    if (v) {
+      v.muted = true;
+      v.defaultMuted = true;
+      v.volume = 0;
+      v.playsInline = true;
+      v.pause();
+    }
+
+    // 2. Coalesced Video Seek Handler (Eliminates decoder queue stalls & freezes)
+    const requestSeek = (time: number) => {
+      const video = videoRef.current;
+      if (!video || video.readyState < 1) return;
+
+      // Skip negligible micro-jitter (< 1/120th of a second)
+      if (Math.abs(time - lastRequestedTimeRef.current) < 0.008) return;
+      lastRequestedTimeRef.current = time;
+
+      // If a hardware seek is currently in flight, coalesce and queue the latest time
+      if (isSeekingRef.current) {
+        pendingTimeRef.current = time;
+        return;
+      }
+
+      // No seek in flight: issue immediately
+      isSeekingRef.current = true;
+      pendingTimeRef.current = null;
+
+      try {
+        if ("fastSeek" in video && typeof (video as any).fastSeek === "function") {
+          (video as any).fastSeek(time);
+        } else {
+          video.currentTime = time;
+        }
+      } catch {
+        video.currentTime = time;
+      }
+    };
+
+    const onSeeked = () => {
+      isSeekingRef.current = false;
+      // If a newer scroll position arrived while the decoder was processing the previous frame:
+      if (pendingTimeRef.current !== null) {
+        const nextTime = pendingTimeRef.current;
+        pendingTimeRef.current = null;
+        requestSeek(nextTime);
+      }
+    };
+
+    if (v) {
+      v.addEventListener("seeked", onSeeked);
+    }
+
+    // 3. Fast, Responsive Unified Lenis Smooth Wheel Engine
     const lenis = new Lenis({
-      lerp: prefersReducedMotion ? 1 : 0.12,
+      lerp: prefersReducedMotion ? 1 : 0.1,
       smoothWheel: true,
-      wheelMultiplier: 1.15,
+      wheelMultiplier: 1.05,
     });
     lenisRef.current = lenis;
 
@@ -226,42 +107,19 @@ export function CinematicHero() {
     gsap.ticker.add(tickerCallback);
     gsap.ticker.lagSmoothing(0);
 
-    const scrollLength = 3200;
+    // 4. Deterministic GSAP ScrollTrigger Pinning
+    const scrollLength = 3200; // Calibrated virtual scroll distance for 44-second film
 
     const st = ScrollTrigger.create({
       trigger: containerRef.current,
       start: "top top",
       end: `+=${scrollLength}`,
-      scrub: 0.1,
+      scrub: 0.05,
       pin: true,
       pinSpacing: true,
       anticipatePin: 1,
       onUpdate: (self) => {
         targetProgressRef.current = self.progress;
-
-        // Read scroll velocity from ScrollTrigger (pixels/second)
-        const velocity = self.getVelocity();
-
-        if (velocity > 20) {
-          // Scrolling forward: compute fluid forward rate
-          isScrollingRef.current = true;
-          targetPlaybackRateRef.current = Math.min(2.6, Math.max(0.6, velocity * 0.0013));
-        } else if (velocity < -20) {
-          // Scrolling backward: set backward rate indicator
-          isScrollingRef.current = false;
-          targetPlaybackRateRef.current = Math.max(-2.2, velocity * 0.0013);
-        } else {
-          // Velocity near zero: trigger smooth deceleration
-          isScrollingRef.current = false;
-          targetPlaybackRateRef.current = 0;
-        }
-
-        // Debounced scroll stop detector: allows continuous wheel ticks without stuttering
-        if (scrollStopTimerRef.current) clearTimeout(scrollStopTimerRef.current);
-        scrollStopTimerRef.current = setTimeout(() => {
-          isScrollingRef.current = false;
-          targetPlaybackRateRef.current = 0; // Triggers organic flywheel spin-down
-        }, 140);
       },
       onRefresh: (self) => {
         targetProgressRef.current = self.progress;
@@ -269,19 +127,133 @@ export function CinematicHero() {
     });
     stRef.current = st;
 
+    // Refresh ScrollTrigger once video metadata loads to ensure precise dimensions
+    const onMeta = () => {
+      if (v) {
+        requestSeek(0);
+      }
+      ScrollTrigger.refresh();
+    };
+
+    if (v) {
+      if (v.readyState >= 1) {
+        onMeta();
+      } else {
+        v.addEventListener("loadedmetadata", onMeta, { once: true });
+      }
+    }
+
+    // 5. Unified 60/120fps Animation Loop (Zero React re-renders)
+    isLoopActiveRef.current = true;
+    const lerpFactor = prefersReducedMotion ? 1 : 0.14;
+
+    const loop = () => {
+      if (!isLoopActiveRef.current) return;
+
+      // Smoothly converge currentProgress toward targetProgress (Apple-style sub-pixel inertia)
+      const diff = targetProgressRef.current - currentProgressRef.current;
+      if (Math.abs(diff) > 0.00008) {
+        currentProgressRef.current += diff * lerpFactor;
+      } else {
+        currentProgressRef.current = targetProgressRef.current;
+      }
+
+      const progress = Math.max(0, Math.min(1, currentProgressRef.current));
+
+      // 5a. Deterministic Hardware Video Sync
+      if (v && v.duration) {
+        const dur = v.duration || 44.011;
+        const targetTime = Math.max(0, Math.min(dur - 0.05, progress * dur));
+        requestSeek(targetTime);
+      }
+
+      // 5b. Update Bottom Progress Bar
+      if (progressBarRef.current) {
+        progressBarRef.current.style.transform = `scaleX(${progress})`;
+      }
+
+      // 5c. Update Centered Scene Overlays with Sine Easing
+      const scenes = HERO_CONFIG.scenes;
+      let activeIdx = 0;
+
+      for (let i = 0; i < scenes.length; i++) {
+        const scene = scenes[i];
+        let opacity = 0;
+        let translateY = 16;
+
+        if (progress >= scene.start && progress <= scene.end) {
+          if (progress < scene.peak) {
+            const t = (progress - scene.start) / Math.max(0.001, scene.peak - scene.start);
+            opacity = Math.sin((t * Math.PI) / 2);
+            translateY = (1 - t) * 16;
+          } else {
+            const t = (progress - scene.peak) / Math.max(0.001, scene.end - scene.peak);
+            opacity = Math.cos((t * Math.PI) / 2);
+            translateY = -t * 16;
+          }
+        }
+
+        const node = sceneRefs.current[i];
+        if (node) {
+          if (opacity > 0.02) {
+            node.style.opacity = opacity.toFixed(3);
+            node.style.transform = `translate3d(0, ${translateY.toFixed(1)}px, 0)`;
+            node.style.visibility = "visible";
+          } else {
+            node.style.opacity = "0";
+            node.style.visibility = "hidden";
+          }
+        }
+
+        // Active Act calculation
+        if (progress >= scene.start && progress <= scene.end) {
+          activeIdx = i;
+        } else if (progress > scene.end && i === scenes.length - 1) {
+          activeIdx = i;
+        }
+      }
+
+      // 5d. Update Fixed Bottom Act Buttons
+      if (activeIdx !== activeSceneIndexRef.current) {
+        const prevBtn = actButtonsRef.current[activeSceneIndexRef.current];
+        const nextBtn = actButtonsRef.current[activeIdx];
+
+        if (prevBtn) {
+          prevBtn.className =
+            "px-3 py-1 rounded-full text-[10px] uppercase font-mono tracking-wider transition-all whitespace-nowrap text-muted hover:text-ivory-100";
+        }
+        if (nextBtn) {
+          nextBtn.className =
+            "px-3 py-1 rounded-full text-[10px] uppercase font-mono tracking-wider transition-all whitespace-nowrap bg-champagne-400 text-obsidian-950 font-semibold shadow-[0_0_15px_rgba(200,162,82,0.45)]";
+        }
+        activeSceneIndexRef.current = activeIdx;
+      }
+
+      rafIdRef.current = requestAnimationFrame(loop);
+    };
+
+    rafIdRef.current = requestAnimationFrame(loop);
+
+    // 6. Comprehensive React Strict Mode Cleanup
     return () => {
-      st.kill();
+      isLoopActiveRef.current = false;
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+      if (v) {
+        v.removeEventListener("seeked", onSeeked);
+        v.removeEventListener("loadedmetadata", onMeta);
+      }
       gsap.ticker.remove(tickerCallback);
+      st.kill();
       lenis.destroy();
-      if (scrollStopTimerRef.current) clearTimeout(scrollStopTimerRef.current);
     };
   }, []);
 
   // Jump to Scene Handler (Desktop)
   const jumpToScene = (targetProgress: number) => {
     if (stRef.current && lenisRef.current) {
-      const targetScroll = stRef.current.start + targetProgress * (stRef.current.end - stRef.current.start);
-      lenisRef.current.scrollTo(targetScroll, { duration: 0.7 });
+      const targetScroll =
+        stRef.current.start + targetProgress * (stRef.current.end - stRef.current.start);
+      lenisRef.current.scrollTo(targetScroll, { duration: 0.8 });
     }
   };
 
@@ -302,7 +274,7 @@ export function CinematicHero() {
         <MobileHero3D />
       </div>
 
-      {/* 2. PINNED GSAP SCROLL-CONTROLLED MOMENTUM VIDEO HERO (DESKTOP >= 768px) */}
+      {/* 2. PINNED GSAP SCROLL-CONTROLLED DETERMINISTIC VIDEO HERO (DESKTOP >= 768px) */}
       <div className="hidden md:block">
         <section
           ref={containerRef}
@@ -335,92 +307,75 @@ export function CinematicHero() {
           {/* Centered Editorial Scene Overlays */}
           <div className="absolute inset-0 w-full h-full z-10 pointer-events-none flex items-center justify-center p-6 md:p-12">
             <div className="relative w-full max-w-4xl min-h-[300px] sm:min-h-[340px] flex items-center justify-center text-center">
-              {HERO_CONFIG.scenes.map((scene) => {
-                const { start, peak, end } = scene;
-                let opacity = 0;
-                let translateY = 16;
-
-                if (currentProgress >= start && currentProgress <= end) {
-                  if (currentProgress < peak) {
-                    const t = (currentProgress - start) / Math.max(0.001, peak - start);
-                    opacity = Math.sin((t * Math.PI) / 2);
-                    translateY = (1 - t) * 16;
-                  } else {
-                    const t = (currentProgress - peak) / Math.max(0.001, end - peak);
-                    opacity = Math.cos((t * Math.PI) / 2);
-                    translateY = -t * 16;
-                  }
-                }
-
-                const isVisible = opacity > 0.02;
-
-                return (
-                  <div
-                    key={scene.id}
-                    className="absolute inset-0 flex flex-col items-center justify-center text-center transition-opacity duration-200 pointer-events-none"
-                    style={{
-                      opacity: isVisible ? opacity : 0,
-                      transform: `translateY(${translateY}px)`,
-                      visibility: isVisible ? "visible" : "hidden",
-                    }}
-                  >
-                    <div className="space-y-4 sm:space-y-5 max-w-3xl mx-auto px-4">
-                      {/* Chapter Label with flanking gold lines */}
-                      <div className="inline-flex items-center justify-center gap-3">
-                        <span className="w-6 sm:w-8 h-[1px] bg-champagne-500 inline-block" />
-                        <span className="text-[10px] sm:text-xs uppercase tracking-ultra text-champagne-400 font-semibold drop-shadow-md">
-                          {scene.chapter}
-                        </span>
-                        <span className="w-6 sm:w-8 h-[1px] bg-champagne-500 inline-block" />
-                      </div>
-
-                      {/* Main Scene Title */}
-                      <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-ivory-50 tracking-tight leading-[1.02] drop-shadow-[0_12px_40px_rgba(0,0,0,0.95)]">
-                        {scene.italicWord ? (
-                          scene.title.split(scene.italicWord).map((part, i, arr) => (
-                            <React.Fragment key={i}>
-                              <span>{part}</span>
-                              {i < arr.length - 1 && (
-                                <span className="italic font-normal text-champagne-400 font-serif px-1">
-                                  {scene.italicWord}
-                                </span>
-                              )}
-                            </React.Fragment>
-                          ))
-                        ) : (
-                          <span>{scene.title}</span>
-                        )}
-                      </h1>
-
-                      {/* Subtext */}
-                      {scene.subtext && (
-                        <p className="text-[11px] sm:text-xs md:text-sm tracking-[0.25em] uppercase text-champagne-300 font-medium max-w-xl mx-auto drop-shadow-md">
-                          {scene.subtext}
-                        </p>
-                      )}
-
-                      {/* Final Act Booking Actions */}
-                      {scene.id === "finale" && (
-                        <div className="pt-6 pointer-events-auto flex flex-wrap gap-4 justify-center items-center w-full max-w-md mx-auto">
-                          <a
-                            href="#book"
-                            className="px-7 sm:px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-300 via-champagne-400 to-champagne-500 hover:shadow-[0_0_35px_rgba(200,162,82,0.6)] transition-all transform hover:scale-105 active:scale-95"
-                          >
-                            Reserve Your Session
-                          </a>
-                          <button
-                            type="button"
-                            onClick={handleExploreStudio}
-                            className="px-7 sm:px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-light text-champagne-300 border border-champagne-500/40 glass-panel hover:border-champagne-400 hover:text-white transition-all cursor-pointer"
-                          >
-                            Explore The Studio ↓
-                          </button>
-                        </div>
-                      )}
+              {HERO_CONFIG.scenes.map((scene, i) => (
+                <div
+                  key={scene.id}
+                  ref={(el) => {
+                    sceneRefs.current[i] = el;
+                  }}
+                  className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none will-change-transform"
+                  style={{
+                    opacity: i === 0 ? 1 : 0,
+                    transform: "translate3d(0, 0, 0)",
+                    visibility: i === 0 ? "visible" : "hidden",
+                  }}
+                >
+                  <div className="space-y-4 sm:space-y-5 max-w-3xl mx-auto px-4">
+                    {/* Chapter Label with flanking gold lines */}
+                    <div className="inline-flex items-center justify-center gap-3">
+                      <span className="w-6 sm:w-8 h-[1px] bg-champagne-500 inline-block" />
+                      <span className="text-[10px] sm:text-xs uppercase tracking-ultra text-champagne-400 font-semibold drop-shadow-md">
+                        {scene.chapter}
+                      </span>
+                      <span className="w-6 sm:w-8 h-[1px] bg-champagne-500 inline-block" />
                     </div>
+
+                    {/* Main Scene Title */}
+                    <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-ivory-50 tracking-tight leading-[1.02] drop-shadow-[0_12px_40px_rgba(0,0,0,0.95)]">
+                      {scene.italicWord ? (
+                        scene.title.split(scene.italicWord).map((part, pIdx, arr) => (
+                          <React.Fragment key={pIdx}>
+                            <span>{part}</span>
+                            {pIdx < arr.length - 1 && (
+                              <span className="italic font-normal text-champagne-400 font-serif px-1">
+                                {scene.italicWord}
+                              </span>
+                            )}
+                          </React.Fragment>
+                        ))
+                      ) : (
+                        <span>{scene.title}</span>
+                      )}
+                    </h1>
+
+                    {/* Subtext */}
+                    {scene.subtext && (
+                      <p className="text-[11px] sm:text-xs md:text-sm tracking-[0.25em] uppercase text-champagne-300 font-medium max-w-xl mx-auto drop-shadow-md">
+                        {scene.subtext}
+                      </p>
+                    )}
+
+                    {/* Final Act Booking Actions */}
+                    {scene.id === "finale" && (
+                      <div className="pt-6 pointer-events-auto flex flex-wrap gap-4 justify-center items-center w-full max-w-md mx-auto">
+                        <a
+                          href="#book"
+                          className="px-7 sm:px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-300 via-champagne-400 to-champagne-500 hover:shadow-[0_0_35px_rgba(200,162,82,0.6)] transition-all transform hover:scale-105 active:scale-95"
+                        >
+                          Reserve Your Session
+                        </a>
+                        <button
+                          type="button"
+                          onClick={handleExploreStudio}
+                          className="px-7 sm:px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-light text-champagne-300 border border-champagne-500/40 glass-panel hover:border-champagne-400 hover:text-white transition-all cursor-pointer"
+                        >
+                          Explore The Studio ↓
+                        </button>
+                      </div>
+                    )}
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           </div>
 
@@ -430,10 +385,13 @@ export function CinematicHero() {
               {HERO_CONFIG.scenes.map((s, i) => (
                 <button
                   key={s.id}
+                  ref={(el) => {
+                    actButtonsRef.current[i] = el;
+                  }}
                   type="button"
                   onClick={() => jumpToScene(s.start)}
                   className={`px-3 py-1 rounded-full text-[10px] uppercase font-mono tracking-wider transition-all whitespace-nowrap ${
-                    activeSceneIndex === i
+                    i === 0
                       ? "bg-champagne-400 text-obsidian-950 font-semibold shadow-[0_0_15px_rgba(200,162,82,0.45)]"
                       : "text-muted hover:text-ivory-100"
                   }`}
@@ -448,8 +406,8 @@ export function CinematicHero() {
           <div className="absolute bottom-0 left-0 w-full h-[2px] bg-obsidian-900/60 z-20 pointer-events-none">
             <div
               ref={progressBarRef}
-              className="h-full bg-champagne-400 transition-all duration-75"
-              style={{ width: "0%" }}
+              className="h-full bg-champagne-400 origin-left will-change-transform"
+              style={{ transform: "scaleX(0)" }}
             />
           </div>
         </section>
