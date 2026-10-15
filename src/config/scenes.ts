@@ -51,10 +51,10 @@ export const HERO_CONFIG: VideoHeroConfig = {
       end: 0.22,
       position: {
         desktop: {
-          align: "left",
+          align: "center",
           vertical: "center",
-          offsetX: "8vw",
-          offsetY: "-4vh",
+          offsetX: "0vw",
+          offsetY: "0vh",
         },
         mobile: {
           align: "center",
@@ -77,10 +77,10 @@ export const HERO_CONFIG: VideoHeroConfig = {
       end: 0.50,
       position: {
         desktop: {
-          align: "right",
+          align: "center",
           vertical: "center",
-          offsetX: "8vw",
-          offsetY: "2vh",
+          offsetX: "0vw",
+          offsetY: "0vh",
         },
         mobile: {
           align: "center",
@@ -103,14 +103,14 @@ export const HERO_CONFIG: VideoHeroConfig = {
       end: 0.80,
       position: {
         desktop: {
-          align: "left",
-          vertical: "bottom",
-          offsetX: "8vw",
-          offsetY: "-10vh",
+          align: "center",
+          vertical: "center",
+          offsetX: "0vw",
+          offsetY: "0vh",
         },
         mobile: {
           align: "center",
-          vertical: "bottom",
+          vertical: "center",
         },
       },
       details: {

@@ -332,53 +332,50 @@ export function CinematicHero() {
             <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-obsidian-950/35 via-transparent to-obsidian-950/35 opacity-50" />
           </div>
 
-          {/* Floating Editorial Overlays - Clean, Bold, Minimal like Reference Image */}
-          <div className="absolute inset-0 w-full h-full z-10 pointer-events-none flex flex-col justify-between p-8 md:p-12 lg:p-16">
-            <div className="pt-20 md:pt-24" />
-
-            <div className="relative w-full max-w-5xl mx-auto my-auto py-10 pointer-events-none">
+          {/* Centered Editorial Scene Overlays */}
+          <div className="absolute inset-0 w-full h-full z-10 pointer-events-none flex items-center justify-center p-6 md:p-12">
+            <div className="relative w-full max-w-4xl min-h-[300px] sm:min-h-[340px] flex items-center justify-center text-center">
               {HERO_CONFIG.scenes.map((scene) => {
                 const { start, peak, end } = scene;
                 let opacity = 0;
-                let translateY = 18;
+                let translateY = 16;
 
                 if (currentProgress >= start && currentProgress <= end) {
                   if (currentProgress < peak) {
                     const t = (currentProgress - start) / Math.max(0.001, peak - start);
                     opacity = Math.sin((t * Math.PI) / 2);
-                    translateY = (1 - t) * 18;
+                    translateY = (1 - t) * 16;
                   } else {
                     const t = (currentProgress - peak) / Math.max(0.001, end - peak);
                     opacity = Math.cos((t * Math.PI) / 2);
-                    translateY = -t * 18;
+                    translateY = -t * 16;
                   }
                 }
 
-                const isVisible = opacity > 0.03;
-                const isLeft = scene.position.desktop.align === "left";
-                const isRight = scene.position.desktop.align === "right";
+                const isVisible = opacity > 0.02;
 
                 return (
                   <div
                     key={scene.id}
-                    className={`transition-opacity duration-300 ${
-                      isVisible ? "block" : "hidden"
-                    } ${isLeft ? "text-left" : isRight ? "text-right ml-auto" : "text-center mx-auto"}`}
+                    className="absolute inset-0 flex flex-col items-center justify-center text-center transition-opacity duration-200 pointer-events-none"
                     style={{
                       opacity: isVisible ? opacity : 0,
                       transform: `translateY(${translateY}px)`,
+                      visibility: isVisible ? "visible" : "hidden",
                     }}
                   >
-                    <div className="space-y-4 max-w-3xl inline-block px-2">
-                      <div className="inline-flex items-center gap-3">
-                        <span className="w-8 h-[1px] bg-champagne-500 inline-block" />
-                        <span className="text-xs uppercase tracking-ultra text-champagne-400 font-semibold drop-shadow-md">
+                    <div className="space-y-4 sm:space-y-5 max-w-3xl mx-auto px-4">
+                      {/* Chapter Label with flanking gold lines */}
+                      <div className="inline-flex items-center justify-center gap-3">
+                        <span className="w-6 sm:w-8 h-[1px] bg-champagne-500 inline-block" />
+                        <span className="text-[10px] sm:text-xs uppercase tracking-ultra text-champagne-400 font-semibold drop-shadow-md">
                           {scene.chapter}
                         </span>
-                        <span className="w-8 h-[1px] bg-champagne-500 inline-block" />
+                        <span className="w-6 sm:w-8 h-[1px] bg-champagne-500 inline-block" />
                       </div>
 
-                      <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-light text-ivory-50 tracking-tight leading-[1.0] drop-shadow-[0_12px_40px_rgba(0,0,0,0.95)]">
+                      {/* Main Scene Title */}
+                      <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-ivory-50 tracking-tight leading-[1.02] drop-shadow-[0_12px_40px_rgba(0,0,0,0.95)]">
                         {scene.italicWord ? (
                           scene.title.split(scene.italicWord).map((part, i, arr) => (
                             <React.Fragment key={i}>
@@ -395,24 +392,26 @@ export function CinematicHero() {
                         )}
                       </h1>
 
+                      {/* Subtext */}
                       {scene.subtext && (
-                        <p className="text-xs md:text-sm tracking-[0.22em] uppercase text-champagne-300 font-medium max-w-xl drop-shadow-md">
+                        <p className="text-[11px] sm:text-xs md:text-sm tracking-[0.25em] uppercase text-champagne-300 font-medium max-w-xl mx-auto drop-shadow-md">
                           {scene.subtext}
                         </p>
                       )}
 
+                      {/* Final Act Booking Actions */}
                       {scene.id === "finale" && (
-                        <div className="pt-6 pointer-events-auto flex gap-4 justify-center items-center w-full max-w-md mx-auto">
+                        <div className="pt-6 pointer-events-auto flex flex-wrap gap-4 justify-center items-center w-full max-w-md mx-auto">
                           <a
                             href="#book"
-                            className="px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-300 via-champagne-400 to-champagne-500 hover:shadow-[0_0_35px_rgba(200,162,82,0.6)] transition-all transform hover:scale-105 active:scale-95"
+                            className="px-7 sm:px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-300 via-champagne-400 to-champagne-500 hover:shadow-[0_0_35px_rgba(200,162,82,0.6)] transition-all transform hover:scale-105 active:scale-95"
                           >
                             Reserve Your Session
                           </a>
                           <button
                             type="button"
                             onClick={handleExploreStudio}
-                            className="px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-light text-champagne-300 border border-champagne-500/40 glass-panel hover:border-champagne-400 hover:text-white transition-all cursor-pointer"
+                            className="px-7 sm:px-8 py-3.5 rounded-full text-xs uppercase tracking-widest font-light text-champagne-300 border border-champagne-500/40 glass-panel hover:border-champagne-400 hover:text-white transition-all cursor-pointer"
                           >
                             Explore The Studio ↓
                           </button>
@@ -423,25 +422,25 @@ export function CinematicHero() {
                 );
               })}
             </div>
+          </div>
 
-            {/* Minimal Bottom Act Selector */}
-            <div className="flex items-center justify-center pointer-events-auto pb-6 px-2">
-              <div className="flex items-center gap-1.5 glass-panel px-3 py-1.5 rounded-full border border-champagne-500/25 backdrop-blur-md">
-                {HERO_CONFIG.scenes.map((s, i) => (
-                  <button
-                    key={s.id}
-                    type="button"
-                    onClick={() => jumpToScene(s.start)}
-                    className={`px-3 py-1 rounded-full text-[10px] uppercase font-mono tracking-wider transition-all whitespace-nowrap ${
-                      activeSceneIndex === i
-                        ? "bg-champagne-400 text-obsidian-950 font-semibold shadow-[0_0_15px_rgba(200,162,82,0.45)]"
-                        : "text-muted hover:text-ivory-100"
-                    }`}
-                  >
-                    ACT 0{i + 1}
-                  </button>
-                ))}
-              </div>
+          {/* Constant Fixed Bottom Act Selector (Never jumps or shifts position) */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 pointer-events-auto flex items-center justify-center px-2">
+            <div className="flex items-center gap-1.5 glass-panel px-3.5 py-1.5 rounded-full border border-champagne-500/25 backdrop-blur-md shadow-lg">
+              {HERO_CONFIG.scenes.map((s, i) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => jumpToScene(s.start)}
+                  className={`px-3 py-1 rounded-full text-[10px] uppercase font-mono tracking-wider transition-all whitespace-nowrap ${
+                    activeSceneIndex === i
+                      ? "bg-champagne-400 text-obsidian-950 font-semibold shadow-[0_0_15px_rgba(200,162,82,0.45)]"
+                      : "text-muted hover:text-ivory-100"
+                  }`}
+                >
+                  ACT 0{i + 1}
+                </button>
+              ))}
             </div>
           </div>
 
