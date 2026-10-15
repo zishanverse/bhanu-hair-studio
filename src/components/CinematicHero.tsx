@@ -86,25 +86,66 @@ export function CinematicHero() {
         let currentRate = currentPlaybackRateRef.current;
         const targetRate = targetPlaybackRateRef.current;
 
-        // If user is actively scrolling forward, ease current rate toward target rate
-        if (isScrollingRef.current && targetRate > 0) {
-          currentRate += (targetRate - currentRate) * 0.18;
-        } else {
-          // When scroll stops, apply organic flywheel friction deceleration:
-          // smoothly reduce speed frame-by-frame instead of abruptly stopping
-          currentRate *= 0.92;
-        }
+        // --- BIDIRECTIONAL VIDEO ENGINE ---
+        if (timeDelta < -0.04) {
+          // 1. REVERSE SCROLL: Video is ahead of target scroll time
+          // Pause forward hardware playback immediately
+          if (!v.paused) v.pause();
+          currentPlaybackRateRef.current = 0;
 
-        // Soft drift trimming: gently bias playback rate to keep video aligned with scroll progress
-        // This avoids ANY hard currentTime seeking during playback which causes browser decoder stalls!
-        if (currentRate > 0.06 && Math.abs(timeDelta) > 0.12) {
-          const driftBias = Math.max(-0.4, Math.min(0.6, timeDelta * 0.45));
-          currentRate = Math.max(0.1, currentRate + driftBias);
+          // Smoothly ease currentTime backward toward targetTime with organic deceleration
+          const dist = Math.abs(timeDelta);
+          if (!v.seeking && currentTime > 0.02) {
+            // Adaptive step: larger when scrolling fast, smoothly easing down to 0 as it approaches targetTime
+            const rewindStep = Math.min(dist, Math.max(0.05, dist * 0.32));
+            const nextTime = Math.max(0, currentTime - rewindStep);
+            try {
+              v.currentTime = nextTime;
+            } catch {}
+          }
+        } else if (isScrollingRef.current && targetRate > 0) {
+          // 2. FORWARD SCROLL: User actively scrolling down
+          currentRate += (targetRate - currentRate) * 0.18;
+
+          // Soft drift trimming: gently bias forward rate so video stays locked to scroll position
+          if (timeDelta > 0.1) {
+            const driftBias = Math.max(-0.4, Math.min(0.6, timeDelta * 0.45));
+            currentRate = Math.max(0.1, currentRate + driftBias);
+          }
+
+          currentPlaybackRateRef.current = currentRate;
+
+          if (currentRate > 0.08) {
+            try {
+              v.playbackRate = Math.min(2.8, Math.max(0.2, currentRate));
+              if (v.paused) {
+                v.play().catch(() => {});
+              }
+            } catch {}
+          }
+        } else {
+          // 3. SCROLL STOPPED / RESTING: Apply flywheel friction deceleration to gentle stop
+          currentRate *= 0.90;
+          currentPlaybackRateRef.current = currentRate;
+
+          if (currentRate > 0.08) {
+            try {
+              v.playbackRate = Math.min(2.8, Math.max(0.2, currentRate));
+              if (v.paused) {
+                v.play().catch(() => {});
+              }
+            } catch {}
+          } else {
+            if (!v.paused) {
+              v.pause();
+            }
+            currentPlaybackRateRef.current = 0;
+          }
         }
 
         // Hard boundary protection (prevent video leaking past hero start or end)
         if (targetProgress >= 0.99) {
-          currentRate = 0;
+          currentPlaybackRateRef.current = 0;
           if (!v.paused) v.pause();
           if (Math.abs(v.currentTime - (dur - 0.05)) > 0.2 && !v.seeking) {
             try {
@@ -112,40 +153,11 @@ export function CinematicHero() {
             } catch {}
           }
         } else if (targetProgress <= 0.005) {
-          currentRate = 0;
+          currentPlaybackRateRef.current = 0;
           if (!v.paused) v.pause();
-          if (v.currentTime > 0.1 && !v.seeking) {
+          if (v.currentTime > 0.05 && !v.seeking) {
             try {
               v.currentTime = 0;
-            } catch {}
-          }
-        }
-
-        currentPlaybackRateRef.current = currentRate;
-
-        if (currentRate > 0.08) {
-          // Video is gliding forward with momentum
-          try {
-            v.playbackRate = Math.min(2.8, Math.max(0.2, currentRate));
-            if (v.paused) {
-              v.play().catch(() => {});
-            }
-          } catch {}
-        } else {
-          // Momentum has finished decaying: smoothly rest and pause without sudden freezes
-          if (!v.paused) {
-            v.pause();
-          }
-          currentPlaybackRateRef.current = 0;
-        }
-
-        // Reverse scroll handling (when user scrolls backward smoothly)
-        if (targetRate < -0.1 && !isScrollingRef.current) {
-          if (!v.paused) v.pause();
-          const step = Math.min(0.08, Math.abs(targetRate) * 0.025);
-          if (!v.seeking && v.currentTime > 0.05) {
-            try {
-              v.currentTime = Math.max(0, v.currentTime - step);
             } catch {}
           }
         }
