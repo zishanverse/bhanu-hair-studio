@@ -1,6 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { Cinzel, Outfit, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
+
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  variable: "--font-cinzel",
+  weight: ["400", "500", "600", "700", "800", "900"],
+  display: "swap",
+});
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -10,24 +17,24 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-const manrope = Manrope({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-manrope",
+  variable: "--font-outfit",
   weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Bhanu Hair Studio | Haute Coiffure & Luxury Unisex Salon Indore",
+  title: "Bhanu Hair Studio | Haute Coiffure & Luxury Unisex Atelier Indore",
   description:
-    "Indore's premier unisex hair and beauty atelier. Experience precision barbering, couture styling, and cinematic craftsmanship.",
+    "Indore's premier unisex hair and beauty atelier on Manik Bagh Rd, Palsikar Colony. Precision cutting, couture styling, and cinematic craftsmanship.",
   keywords: [
     "Bhanu Hair Studio",
     "Luxury Salon Indore",
     "Unisex Hair Studio Indore",
     "Haute Coiffure",
     "Precision Haircut Indore",
-    "Aesthetic Beauty Salon",
+    "Palsikar Colony Salon",
   ],
   authors: [{ name: "Bhanu Hair Studio" }],
   openGraph: {
@@ -40,7 +47,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0B0B0C",
+  themeColor: "#050505",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -52,7 +59,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${manrope.variable} scroll-smooth`}>
+    <html
+      lang="en"
+      className={`${cinzel.variable} ${cormorant.variable} ${outfit.variable} scroll-smooth`}
+    >
       <body className="bg-obsidian-950 text-ivory-50 font-sans antialiased selection:bg-champagne-500/30 selection:text-champagne-200 min-h-screen">
         {children}
       </body>

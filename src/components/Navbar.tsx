@@ -70,13 +70,13 @@ export function Navbar() {
                         : "bg-amber-400"
                     }`}
                   />
-                  <span className="hidden xl:inline text-[9px] font-mono tracking-wider text-champagne-400/80">
+                  <span className="hidden xl:inline text-[9px] font-mono tracking-wider text-champagne-400">
                     {isOpenNow ? "OPEN TIL 10PM" : "OPENS 10AM"}
                   </span>
                 </span>
               </div>
-              <span className="text-[8px] sm:text-[9px] tracking-[0.25em] uppercase text-champagne-400/90 -mt-0.5 font-sans">
-                THE HAIR STUDIO · PALSIKAR
+              <span className="text-[8px] sm:text-[9px] tracking-[0.28em] uppercase text-champagne-400 -mt-0.5 font-sans font-medium">
+                HAUTE COIFFURE · INDORE
               </span>
             </div>
           </a>

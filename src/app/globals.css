@@ -3,12 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --color-obsidian: #0B0B0C;
-  --color-surface: #171719;
-  --color-champagne: #C5A477;
-  --color-champagne-light: #DEC7A9;
-  --color-ivory: #F4EFE8;
-  --color-muted: #A9A29B;
+  --color-obsidian: #050505;
+  --color-surface: #0E0E12;
+  --color-champagne: #C8A252;
+  --color-champagne-light: #E4C784;
+  --color-champagne-dark: #8B6925;
+  --color-ivory: #F8F6F2;
+  --color-muted: #969087;
 }
 
 * {
@@ -18,8 +19,8 @@
 }
 
 html {
-  background-color: #0B0B0C;
-  color: #F4EFE8;
+  background-color: #050505;
+  color: #F8F6F2;
   scroll-behavior: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -27,9 +28,34 @@ html {
 
 body {
   overflow-x: hidden;
-  background-color: #0B0B0C;
-  color: #F4EFE8;
+  background-color: #050505;
+  color: #F8F6F2;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* STRICTLY HIDE DEFAULT OS CURSOR SO ONLY THE BESPOKE LUXURY CURSOR IS VISIBLE */
+@media (pointer: fine) {
+  html,
+  body,
+  *,
+  *::before,
+  *::after,
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  canvas,
+  label,
+  span,
+  div,
+  [role="button"],
+  [tabindex],
+  .cursor-pointer,
+  .cursor-grab,
+  .cursor-grabbing {
+    cursor: none !important;
+  }
 }
 
 /* Custom luxury scrollbar */
@@ -37,65 +63,69 @@ body {
   width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #0B0B0C;
+  background: #050505;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(197, 164, 119, 0.35);
+  background: rgba(200, 162, 82, 0.4);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(197, 164, 119, 0.65);
+  background: rgba(200, 162, 82, 0.75);
 }
 
 /* Editorial selection */
 ::selection {
-  background: rgba(197, 164, 119, 0.25);
-  color: #F4EFE8;
+  background: rgba(200, 162, 82, 0.3);
+  color: #F8F6F2;
 }
 
-/* Glassmorphism styling */
+/* Glassmorphism styling - Deep obsidian with rich gold accents */
 .glass-panel {
-  background: rgba(23, 23, 25, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(197, 164, 119, 0.15);
+  background: rgba(10, 10, 12, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(200, 162, 82, 0.18);
 }
 
 .glass-pill {
-  background: rgba(23, 23, 25, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(197, 164, 119, 0.2);
+  background: rgba(14, 14, 18, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(200, 162, 82, 0.25);
 }
 
 .glass-card {
-  background: linear-gradient(145deg, rgba(23, 23, 25, 0.85) 0%, rgba(14, 14, 16, 0.95) 100%);
-  border: 1px solid rgba(197, 164, 119, 0.12);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: linear-gradient(150deg, rgba(14, 14, 18, 0.9) 0%, rgba(8, 8, 10, 0.96) 100%);
+  border: 1px solid rgba(200, 162, 82, 0.16);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 /* Subtle cinematic film grain overlay */
 .film-grain {
   pointer-events: none;
-  background-image: radial-gradient(rgba(197, 164, 119, 0.035) 1px, transparent 0);
+  background-image: radial-gradient(rgba(200, 162, 82, 0.04) 1px, transparent 0);
   background-size: 28px 28px;
 }
 
-/* Champagne text gradient */
+/* Bold rich antique gold text gradient matching reference image */
 .text-champagne-gradient {
-  background: linear-gradient(135deg, #FAF7F2 0%, #C5A477 50%, #8F6E43 100%);
+  background: linear-gradient(135deg, #F8F3E8 0%, #D6B46B 45%, #C8A252 70%, #98752C 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-ivory-gradient {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F4EFE8 70%, #A9A29B 100%);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F3ECE1 70%, #969087 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Subtle image depth and masks */
-.editorial-mask {
-  clip-path: polygon(0 0, 100% 0, 100% 96%, 0 100%);
+/* Hide scrollbar for clean horizontal reel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

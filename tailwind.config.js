@@ -8,50 +8,59 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Pure deep obsidian black matching reference image
         obsidian: {
-          950: "#0B0B0C", // art direction primary background
-          900: "#111113",
-          800: "#171719", // secondary surface
-          700: "#222226",
-          600: "#2F2F35",
+          950: "#050505", // Deepest pitch black
+          900: "#0A0A0C", // Layered card surface
+          850: "#0E0E12",
+          800: "#131317", // Elevated container surface
+          700: "#1C1C22",
+          600: "#27272E",
         },
         surface: {
-          DEFAULT: "#171719",
-          hover: "#1F1F22",
-          card: "#141416",
+          DEFAULT: "#0E0E12",
+          hover: "#15151A",
+          card: "#09090B",
         },
+        // Rich, warm, bold metallic antique gold matching reference image ("WE MAKE YOUR BRAND HEARD")
         champagne: {
-          50: "#FAF7F2",
-          100: "#F5EFE6",
-          200: "#EADCC9",
-          300: "#DEC7A9",
-          400: "#D3B68E",
-          500: "#C5A477", // art direction signature champagne gold
-          600: "#B28F5F",
-          700: "#8F6E43",
-          800: "#6A502D",
+          50: "#FDFBF7",
+          100: "#F8F3E8",
+          200: "#F0E4CA",
+          300: "#E4C784", // Luminous highlight gold
+          400: "#D6B46B", // Bright metallic gold
+          500: "#C8A252", // Signature reference gold
+          600: "#AA8436", // Burnished antique gold
+          700: "#8B6925", // Deep shadow gold
+          800: "#694D18",
+          900: "#4A360F",
         },
         ivory: {
           50: "#FFFFFF",
-          100: "#FAF8F5",
-          200: "#F4EFE8", // warm ivory
-          300: "#E4DCD2",
-          400: "#D2C7B9",
+          100: "#FBF9F5",
+          200: "#F3ECE1",
+          300: "#E2D6C5",
+          400: "#CFC1AD",
         },
         muted: {
-          DEFAULT: "#A9A29B", // muted text
-          light: "#BEB8B2",
-          dark: "#78726C",
+          DEFAULT: "#969087", // Refined editorial muted tone
+          light: "#B8B2A8",
+          dark: "#69645D",
         },
       },
       fontFamily: {
-        serif: ["var(--font-cormorant)", "Cormorant Garamond", "serif"],
-        sans: ["var(--font-manrope)", "Manrope", "sans-serif"],
+        serif: ["var(--font-cinzel)", "var(--font-cormorant)", "serif"],
+        sans: ["var(--font-outfit)", "var(--font-manrope)", "sans-serif"],
+        display: ["var(--font-cinzel)", "serif"],
       },
       letterSpacing: {
-        widest: "0.2em",
-        ultra: "0.3em",
-        editorial: "0.15em",
+        tightest: "-0.04em",
+        tighter: "-0.02em",
+        normal: "0em",
+        wide: "0.08em",
+        widest: "0.18em",
+        ultra: "0.28em",
+        editorial: "0.22em",
       },
       animation: {
         marquee: "marquee 42s linear infinite",

@@ -26,6 +26,21 @@ export function LuxuryCursor() {
 
     setMounted(true);
 
+    // Completely eradicate default OS cursor across the entire document
+    document.documentElement.style.cursor = "none";
+    document.body.style.cursor = "none";
+
+    const styleEl = document.createElement("style");
+    styleEl.id = "force-hide-system-cursor";
+    styleEl.innerHTML = `
+      @media (pointer: fine) {
+        *, *::before, *::after, html, body, a, button, input, textarea, select, canvas, [role="button"], [tabindex], .cursor-pointer, .cursor-grab, .cursor-grabbing {
+          cursor: none !important;
+        }
+      }
+    `;
+    document.head.appendChild(styleEl);
+
     const onMouseMove = (e: MouseEvent) => {
       mousePos.current = { x: e.clientX, y: e.clientY };
 
@@ -122,13 +137,17 @@ export function LuxuryCursor() {
       document.removeEventListener("mouseleave", onMouseLeave);
       document.removeEventListener("mouseenter", onMouseEnter);
       if (rafId.current) cancelAnimationFrame(rafId.current);
+      document.documentElement.style.cursor = "";
+      document.body.style.cursor = "";
+      const el = document.getElementById("force-hide-system-cursor");
+      if (el) el.remove();
     };
   }, []);
 
   if (!mounted) return null;
 
   return (
-    <div className="hidden lg:block pointer-events-none fixed inset-0 z-[99999] overflow-hidden select-none">
+    <div className="hidden md:block pointer-events-none fixed inset-0 z-[99999] overflow-hidden select-none">
       {/* Precision Core Dot (Tracks cursor position instantly) */}
       <div
         ref={dotRef}
