@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { Scissors, Sparkles, MessageCircle, ArrowDown, ChevronRight, Compass } from "lucide-react";
+import { Scissors, Sparkles, MessageCircle, ArrowDown, ChevronRight } from "lucide-react";
 import { SALON_CONFIG } from "@/config/salon.config";
 
 export function MobileHero3D() {
@@ -239,23 +239,8 @@ export function MobileHero3D() {
       {/* 3. Floating 3D Perspective Content Layer */}
       <div
         ref={cardRef}
-        className="relative z-10 flex flex-col justify-between h-full pointer-events-none space-y-4"
+        className="relative z-10 flex flex-col justify-between h-full pointer-events-none space-y-4 pt-4"
       >
-        {/* Top Eyebrow Badge */}
-        <div className="flex items-center justify-between pointer-events-auto pt-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-panel border border-champagne-500/30 backdrop-blur-xl shadow-[0_4px_25px_rgba(0,0,0,0.6)]">
-            <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
-            <span className="text-[9px] tracking-ultra uppercase text-champagne-300 font-mono font-medium">
-              PALSIKAR COLONY · OPEN TILL 10 PM
-            </span>
-          </div>
-
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-champagne-500/20 text-[9px] font-mono text-champagne-400/80 bg-obsidian-950/60 backdrop-blur-md">
-            <Compass className="w-2.5 h-2.5" />
-            <span>INDORE</span>
-          </div>
-        </div>
-
         {/* Center Editorial Haute Coiffure Headline */}
         <div className="space-y-3 my-auto text-center px-2 pointer-events-auto">
           <div className="inline-flex items-center gap-2 mx-auto">

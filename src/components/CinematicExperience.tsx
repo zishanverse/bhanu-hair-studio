@@ -10,9 +10,7 @@ import {
   MessageCircle,
   ArrowDown,
   ArrowUpRight,
-  Clock,
   Star,
-  MapPin,
 } from "lucide-react";
 import { SALON_CONFIG } from "@/config/salon.config";
 
@@ -80,31 +78,10 @@ export function CinematicExperience() {
       {/* 2. WORLD-CLASS EDITORIAL LUXURY DESKTOP HERO (>= 768px) */}
       <div
         ref={containerRef}
-        className="hidden md:block relative w-full text-ivory-50 select-none min-h-[100dvh] flex flex-col justify-between py-16 px-8 md:px-14 lg:px-20 max-w-7xl mx-auto"
+        className="hidden md:block relative w-full text-ivory-50 select-none min-h-[100dvh] flex flex-col justify-between pt-32 pb-16 px-8 md:px-14 lg:px-20 max-w-7xl mx-auto"
       >
-        {/* Top Luxury Atelier Badge Bar */}
-        <div className="flex items-center justify-between pt-6 pointer-events-auto">
-          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass-card border border-champagne-500/30 shadow-xl backdrop-blur-xl">
-            <span className="w-2 h-2 rounded-full bg-champagne-400 animate-pulse" />
-            <span className="text-xs uppercase tracking-widest text-champagne-200 font-medium">
-              Bhanu&apos;s The Hair Studio · Palsikar Colony
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4 text-xs font-medium text-champagne-300 tracking-wider uppercase">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border border-champagne-500/20">
-              <Clock className="w-3.5 h-3.5 text-champagne-400" />
-              <span>Open Daily 10 AM – 10 PM</span>
-            </div>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border border-champagne-500/20">
-              <MapPin className="w-3.5 h-3.5 text-champagne-400" />
-              <span>Manik Bagh Rd, Indore</span>
-            </div>
-          </div>
-        </div>
-
         {/* Central Editorial Haute Coiffure Masterpiece */}
-        <div className="my-auto space-y-7 max-w-4xl pointer-events-auto pt-6">
+        <div className="my-auto space-y-7 max-w-4xl pointer-events-auto">
           <div className="inline-flex items-center gap-3">
             <span className="w-10 h-[1px] bg-champagne-400 inline-block" />
             <span className="text-xs uppercase tracking-[0.25em] text-champagne-300 font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
