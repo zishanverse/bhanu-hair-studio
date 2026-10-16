@@ -26,7 +26,7 @@ export function BookingSection() {
   return (
     <section
       id="book"
-      className="relative w-full bg-surface text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/20 overflow-hidden"
+      className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/20 overflow-hidden"
     >
       {/* Subtle champagne light reflections */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[400px] bg-gradient-to-b from-champagne-500/10 via-champagne-500/5 to-transparent blur-[160px] pointer-events-none" />

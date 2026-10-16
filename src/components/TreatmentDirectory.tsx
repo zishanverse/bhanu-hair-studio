@@ -89,7 +89,7 @@ export function TreatmentDirectory() {
   return (
     <section
       id="services"
-      className="relative w-full bg-obsidian-950 text-ivory-200 py-20 sm:py-28 md:py-32 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden"
+      className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-20 sm:py-28 md:py-32 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden"
     >
       {/* Ambient background gold glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-champagne-500/5 blur-[160px] pointer-events-none" />

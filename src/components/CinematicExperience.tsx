@@ -1,16 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { HERO_CONFIG } from "@/config/scenes";
 import { SALON_CONFIG } from "@/config/salon.config";
 import { MobileHero3D } from "@/components/MobileHero3D";
-import {
-  CinematicBackground,
-  CinematicBackgroundHandle,
-} from "@/components/CinematicBackground";
 import {
   Scissors,
   Sparkles,
@@ -23,8 +17,6 @@ import {
 
 export function CinematicExperience() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const backgroundRef = useRef<CinematicBackgroundHandle>(null);
-  const progressBarRef = useRef<HTMLDivElement>(null);
   const actSelectorRef = useRef<HTMLDivElement>(null);
 
   // Parallax refs for pseudo-3D layers
@@ -39,55 +31,14 @@ export function CinematicExperience() {
   const actButtonsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const activeActIndexRef = useRef<number>(0);
 
-  // Smooth scroll & animation tracking
-  const lenisRef = useRef<Lenis | null>(null);
-  const stRef = useRef<ScrollTrigger | null>(null);
-  const targetProgressRef = useRef<number>(0);
-  const currentProgressRef = useRef<number>(0);
-  const isLoopActiveRef = useRef<boolean>(false);
-  const rafIdRef = useRef<number | null>(null);
-
   useEffect(() => {
     if (typeof window === "undefined" || !containerRef.current) return;
     if (window.innerWidth < 768) return; // Dedicated Mobile 3D Engine for < 768px
 
     gsap.registerPlugin(ScrollTrigger);
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    // 1. Unified Responsive Lenis Smooth Wheel Engine
-    const lenis = new Lenis({
-      lerp: prefersReducedMotion ? 1 : 0.1,
-      smoothWheel: true,
-      wheelMultiplier: 1.05,
-    });
-    lenisRef.current = lenis;
-
-    lenis.on("scroll", ScrollTrigger.update);
-
-    const tickerCallback = (time: number) => {
-      lenis.raf(time * 1000);
-    };
-    gsap.ticker.add(tickerCallback);
-    gsap.ticker.lagSmoothing(0);
-
-    // 2. Continuous Natural Scroll Measurement over the Multi-Scene Container
     const container = containerRef.current;
 
-    const st = ScrollTrigger.create({
-      trigger: container,
-      start: "top top",
-      end: "bottom bottom",
-      scrub: prefersReducedMotion ? 0 : 0.05,
-      onUpdate: (self) => {
-        targetProgressRef.current = self.progress;
-      },
-      onRefresh: (self) => {
-        targetProgressRef.current = self.progress;
-      },
-    });
-    stRef.current = st;
-
-    // 3. Subtle GSAP Pseudo-3D Parallax on Foreground Layers
+    // 1. Subtle GSAP Pseudo-3D Parallax on Foreground Layers
     const ctx = gsap.context(() => {
       // Scene 1: Headline float with perspective depth
       if (scene1HeadlineRef.current) {
@@ -184,43 +135,25 @@ export function CinematicExperience() {
       }
     }, container);
 
-    // 4. High-Performance RAF Loop for Video Sync and Act Tracking (Zero React re-renders)
-    isLoopActiveRef.current = true;
-    const lerpFactor = prefersReducedMotion ? 1 : 0.14;
+    // 2. Track active Act for floating selector based on scroll position
+    const handleScroll = () => {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const vh = window.innerHeight;
 
-    const loop = () => {
-      if (!isLoopActiveRef.current) return;
+      const act1 = document.getElementById("cinematic-act-1");
+      const act2 = document.getElementById("cinematic-act-2");
+      const act3 = document.getElementById("cinematic-act-3");
+      const act4 = document.getElementById("cinematic-act-4");
 
-      const diff = targetProgressRef.current - currentProgressRef.current;
-      if (Math.abs(diff) > 0.00008) {
-        currentProgressRef.current += diff * lerpFactor;
-      } else {
-        currentProgressRef.current = targetProgressRef.current;
-      }
+      let currentAct = 0;
+      if (act4 && scrollY >= act4.offsetTop - vh * 0.45) currentAct = 3;
+      else if (act3 && scrollY >= act3.offsetTop - vh * 0.45) currentAct = 2;
+      else if (act2 && scrollY >= act2.offsetTop - vh * 0.45) currentAct = 1;
+      else currentAct = 0;
 
-      const progress = Math.max(0, Math.min(1, currentProgressRef.current));
-
-      // 4a. Synchronize background video frame
-      if (backgroundRef.current) {
-        backgroundRef.current.seekToProgress(progress);
-      }
-
-      // 4b. Update bottom progress indicator
-      if (progressBarRef.current) {
-        progressBarRef.current.style.transform = `scaleX(${progress})`;
-      }
-
-      // 4c. Calculate active Act based on normalized progress
-      // Act 1: 0.0 - 0.25 | Act 2: 0.25 - 0.50 | Act 3: 0.50 - 0.75 | Act 4: 0.75 - 1.0
-      let activeIdx = 0;
-      if (progress < 0.25) activeIdx = 0;
-      else if (progress < 0.50) activeIdx = 1;
-      else if (progress < 0.75) activeIdx = 2;
-      else activeIdx = 3;
-
-      if (activeIdx !== activeActIndexRef.current) {
+      if (currentAct !== activeActIndexRef.current) {
         const prevBtn = actButtonsRef.current[activeActIndexRef.current];
-        const nextBtn = actButtonsRef.current[activeIdx];
+        const nextBtn = actButtonsRef.current[currentAct];
 
         if (prevBtn) {
           prevBtn.className =
@@ -230,12 +163,13 @@ export function CinematicExperience() {
           nextBtn.className =
             "px-3.5 py-1.5 rounded-full text-[10px] uppercase font-mono tracking-wider transition-all whitespace-nowrap bg-champagne-400 text-obsidian-950 font-semibold shadow-[0_0_15px_rgba(200,162,82,0.45)]";
         }
-        activeActIndexRef.current = activeIdx;
+        activeActIndexRef.current = currentAct;
       }
 
-      // 4d. Hide floating Act selector if user has scrolled past into TheStudio
-      if (actSelectorRef.current) {
-        if (progress > 0.98) {
+      // Hide Act selector when scrolled into TheStudio or below
+      const studio = document.getElementById("studio");
+      if (actSelectorRef.current && studio) {
+        if (scrollY >= studio.offsetTop - vh * 0.3) {
           actSelectorRef.current.style.opacity = "0";
           actSelectorRef.current.style.pointerEvents = "none";
         } else {
@@ -243,44 +177,29 @@ export function CinematicExperience() {
           actSelectorRef.current.style.pointerEvents = "auto";
         }
       }
-
-      rafIdRef.current = requestAnimationFrame(loop);
     };
 
-    rafIdRef.current = requestAnimationFrame(loop);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
     return () => {
-      isLoopActiveRef.current = false;
-      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       ctx.revert();
-      gsap.ticker.remove(tickerCallback);
-      st.kill();
-      lenis.destroy();
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  // Jump to specific Act via smooth Lenis scroll
+  // Jump to specific Act via smooth scroll
   const scrollToAct = (actId: string) => {
-    if (lenisRef.current) {
-      const el = document.getElementById(actId);
-      if (el) {
-        lenisRef.current.scrollTo(el, { duration: 1.0, offset: 0 });
-      }
-    } else {
-      const el = document.getElementById(actId);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
+    const el = document.getElementById(actId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   const scrollToStudio = () => {
-    if (lenisRef.current) {
-      const studio = document.getElementById("studio");
-      if (studio) {
-        lenisRef.current.scrollTo(studio, { duration: 1.1 });
-      }
-    } else {
-      const studio = document.getElementById("studio");
-      if (studio) studio.scrollIntoView({ behavior: "smooth" });
+    const studio = document.getElementById("studio");
+    if (studio) {
+      studio.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -294,27 +213,10 @@ export function CinematicExperience() {
       {/* 2. LUXURY NATURAL SCROLLING DESKTOP EXPERIENCE (>= 768px) */}
       <div
         ref={containerRef}
-        className="hidden md:block relative w-full bg-obsidian-950 text-ivory-50 select-none"
+        className="hidden md:block relative w-full text-ivory-50 select-none"
       >
-        {/* A. STICKY BACKGROUND SYSTEM (Fixed in viewport, progresses with scroll) */}
-        <div className="sticky top-0 left-0 w-full h-[100dvh] overflow-hidden -z-10 pointer-events-none">
-          <CinematicBackground
-            ref={backgroundRef}
-            videoSrc={HERO_CONFIG.videoSrc}
-          />
-
-          {/* Real-time Cinematic Progress Bar along the bottom of the sticky frame */}
-          <div className="absolute bottom-0 left-0 w-full h-[2px] bg-obsidian-900/60 z-30 pointer-events-none">
-            <div
-              ref={progressBarRef}
-              className="h-full bg-champagne-400 origin-left will-change-transform"
-              style={{ transform: "scaleX(0)" }}
-            />
-          </div>
-        </div>
-
-        {/* B. FOREGROUND CONTENT (Naturally scrolls on top of sticky video) */}
-        <div className="relative -mt-[100dvh] z-10 w-full pointer-events-auto">
+        {/* FOREGROUND CONTENT (Naturally scrolls on top of fixed background) */}
+        <div className="relative z-10 w-full pointer-events-auto">
           {/* ========================================================================= */}
           {/* SCENE 01 — THE LUXURY ENTRANCE */}
           {/* ========================================================================= */}
@@ -403,7 +305,7 @@ export function CinematicExperience() {
               II
             </div>
 
-            {/* Left-weighted Craftsmanship Content (Leaves focal point in video visible) */}
+            {/* Left-weighted Craftsmanship Content */}
             <div
               ref={scene2CardRef}
               className="max-w-xl space-y-6 will-change-transform relative z-10"
@@ -493,7 +395,7 @@ export function CinematicExperience() {
               </p>
             </div>
 
-            {/* 3 Progressive Preview Cards (Generous negative space, glass & gold borders) */}
+            {/* 3 Progressive Preview Cards */}
             <div
               ref={scene3CardsRef}
               className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 will-change-transform"
@@ -643,7 +545,7 @@ export function CinematicExperience() {
           </section>
         </div>
 
-        {/* C. CONSTANT FLOATING ACT SELECTOR (Stays comfortably visible on desktop) */}
+        {/* C. CONSTANT FLOATING ACT SELECTOR */}
         <div
           ref={actSelectorRef}
           className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 pointer-events-auto transition-opacity duration-500"
@@ -677,3 +579,4 @@ export function CinematicExperience() {
     </div>
   );
 }
+export default CinematicExperience;

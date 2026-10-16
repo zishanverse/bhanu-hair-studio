@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/Navbar";
+import { CinematicBackground } from "@/components/CinematicBackground";
 import { CinematicHero } from "@/components/CinematicHero";
 import { TheStudio } from "@/components/TheStudio";
 import { MarqueeRibbon } from "@/components/MarqueeRibbon";
@@ -13,14 +14,17 @@ import { LuxuryCursor } from "@/components/LuxuryCursor";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-obsidian-950 text-ivory-50 overflow-x-hidden selection:bg-champagne-500/30 selection:text-champagne-200">
+    <main className="relative min-h-screen bg-transparent text-ivory-50 overflow-x-hidden selection:bg-champagne-500/30 selection:text-champagne-200">
       {/* 0. Bespoke Luxury Magnetic Cursor (Desktop) */}
       <LuxuryCursor />
 
       {/* 1. Fixed Luxury Transparent / Glass Navigation */}
       <Navbar />
 
-      {/* 2. Dual-Engine Hero: 3D Sculpture for Mobile (<768px) & Pinned Video Scrub for Desktop (>=768px) */}
+      {/* 2. Global Full-Page Fixed Synchronized Background Video (Desktop >=768px) */}
+      <CinematicBackground />
+
+      {/* 3. Dual-Engine Hero: 3D Sculpture for Mobile (<768px) & Natural Narrative for Desktop (>=768px) */}
       <CinematicHero />
 
       {/* 3. Section 1 — The Studio (Asymmetric editorial layout & heritage) */}

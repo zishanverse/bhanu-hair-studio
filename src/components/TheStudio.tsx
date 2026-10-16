@@ -108,7 +108,7 @@ export function TheStudio() {
     <section
       ref={sectionRef}
       id="studio"
-      className="relative z-20 w-full bg-obsidian-950 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 overflow-hidden border-t border-champagne-500/15"
+      className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 overflow-hidden border-t border-champagne-500/15"
     >
       {/* Visual Bridge & Ambient Glow */}
       <div className="absolute top-0 left-1/3 w-[600px] h-[250px] bg-champagne-500/5 blur-[140px] pointer-events-none -translate-y-1/2" />

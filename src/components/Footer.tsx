@@ -15,7 +15,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative w-full bg-obsidian-950 text-ivory-200 pt-16 sm:pt-20 pb-12 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden">
+    <footer className="relative z-10 w-full bg-obsidian-950/40 backdrop-blur-sm text-ivory-200 pt-16 sm:pt-20 pb-12 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden">
       <div className="max-w-7xl mx-auto space-y-12 sm:space-y-16">
         {/* Top Tier: Logo, Brand Statement, and Back to Top */}
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8 sm:gap-10 pb-10 sm:pb-12 border-b border-champagne-500/15">

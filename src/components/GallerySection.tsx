@@ -30,7 +30,7 @@ export function GallerySection() {
   return (
     <section
       id="gallery"
-      className="relative w-full bg-obsidian-950 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15"
+      className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15"
     >
       <div className="max-w-7xl mx-auto space-y-12 sm:space-y-16">
         {/* Section Header */}

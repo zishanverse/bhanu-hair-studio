@@ -21,7 +21,7 @@ export function MarqueeRibbon({ className = "" }: MarqueeRibbonProps) {
 
   return (
     <div
-      className={`relative w-full overflow-hidden py-3.5 bg-obsidian-900/80 border-y border-champagne-500/15 backdrop-blur-md select-none ${className}`}
+      className={`relative z-10 w-full overflow-hidden py-3.5 bg-obsidian-900/30 border-y border-champagne-500/15 backdrop-blur-sm select-none ${className}`}
       aria-hidden="true"
     >
       <div className="flex w-max animate-marquee space-x-8 text-[10px] md:text-xs uppercase tracking-[0.3em] font-mono text-champagne-400/85">
