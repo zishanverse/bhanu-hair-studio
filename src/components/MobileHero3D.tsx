@@ -61,9 +61,6 @@ export function MobileHero3D() {
     glintLight.position.set(0, 3, 2);
     scene.add(glintLight);
 
-    // 3. Central 3D Sculpture: Interlocking Golden Rings & Stylized Master Shears
-    const coreGroup = new THREE.Group();
-
     // High Polish Champagne Gold Material
     const goldMaterial = new THREE.MeshStandardMaterial({
       color: 0xd4af37,
@@ -85,42 +82,87 @@ export function MobileHero3D() {
       roughness: 0.2,
     });
 
-    // Outer Armillary Ring 1 (Gold)
-    const ring1Geo = new THREE.TorusGeometry(1.6, 0.045, 16, 64);
-    const ring1 = new THREE.Mesh(ring1Geo, goldMaterial);
-    ring1.rotation.x = Math.PI / 3;
-    coreGroup.add(ring1);
+    // 3. Central Salon Haute Coiffure Sculpture: Japanese Master Shears & Silk Hair Strand
+    const coreGroup = new THREE.Group();
 
-    // Outer Armillary Ring 2 (Steel)
-    const ring2Geo = new THREE.TorusGeometry(1.4, 0.04, 16, 64);
-    const ring2 = new THREE.Mesh(ring2Geo, steelMaterial);
-    ring2.rotation.y = Math.PI / 3;
-    ring2.rotation.x = -Math.PI / 6;
-    coreGroup.add(ring2);
+    // Pivot Screw with Obsidian Jewel
+    const pivotBezelGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.1, 32);
+    const pivotBezel = new THREE.Mesh(pivotBezelGeo, goldMaterial);
+    pivotBezel.rotation.x = Math.PI / 2;
+    coreGroup.add(pivotBezel);
 
-    // Center Faceted Gem Diamond (Haute Coiffure Emblem)
-    const gemGeo = new THREE.OctahedronGeometry(0.75, 1);
-    const gemMesh = new THREE.Mesh(gemGeo, goldMaterial);
-    coreGroup.add(gemMesh);
+    const pivotGemGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.12, 32);
+    const pivotGem = new THREE.Mesh(pivotGemGeo, jewelMaterial);
+    pivotGem.rotation.x = Math.PI / 2;
+    coreGroup.add(pivotGem);
 
-    // Center Dark Core Sphere
-    const coreSphereGeo = new THREE.SphereGeometry(0.42, 32, 32);
-    const coreSphere = new THREE.Mesh(coreSphereGeo, jewelMaterial);
-    coreGroup.add(coreSphere);
+    // Shears Blade A (Convex Cutting Edge)
+    const bladeGeo = new THREE.ConeGeometry(0.11, 2.7, 4);
+    bladeGeo.scale(1, 1, 0.24);
+    bladeGeo.translate(0, 1.35, 0);
 
-    // Crossed Stylized Blades
-    const bladeGeo = new THREE.ConeGeometry(0.08, 2.6, 4);
-    bladeGeo.scale(1, 1, 0.3);
+    const bladeA = new THREE.Mesh(bladeGeo, steelMaterial);
+    bladeA.rotation.z = 0.22;
+    bladeA.position.set(0, 0, 0.03);
+    coreGroup.add(bladeA);
 
-    const blade1 = new THREE.Mesh(bladeGeo, steelMaterial);
-    blade1.position.set(0, 0, 0.08);
-    blade1.rotation.z = Math.PI / 4;
-    coreGroup.add(blade1);
+    // Shears Blade B (Opposing Convex Cutting Edge)
+    const bladeB = new THREE.Mesh(bladeGeo, steelMaterial);
+    bladeB.rotation.z = -0.22;
+    bladeB.position.set(0, 0, -0.03);
+    coreGroup.add(bladeB);
 
-    const blade2 = new THREE.Mesh(bladeGeo, steelMaterial);
-    blade2.position.set(0, 0, -0.08);
-    blade2.rotation.z = -Math.PI / 4;
-    coreGroup.add(blade2);
+    // Handle Shanks & Finger Rings
+    const shankGeo = new THREE.CylinderGeometry(0.055, 0.045, 1.25, 16);
+    shankGeo.translate(0, -0.62, 0);
+
+    const shankA = new THREE.Mesh(shankGeo, goldMaterial);
+    shankA.rotation.z = -0.28;
+    coreGroup.add(shankA);
+
+    const shankB = new THREE.Mesh(shankGeo, goldMaterial);
+    shankB.rotation.z = 0.28;
+    coreGroup.add(shankB);
+
+    // Finger Loops
+    const ringGeo = new THREE.TorusGeometry(0.3, 0.042, 16, 32);
+    const fingerLoopA = new THREE.Mesh(ringGeo, goldMaterial);
+    fingerLoopA.position.set(-0.36, -1.45, 0.03);
+    fingerLoopA.rotation.y = 0.15;
+    coreGroup.add(fingerLoopA);
+
+    const fingerLoopB = new THREE.Mesh(ringGeo, goldMaterial);
+    fingerLoopB.position.set(0.36, -1.45, -0.03);
+    fingerLoopB.rotation.y = -0.15;
+    coreGroup.add(fingerLoopB);
+
+    // Japanese Pinky Tang (Salon Master Tool Rest)
+    const tangGeo = new THREE.CylinderGeometry(0.02, 0.035, 0.42, 16);
+    tangGeo.translate(0, -0.21, 0);
+    const tang = new THREE.Mesh(tangGeo, goldMaterial);
+    tang.position.set(0.62, -1.45, -0.03);
+    tang.rotation.z = -0.65;
+    coreGroup.add(tang);
+
+    // Flowing Silk Hair Strand / Ribbon (Gracefully weaving past the blades)
+    const hairCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-1.7, -1.3, -0.4),
+      new THREE.Vector3(-1.1, -0.2, 0.35),
+      new THREE.Vector3(-0.25, 0.75, 0.25),
+      new THREE.Vector3(0.45, 1.35, -0.15),
+      new THREE.Vector3(1.15, 0.35, 0.4),
+      new THREE.Vector3(1.7, -0.75, -0.25),
+    ]);
+    const hairRibbonGeo = new THREE.TubeGeometry(hairCurve, 64, 0.032, 12, false);
+    const hairRibbonMat = new THREE.MeshStandardMaterial({
+      color: 0xe4c784,
+      metalness: 0.88,
+      roughness: 0.22,
+      emissive: 0x8b6925,
+      emissiveIntensity: 0.2,
+    });
+    const hairRibbon = new THREE.Mesh(hairRibbonGeo, hairRibbonMat);
+    coreGroup.add(hairRibbon);
 
     scene.add(coreGroup);
 
@@ -187,10 +229,13 @@ export function MobileHero3D() {
       coreGroup.rotation.x += (targetRotX + Math.sin(t * 0.8) * 0.15 - coreGroup.rotation.x) * 0.06;
       coreGroup.position.y = Math.sin(t * 1.2) * 0.12;
 
-      // Rotate armillary rings in opposite axes
-      ring1.rotation.z = t * 0.5;
-      ring2.rotation.z = -t * 0.4;
-      gemMesh.rotation.y = t * 0.8;
+      // Subtle scissor blade breath / shear angle oscillation
+      const snipAngle = 0.22 + Math.sin(t * 1.5) * 0.05;
+      bladeA.rotation.z = snipAngle;
+      bladeB.rotation.z = -snipAngle;
+
+      // Subtle hair ribbon shimmer
+      hairRibbon.rotation.z = Math.sin(t * 0.6) * 0.08;
 
       // Particle floating drift
       particles.rotation.y = t * 0.06;
@@ -257,16 +302,16 @@ export function MobileHero3D() {
           </h1>
 
           <p className="text-[11px] tracking-[0.16em] uppercase text-ivory-100 font-light max-w-xs mx-auto drop-shadow-md leading-relaxed">
-            Sculpted geometric precision, liquid silk textures & sensory calm in Palsikar Colony.
+            Sculpted geometric precision, liquid silk textures & sensory calm across Indore.
           </p>
 
           <div className="pt-1 flex items-center justify-center gap-2 text-[10px] text-champagne-300 font-medium tracking-widest uppercase">
-            <span>Bespoke Hair & Aesthetics Atelier</span>
+            <span>Bespoke Hair & Aesthetics Atelier · 3 Indore Studios</span>
           </div>
         </div>
 
         {/* Bottom Carousel Pillars & Direct CTAs */}
-        <div className="space-y-3.5 pointer-events-auto">
+        <div className="space-y-3.5 pointer-events-auto pb-1">
           {/* Interactive Discipline Horizontal Chips */}
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 px-1">
             {pillars.map((p, idx) => (
@@ -274,7 +319,7 @@ export function MobileHero3D() {
                 key={idx}
                 type="button"
                 onClick={() => setActivePill(idx)}
-                className={`shrink-0 px-3 py-1.5 rounded-full border text-[9px] uppercase tracking-wider font-mono transition-all duration-300 ${activePill === idx
+                className={`shrink-0 px-3 py-2 rounded-full border text-[10px] uppercase tracking-wider font-mono transition-all duration-300 min-h-[36px] ${activePill === idx
                   ? "bg-champagne-400 text-obsidian-950 font-bold border-champagne-300 shadow-[0_0_15px_rgba(197,164,119,0.5)]"
                   : "glass-panel border-champagne-500/25 text-ivory-200 hover:text-white"
                   }`}
@@ -288,13 +333,13 @@ export function MobileHero3D() {
           <div className="grid grid-cols-2 gap-2.5 pt-1">
             <a
               href={`https://wa.me/${SALON_CONFIG.contact.whatsappNumber}?text=${encodeURIComponent(
-                "Hello Bhanu's The Hair Studio Palsikar, I would like to reserve a luxury hair experience."
+                "Hello Bhanu's The Hair Studio, I would like to reserve a luxury salon appointment."
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="group relative flex items-center justify-center gap-2 py-3.5 rounded-full overflow-hidden text-[11px] uppercase tracking-wider font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 shadow-[0_0_25px_rgba(197,164,119,0.5)] active:scale-95 transition-all text-center"
+              className="group relative flex items-center justify-center gap-2 py-3.5 rounded-full overflow-hidden text-[11px] uppercase tracking-wider font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 shadow-[0_0_25px_rgba(197,164,119,0.5)] active:scale-95 transition-all text-center min-h-[46px]"
             >
-              <MessageCircle className="w-3.5 h-3.5 fill-obsidian-950" />
+              <MessageCircle className="w-4 h-4 fill-obsidian-950" />
               <span>Book Session</span>
             </a>
 
