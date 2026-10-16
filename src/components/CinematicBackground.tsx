@@ -281,8 +281,9 @@ export function CinematicBackground({
           }}
         />
 
-        {/* Minimal subtle ambient vignette: ensures 100% full clarity of sequence */}
-        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-obsidian-950/40 via-transparent to-obsidian-950/15 opacity-40" />
+        {/* Luxury editorial grading veil: perfectly balances light video background with crisp text contrast */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/55 via-black/40 to-black/65" />
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(5,5,5,0.5)_100%)]" />
       </div>
 
       {/* 2. Global Scroll Progress Line along the bottom of the viewport */}

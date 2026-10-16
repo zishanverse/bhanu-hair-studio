@@ -49,9 +49,9 @@ export default {
         },
       },
       fontFamily: {
-        serif: ["var(--font-cinzel)", "var(--font-cormorant)", "serif"],
-        sans: ["var(--font-outfit)", "var(--font-manrope)", "sans-serif"],
-        display: ["var(--font-cinzel)", "serif"],
+        serif: ["var(--font-cormorant)", "Georgia", "serif"],
+        sans: ["var(--font-outfit)", "system-ui", "sans-serif"],
+        display: ["var(--font-cormorant)", "var(--font-cinzel)", "serif"],
       },
       letterSpacing: {
         tightest: "-0.04em",

@@ -17,6 +17,13 @@ export function MobileHero3D() {
     { title: "Bespoke Grooming", tag: "SIGNATURE FINISH" },
   ];
 
+  const handleScrollToStudio = () => {
+    const el = document.getElementById("studio");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   // Three.js 3D Floating Gold Emblem & Stardust Particles
   useEffect(() => {
     const mount = mountRef.current;
@@ -275,8 +282,8 @@ export function MobileHero3D() {
             Sculpted geometric precision, liquid silk textures & sensory calm in Palsikar Colony.
           </p>
 
-          <div className="pt-1 flex items-center justify-center gap-2 text-[9px] text-champagne-400/70 font-mono tracking-widest uppercase">
-            <span>TOUCH & SWIPE 3D EMBLEM</span>
+          <div className="pt-1 flex items-center justify-center gap-2 text-[10px] text-champagne-300 font-medium tracking-widest uppercase">
+            <span>Bespoke Hair & Aesthetics Atelier</span>
           </div>
         </div>
 
@@ -289,11 +296,10 @@ export function MobileHero3D() {
                 key={idx}
                 type="button"
                 onClick={() => setActivePill(idx)}
-                className={`shrink-0 px-3 py-1.5 rounded-full border text-[9px] uppercase tracking-wider font-mono transition-all duration-300 ${
-                  activePill === idx
+                className={`shrink-0 px-3 py-1.5 rounded-full border text-[9px] uppercase tracking-wider font-mono transition-all duration-300 ${activePill === idx
                     ? "bg-champagne-400 text-obsidian-950 font-bold border-champagne-300 shadow-[0_0_15px_rgba(197,164,119,0.5)]"
                     : "glass-panel border-champagne-500/25 text-ivory-200 hover:text-white"
-                }`}
+                  }`}
               >
                 <span>{p.title}</span>
               </button>

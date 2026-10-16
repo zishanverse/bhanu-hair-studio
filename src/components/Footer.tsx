@@ -162,7 +162,7 @@ export function Footer() {
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
             <span>{contact.address.line1}, {contact.address.city}, {contact.address.state}</span>
             <span className="hidden sm:inline">•</span>
-            <span className="font-mono text-champagne-400">{identity.coordinates.display}</span>
+            <span className="text-champagne-400">Open Daily 10:00 AM – 10:00 PM</span>
           </div>
 
           <div className="flex items-center gap-6">

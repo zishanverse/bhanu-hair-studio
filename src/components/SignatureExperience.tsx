@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { SALON_CONFIG } from "@/config/salon.config";
 import { ThreeScissorsCanvas } from "@/components/ThreeScissorsCanvas";
-import { Sparkles, Check, ChevronRight, RotateCcw } from "lucide-react";
+import { Sparkles, Check, ChevronRight, RotateCcw, Scissors } from "lucide-react";
 
 export function SignatureExperience() {
   const { signatureExperience } = SALON_CONFIG;
@@ -133,11 +133,11 @@ export function SignatureExperience() {
             }`}>
               <div className="flex items-center justify-between z-10">
                 <div className="space-y-0.5">
-                  <span className="text-[10px] tracking-widest uppercase text-champagne-400 font-mono block">
-                    HITACHI 440C COBALT ALLOY
+                  <span className="text-[10px] tracking-widest uppercase text-champagne-300 font-medium block">
+                    JAPANESE SHEAR CRAFTSMANSHIP
                   </span>
-                  <span className="text-[9px] text-muted tracking-wider uppercase font-mono">
-                    Tension: 4.8 N·m · Hamaguri-ba
+                  <span className="text-[10px] text-muted tracking-wider uppercase font-sans">
+                    Hand-Honed Convex Edge · Master Tooling
                   </span>
                 </div>
                 
@@ -145,11 +145,11 @@ export function SignatureExperience() {
                 <button
                   type="button"
                   onClick={handleTriggerSnip}
-                  className="group relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 active:scale-95 transition-all shadow-md"
+                  className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 active:scale-95 transition-all shadow-md"
                   aria-label="Trigger mechanical snip"
                 >
-                  <Sparkles className="w-3 h-3 animate-spin text-obsidian-950" style={{ animationDuration: "6s" }} />
-                  <span>Snip Shears ✂️</span>
+                  <Scissors className="w-3 h-3 text-obsidian-950" />
+                  <span>Inspect Shears</span>
                   {snipCount > 0 && (
                     <span className="ml-1 px-1.5 py-0.2 rounded-full bg-obsidian-950 text-champagne-300 text-[9px] font-mono">
                       {snipCount}

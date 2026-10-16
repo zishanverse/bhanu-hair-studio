@@ -216,10 +216,8 @@ export const SALON_CONFIG: SalonConfiguration = {
       "We fuse European precision techniques with contemporary bespoke grooming to craft enduring personal elegance for men and women.",
       "Our Palsikar Colony studio provides an intentional sanctuary on Manik Bagh Road, curated with warm acoustics, champagne accents, and discreet unisex luxury.",
     ],
-    featuredImage:
-      "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80",
-    accentImage:
-      "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=80",
+    featuredImage: "/images/studio-interior.jpg",
+    accentImage: "/images/studio-craft.jpg",
     stats: [
       { value: "10 PM", label: "Open Daily Until 10:00 PM" },
       { value: "30+", label: "Unisex Hair & Beauty Disciplines" },
@@ -241,8 +239,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         eyebrow: "SCULPTURAL PRECISION & MEN'S SALON",
         description:
           "Master haircutting, beard contouring, blow dry, and precision styling for discerning unisex clientele.",
-        image:
-          "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/cat-men.jpg",
         featured: true,
         services: [
           {
@@ -282,8 +279,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         eyebrow: "BIOLOGICAL RESTORATION & SMOOTHING",
         description:
           "Specialized Keratin Treatment, Hair Rebonding, Hair Smoothing, and Herbal Treat rituals for glossy resilience.",
-        image:
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/cat-treatment.jpg",
         featured: false,
         services: [
           {
@@ -323,8 +319,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         eyebrow: "DIMENSIONAL TONING & COUTURE HUES",
         description:
           "Full spectrum hair colouring, French balayage, multidimensional highlights, and root touch-ups.",
-        image:
-          "https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/cat-color.jpg",
         featured: false,
         services: [
           {
@@ -350,8 +345,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         eyebrow: "COUTURE BEAUTY & CELEBRATION",
         description:
           "Exquisite Bridal services, Make-up services, Eyelashes, Eyebrow beautification, and Nail Art.",
-        image:
-          "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/cat-beauty.jpg",
         featured: true,
         services: [
           {
@@ -391,8 +385,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         eyebrow: "CLINICAL DERMAL THERAPY",
         description:
           "Advanced Facials, deep Clean Up, and clinical Acne treatments formulated for long-lasting complexion radiance.",
-        image:
-          "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/skin-facial.jpg",
         featured: false,
         services: [
           {
@@ -425,8 +418,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         eyebrow: "SENSORY RELAXATION & DEPILATION",
         description:
           "Indulgent Spa services, Pedicure, relaxing Massage, Body waxing, Waxing Oil Wax, and Home Services.",
-        image:
-          "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/cat-spa.jpg",
         featured: true,
         services: [
           {
@@ -479,8 +471,7 @@ export const SALON_CONFIG: SalonConfiguration = {
           "Zero-gap beard contouring and razor fade",
           "Hot herbal towel and beard perimeter refinement",
         ],
-        image:
-          "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/sig-precision.jpg",
       },
       {
         id: "transformation",
@@ -494,8 +485,7 @@ export const SALON_CONFIG: SalonConfiguration = {
           "Bespoke chromatic balayage matched to iris and skin tone",
           "Silky thermal lock ensuring weeks of humidity resistance",
         ],
-        image:
-          "https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/sig-transform.jpg",
       },
       {
         id: "rejuvenation",
@@ -509,8 +499,7 @@ export const SALON_CONFIG: SalonConfiguration = {
           "Therapeutic spa services and luxury pedicure",
           "Body waxing with nourishing waxing oil wax",
         ],
-        image:
-          "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/sig-rejuvenate.jpg",
       },
     ],
   },
@@ -527,15 +516,12 @@ export const SALON_CONFIG: SalonConfiguration = {
         title: "Textured Crop & Low Taper Fade",
         category: "mens",
         categoryLabel: "Men's Hair",
-        image:
-          "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/gallery-1.jpg",
         aspect: "tall",
         description: "Matte texturizing finish with seamless low skin fade.",
         transformation: {
-          beforeImage:
-            "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80",
-          afterImage:
-            "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=600&q=80",
+          beforeImage: "/images/gallery-1.jpg",
+          afterImage: "/images/gallery-1.jpg",
           details: "Overgrown fringe transformed into sculpted editorial crop.",
         },
       },
@@ -544,8 +530,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         title: "Caramel Balayage & Soft Waves",
         category: "colour",
         categoryLabel: "Hair Colour",
-        image:
-          "https://images.unsplash.com/photo-1560869713-7d0a29430803?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/gallery-2.jpg",
         aspect: "wide",
         description: "Hand-painted warm amber tones on deep espresso roots.",
       },
@@ -554,8 +539,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         title: "Couture Curtain Layers & Blowout",
         category: "womens",
         categoryLabel: "Women's Hair",
-        image:
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/gallery-3.jpg",
         aspect: "tall",
         description: "Face-framing butterfly layers with mirror-finish blowout.",
       },
@@ -564,15 +548,12 @@ export const SALON_CONFIG: SalonConfiguration = {
         title: "Keratin & Smoothing Glass Reset",
         category: "treatments",
         categoryLabel: "Treatments",
-        image:
-          "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/gallery-4.jpg",
         aspect: "square",
         description: "Complete cuticle sealing, hair smoothing, and frizz elimination.",
         transformation: {
-          beforeImage:
-            "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=600&q=80",
-          afterImage:
-            "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=600&q=80",
+          beforeImage: "/images/gallery-4.jpg",
+          afterImage: "/images/gallery-4.jpg",
           details: "Brittle bleached fibers rebuilt with multi-collagen bonding.",
         },
       },
@@ -581,8 +562,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         title: "Sharp Beard Contour & Pompadour",
         category: "mens",
         categoryLabel: "Men's Hair",
-        image:
-          "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/gallery-5.jpg",
         aspect: "tall",
         description: "Clean classic contour with natural matte hold.",
       },
@@ -591,8 +571,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         title: "Bridal Glow & Artistry Finish",
         category: "colour",
         categoryLabel: "Bridal & Make-up",
-        image:
-          "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=1000&q=80",
+        image: "/images/gallery-6.jpg",
         aspect: "wide",
         description: "High-definition makeup and couture hair ornamentation for grand celebration.",
       },
@@ -614,8 +593,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         description:
           "An invigorating dermal cleanse utilizing botanical fruit enzymes to dissolve dead surface cells, followed by delicate manual extraction and an organic oat milk soothing pack.",
         protocol: "Double cleanse → Enzymatic steam → Manual vacuum extraction → Calming thermal mist",
-        image:
-          "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=800&q=80",
+        image: "/images/skin-cleanup.jpg",
       },
       {
         id: "facial",
@@ -625,8 +603,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         description:
           "A multi-stage sensory journey including lymphatic neck drainage, customized hydro-jelly mask, and deeply hydrating peptides that leave the skin plump and radiant.",
         protocol: "Lymphatic drainage → Micro-circulation massage → Peptides & vitamin bath → Rose quartz seal",
-        image:
-          "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80",
+        image: "/images/skin-facial.jpg",
       },
       {
         id: "anti-acne-facial",
@@ -636,8 +613,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         description:
           "Designed specifically for congested or inflammation-prone skin. Infuses anti-bacterial tea tree and salicylic actives while soothing erythema with cold botanical compresses.",
         protocol: "Salicylic peel → High frequency blue ozone → Tea tree clarifying veil → Zinc soothing compress",
-        image:
-          "https://images.unsplash.com/photo-1512290900672-1f417551980a?auto=format&fit=crop&w=800&q=80",
+        image: "/images/skin-acne.jpg",
       },
       {
         id: "body-waxing-oil",
@@ -647,8 +623,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         description:
           "Premium waxing enriched with pre-wax soothing oil and post-wax cooling chamomile to ensure completely smooth, painless hair removal without redness.",
         protocol: "Skin prep oil → Hot liposoluble wax strip → Soothing calendula balm → Hydrating silk finish",
-        image:
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
+        image: "/images/cat-spa.jpg",
       },
     ],
   },
