@@ -111,26 +111,26 @@ export function AcademyClientPage() {
       {/* ======================================================== */}
       {/* 1. HERO SECTION — STREAMLINED & EDITORIAL                */}
       {/* ======================================================== */}
-      <section className="relative z-10 pt-32 sm:pt-40 md:pt-44 pb-16 px-4 sm:px-8 md:px-12 lg:px-20 max-w-7xl mx-auto border-b border-champagne-500/15">
-        <div className="space-y-6 max-w-4xl">
+      <section className="relative z-10 pt-28 sm:pt-36 md:pt-44 pb-12 sm:pb-16 px-4 sm:px-8 md:px-12 lg:px-20 max-w-7xl mx-auto border-b border-champagne-500/15">
+        <div className="space-y-5 sm:space-y-6 max-w-4xl">
           {/* Eyebrow Pill */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full glass-panel border border-champagne-500/30 backdrop-blur-xl">
-            <span className="w-2 h-2 rounded-full bg-champagne-400 animate-pulse" />
-            <span className="text-[10px] sm:text-[11px] uppercase tracking-widest text-champagne-300 font-mono font-medium">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full glass-panel border border-champagne-500/30 backdrop-blur-xl max-w-full">
+            <span className="w-2 h-2 rounded-full bg-champagne-400 animate-pulse shrink-0" />
+            <span className="text-[9px] sm:text-[11px] uppercase tracking-widest text-champagne-300 font-mono font-medium truncate sm:whitespace-normal">
               PROFESSIONAL SALON TRAINING ACADEMY · INDORE
             </span>
           </div>
 
           {/* Main Title */}
-          <div className="space-y-3">
-            <h1 className="font-serif text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-light text-ivory-50 tracking-tight leading-[1.0] sm:leading-[0.95]">
+          <div className="space-y-2.5 sm:space-y-3">
+            <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-ivory-50 tracking-tight leading-[1.08] sm:leading-[0.95] break-words">
               BHANU&apos;S HAIR ACADEMY <br />
               <span className="italic font-normal text-champagne-400 font-serif">
                 PROFESSIONAL SALON COURSES
               </span>
             </h1>
 
-            <p className="text-base sm:text-xl text-champagne-200 font-light tracking-wide">
+            <p className="text-sm sm:text-lg md:text-xl text-champagne-200 font-light tracking-wide leading-snug">
               Complete Beauty & Salon Training: Hair • Makeup • Skin • Nails
             </p>
 
@@ -139,11 +139,11 @@ export function AcademyClientPage() {
             </p>
           </div>
 
-          {/* Hero CTAs */}
-          <div className="flex flex-wrap items-center gap-3.5 pt-2">
+          {/* Hero CTAs (Full width on mobile, inline on desktop) */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3.5 pt-2">
             <a
               href="#courses"
-              className="px-7 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-400 hover:shadow-[0_0_30px_rgba(200,162,82,0.6)] transition-all transform hover:scale-105 active:scale-95"
+              className="w-full sm:w-auto text-center px-7 py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-400 hover:shadow-[0_0_30px_rgba(200,162,82,0.6)] transition-all transform hover:scale-[1.02] active:scale-95 min-h-[44px] flex items-center justify-center"
             >
               Explore Courses
             </a>
@@ -154,52 +154,52 @@ export function AcademyClientPage() {
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-xs uppercase tracking-widest font-medium text-ivory-50 border border-champagne-500/35 glass-card hover:border-champagne-300 hover:bg-champagne-500/10 transition-all cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-xs uppercase tracking-widest font-medium text-ivory-50 border border-champagne-500/35 glass-card hover:border-champagne-300 hover:bg-champagne-500/10 transition-all cursor-pointer min-h-[44px]"
             >
-              <MessageCircle className="w-4 h-4 text-emerald-400" />
+              <MessageCircle className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>WhatsApp Admission Desk</span>
             </a>
 
             <a
               href={`tel:${contact.phone}`}
-              className="inline-flex items-center gap-2 px-5 py-3.5 rounded-full text-xs uppercase tracking-widest text-muted hover:text-white transition-colors"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-full text-xs uppercase tracking-widest text-muted hover:text-white transition-colors"
             >
-              <Phone className="w-3.5 h-3.5 text-champagne-400" />
+              <Phone className="w-3.5 h-3.5 text-champagne-400 shrink-0" />
               <span>{contact.displayPhone}</span>
             </a>
           </div>
 
           {/* 4 Stat Badges */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-champagne-500/15">
-            <div className="p-3.5 rounded-2xl glass-panel border border-champagne-500/20">
-              <div className="text-2xl sm:text-3xl font-serif text-champagne-300 font-light">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 pt-5 sm:pt-6 border-t border-champagne-500/15">
+            <div className="p-3 sm:p-3.5 rounded-2xl glass-panel border border-champagne-500/20 text-center sm:text-left">
+              <div className="text-xl sm:text-3xl font-serif text-champagne-300 font-light">
                 80%
               </div>
-              <div className="text-[10px] font-mono uppercase tracking-wider text-muted">
+              <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-muted">
                 Live Model Practicals
               </div>
             </div>
-            <div className="p-3.5 rounded-2xl glass-panel border border-champagne-500/20">
-              <div className="text-2xl sm:text-3xl font-serif text-champagne-300 font-light">
+            <div className="p-3 sm:p-3.5 rounded-2xl glass-panel border border-champagne-500/20 text-center sm:text-left">
+              <div className="text-xl sm:text-3xl font-serif text-champagne-300 font-light">
                 500+
               </div>
-              <div className="text-[10px] font-mono uppercase tracking-wider text-muted">
+              <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-muted">
                 Trained Stylists
               </div>
             </div>
-            <div className="p-3.5 rounded-2xl glass-panel border border-champagne-500/20">
-              <div className="text-2xl sm:text-3xl font-serif text-champagne-300 font-light">
+            <div className="p-3 sm:p-3.5 rounded-2xl glass-panel border border-champagne-500/20 text-center sm:text-left">
+              <div className="text-xl sm:text-3xl font-serif text-champagne-300 font-light">
                 100%
               </div>
-              <div className="text-[10px] font-mono uppercase tracking-wider text-muted">
+              <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-muted">
                 Placement Support
               </div>
             </div>
-            <div className="p-3.5 rounded-2xl glass-panel border border-champagne-500/20">
-              <div className="text-2xl sm:text-3xl font-serif text-champagne-300 font-light">
+            <div className="p-3 sm:p-3.5 rounded-2xl glass-panel border border-champagne-500/20 text-center sm:text-left">
+              <div className="text-xl sm:text-3xl font-serif text-champagne-300 font-light">
                 3 Studios
               </div>
-              <div className="text-[10px] font-mono uppercase tracking-wider text-muted">
+              <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-muted">
                 Indore Network
               </div>
             </div>
@@ -418,16 +418,16 @@ export function AcademyClientPage() {
                 </div>
 
                 {/* Card Action Bar */}
-                <div className="pt-5 mt-5 border-t border-champagne-500/15 flex flex-wrap items-center justify-between gap-3">
+                <div className="pt-4 sm:pt-5 mt-4 sm:mt-5 border-t border-champagne-500/15 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <a
                     href={`https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(
                       `Hello Bhanu's Hair Academy, I would like to enroll / inquire about: ${course.title}. Please share batch schedule and fee structure.`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-all shadow-sm"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 sm:py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-all shadow-sm min-h-[44px]"
                   >
-                    <MessageCircle className="w-3.5 h-3.5 fill-obsidian-950" />
+                    <MessageCircle className="w-3.5 h-3.5 fill-obsidian-950 shrink-0" />
                     <span>Inquire on WhatsApp</span>
                   </a>
 
@@ -436,7 +436,7 @@ export function AcademyClientPage() {
                     onClick={() =>
                       setFormData((prev) => ({ ...prev, course: course.title }))
                     }
-                    className="text-xs uppercase tracking-widest text-champagne-400 hover:text-white transition-colors flex items-center gap-1 font-medium font-mono"
+                    className="w-full sm:w-auto text-xs uppercase tracking-widest text-champagne-400 hover:text-white transition-colors flex items-center justify-center sm:justify-start gap-1 font-medium font-mono py-1.5"
                   >
                     <span>Admission Form</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -452,10 +452,10 @@ export function AcademyClientPage() {
       {/* 4. MASTER BHANU SPOTLIGHT                                */}
       {/* ======================================================== */}
       <section className="relative z-10 py-16 px-4 sm:px-8 md:px-12 lg:px-20 max-w-7xl mx-auto space-y-10 border-t border-champagne-500/15">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
           {/* Portrait */}
           <div className="lg:col-span-5 relative">
-            <div className="relative rounded-3xl overflow-hidden glass-card border border-champagne-500/20 aspect-[4/5] bg-obsidian-900 group shadow-2xl">
+            <div className="relative rounded-3xl overflow-hidden glass-card border border-champagne-500/20 aspect-[16/11] sm:aspect-[4/5] max-h-[340px] sm:max-h-none bg-obsidian-900 group shadow-2xl">
               <Image
                 src="/images/studio-craft.jpg"
                 alt="Master Stylist Bhanu Mentoring Salon Apprentices"
@@ -465,14 +465,14 @@ export function AcademyClientPage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/40 to-transparent pointer-events-none" />
 
-              <div className="absolute bottom-6 left-6 right-6 p-5 rounded-2xl glass-panel border border-champagne-500/30 space-y-1 backdrop-blur-xl">
-                <div className="text-[10px] tracking-widest uppercase text-champagne-400 font-mono">
+              <div className="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 p-3.5 sm:p-5 rounded-2xl glass-panel border border-champagne-500/30 space-y-1 backdrop-blur-xl">
+                <div className="text-[9px] sm:text-[10px] tracking-widest uppercase text-champagne-400 font-mono">
                   ACADEMY FOUNDER & MASTER EDUCATOR
                 </div>
-                <h4 className="font-serif text-2xl text-ivory-50">
+                <h4 className="font-serif text-xl sm:text-2xl text-ivory-50">
                   Master Stylist Bhanu
                 </h4>
-                <p className="text-xs text-muted font-light">
+                <p className="text-[11px] sm:text-xs text-muted font-light">
                   15+ Years Craft Leadership · Japanese Shears & Chemical Artistry
                 </p>
               </div>
@@ -572,7 +572,7 @@ export function AcademyClientPage() {
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-champagne-500/15 text-xs text-champagne-400 font-mono flex items-center justify-between">
+              <div className="pt-2 border-t border-champagne-500/15 text-xs text-champagne-400 font-mono flex flex-wrap items-center justify-between gap-2">
                 <span>{outlet.landmark}</span>
                 <span>{outlet.hours}</span>
               </div>
@@ -602,7 +602,7 @@ export function AcademyClientPage() {
 
         <form
           onSubmit={handleInquirySubmit}
-          className="rounded-3xl glass-card border border-champagne-500/25 p-6 sm:p-10 space-y-5 shadow-2xl backdrop-blur-2xl"
+          className="rounded-3xl glass-card border border-champagne-500/25 p-5 sm:p-10 space-y-4 sm:space-y-5 shadow-2xl backdrop-blur-2xl"
         >
           {formSubmitted ? (
             <div className="py-10 text-center space-y-3">
@@ -638,7 +638,7 @@ export function AcademyClientPage() {
                       setFormData({ ...formData, name: e.target.value })
                     }
                     placeholder="e.g. Aarti Sharma"
-                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors min-h-[44px]"
                   />
                 </div>
 
@@ -654,7 +654,7 @@ export function AcademyClientPage() {
                       setFormData({ ...formData, phone: e.target.value })
                     }
                     placeholder="+91 98765 43210"
-                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors min-h-[44px]"
                   />
                 </div>
               </div>
@@ -669,7 +669,7 @@ export function AcademyClientPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, course: e.target.value })
                     }
-                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 focus:outline-none focus:border-champagne-400 transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 focus:outline-none focus:border-champagne-400 transition-colors min-h-[44px]"
                   >
                     {academy.courses.map((c) => (
                       <option key={c.id} value={c.title} className="bg-obsidian-900">
@@ -690,7 +690,7 @@ export function AcademyClientPage() {
                       setFormData({ ...formData, city: e.target.value })
                     }
                     placeholder="Indore / Other"
-                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors min-h-[44px]"
                   />
                 </div>
               </div>
@@ -706,13 +706,13 @@ export function AcademyClientPage() {
                     setFormData({ ...formData, message: e.target.value })
                   }
                   placeholder="Ask about batch start dates or syllabus..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors resize-none"
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-400 hover:shadow-[0_0_30px_rgba(200,162,82,0.6)] transition-all flex items-center justify-center gap-2 transform active:scale-95 cursor-pointer"
+                className="w-full py-4 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-400 hover:shadow-[0_0_30px_rgba(200,162,82,0.6)] transition-all flex items-center justify-center gap-2 transform active:scale-95 cursor-pointer min-h-[48px]"
               >
                 <Send className="w-3.5 h-3.5 fill-obsidian-950" />
                 <span>Submit & Receive Syllabus on WhatsApp</span>
