@@ -10,6 +10,7 @@ export function BookingSection() {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
+    outlet: "Palsikar Colony",
     service: "Hair Cut & Styling",
     date: "",
     time: "",
@@ -18,7 +19,7 @@ export function BookingSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Create WhatsApp direct link with form details
-    const text = `Hello Bhanu Hair Studio! I would like to book an appointment:%0A%0A• Name: ${formData.name}%0A• Phone: ${formData.phone}%0A• Service: ${formData.service}%0A• Preferred Date: ${formData.date || "Next available"}%0A• Preferred Time: ${formData.time || "Any"}`;
+    const text = `Hello Bhanu's The Hair Studio! I would like to book an appointment:%0A%0A• Name: ${formData.name}%0A• Phone: ${formData.phone}%0A• Preferred Outlet: ${formData.outlet} (Indore)%0A• Service: ${formData.service}%0A• Preferred Date: ${formData.date || "Next available"}%0A• Preferred Time: ${formData.time || "Any"}`;
     window.open(`https://wa.me/${contact.whatsappNumber}?text=${text}`, "_blank");
     setFormSubmitted(true);
   };
@@ -91,34 +92,55 @@ export function BookingSection() {
 
         {/* Studio Info & Quick Request Card */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start pt-6">
-          {/* Studio Details / Operating Hours */}
+          {/* Studio Details / 3 Indore Outlets */}
           <div className="lg:col-span-5 rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 md:p-10 space-y-6 sm:space-y-8">
             <div className="space-y-3">
-              <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono">
-                STUDIO LOCATION
-              </span>
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono">
+                  OUR INDORE STUDIOS
+                </span>
+                <span className="text-[10px] font-mono text-emerald-400 font-medium">
+                  3 ACTIVE OUTLETS
+                </span>
+              </div>
               <h3 className="font-serif text-2xl text-ivory-50">
-                {identity.brandName} {identity.brandSub}
+                {identity.brandName}
               </h3>
               <p className="text-xs text-muted font-light leading-relaxed">
-                {contact.address.line1}, {contact.address.line2}, {contact.address.city}, {contact.address.state} — {contact.address.pincode}
+                Choose any of our three luxury unisex studios in Indore for your styling appointment.
               </p>
             </div>
 
-            <div className="space-y-4 pt-4 border-t border-champagne-500/15">
-              <div className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono">
-                OPERATING HOURS
-              </div>
-              {contact.hours.map((h, i) => (
-                <div key={i} className="flex items-center justify-between text-xs">
-                  <span className="text-ivory-200 font-light">{h.days}</span>
-                  <span className="text-champagne-300 font-mono">{h.time}</span>
+            {/* 3 Outlets Compact List */}
+            <div className="space-y-3 pt-2">
+              {SALON_CONFIG.outlets.map((outlet) => (
+                <div
+                  key={outlet.id}
+                  className="p-3.5 rounded-2xl glass-panel border border-champagne-500/20 space-y-1"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-serif text-champagne-200">
+                      {outlet.name}
+                    </span>
+                    <span className="text-[9px] font-mono uppercase text-champagne-400">
+                      {outlet.area}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-muted font-light">
+                    {outlet.address}
+                  </p>
                 </div>
               ))}
             </div>
 
-            <div className="p-4 rounded-xl glass-panel border border-champagne-500/15 text-[11px] text-muted font-light">
-              Valet parking and private consultation rooms available on arrival.
+            <div className="space-y-3 pt-3 border-t border-champagne-500/15">
+              <div className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono">
+                STUDIO HOURS
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-ivory-200 font-light">All Outlets (Mon – Sun)</span>
+                <span className="text-champagne-300 font-mono">10:00 AM – 10:00 PM</span>
+              </div>
             </div>
           </div>
 
@@ -141,7 +163,7 @@ export function BookingSection() {
                 <CheckCircle2 className="w-10 h-10 text-champagne-400 mx-auto" />
                 <h4 className="font-serif text-2xl text-ivory-50">Inquiry Dispatched</h4>
                 <p className="text-xs text-muted max-w-md mx-auto">
-                  Your details have been forwarded to our WhatsApp desk. We look forward to welcoming you to Bhanu Hair Studio.
+                  Your details have been forwarded to our WhatsApp desk. We look forward to welcoming you to Bhanu&apos;s The Hair Studio.
                 </p>
               </div>
             ) : (
@@ -149,7 +171,7 @@ export function BookingSection() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[10px] tracking-widest uppercase text-muted mb-1.5 font-mono">
-                      Your Full Name
+                      Your Full Name *
                     </label>
                     <input
                       type="text"
@@ -162,7 +184,7 @@ export function BookingSection() {
                   </div>
                   <div>
                     <label className="block text-[10px] tracking-widest uppercase text-muted mb-1.5 font-mono">
-                      Phone Number
+                      Phone Number *
                     </label>
                     <input
                       type="tel"
@@ -178,7 +200,22 @@ export function BookingSection() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[10px] tracking-widest uppercase text-muted mb-1.5 font-mono">
-                      Preferred Discipline
+                      Select Studio Location *
+                    </label>
+                    <select
+                      value={formData.outlet}
+                      onChange={(e) => setFormData({ ...formData, outlet: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/20 text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
+                    >
+                      <option value="Palsikar Colony">Palsikar Colony (Manik Bagh Rd)</option>
+                      <option value="Saket Nagar">Saket Nagar (Near Saket Club)</option>
+                      <option value="Vijay Nagar">Vijay Nagar (Near Orbit Mall / AB Rd)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] tracking-widest uppercase text-muted mb-1.5 font-mono">
+                      Preferred Discipline *
                     </label>
                     <select
                       value={formData.service}
@@ -205,6 +242,9 @@ export function BookingSection() {
                       <option value="Home Services">Home Services (Bespoke In-Residence)</option>
                     </select>
                   </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[10px] tracking-widest uppercase text-muted mb-1.5 font-mono">
                       Preferred Date
@@ -213,6 +253,17 @@ export function BookingSection() {
                       type="date"
                       value={formData.date}
                       onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/20 text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] tracking-widest uppercase text-muted mb-1.5 font-mono">
+                      Preferred Time
+                    </label>
+                    <input
+                      type="time"
+                      value={formData.time}
+                      onChange={(e) => setFormData({ ...formData, time: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/20 text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
                     />
                   </div>

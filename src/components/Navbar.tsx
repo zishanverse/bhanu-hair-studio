@@ -79,13 +79,13 @@ export function Navbar() {
             </div>
           </a>
 
-          {/* 2. De-congested Center Navigation Links - Desktop */}
+          {/* 2. Center Navigation Links - Desktop */}
           <nav
-            className="hidden md:flex items-center gap-6 lg:gap-8 px-5 py-1.5 rounded-full bg-surface/50 border border-white/5"
+            className="hidden md:flex items-center gap-5 lg:gap-7 px-5 py-1.5 rounded-full bg-surface/50 border border-white/5"
             aria-label="Main Navigation"
           >
             <a
-              href="#studio"
+              href="/#studio"
               id="nav-link-studio"
               className="text-[11px] uppercase tracking-[0.22em] text-ivory-200/80 hover:text-champagne-300 transition-colors relative py-1 group font-light"
             >
@@ -93,7 +93,7 @@ export function Navbar() {
               <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-champagne-400 -translate-x-1/2 group-hover:w-full transition-all duration-300" />
             </a>
             <a
-              href="#services"
+              href="/#services"
               id="nav-link-services"
               className="text-[11px] uppercase tracking-[0.22em] text-ivory-200/80 hover:text-champagne-300 transition-colors relative py-1 group font-light"
             >
@@ -101,7 +101,16 @@ export function Navbar() {
               <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-champagne-400 -translate-x-1/2 group-hover:w-full transition-all duration-300" />
             </a>
             <a
-              href="#gallery"
+              href="/bhanushairacademy"
+              id="nav-link-academy"
+              className="text-[11px] uppercase tracking-[0.22em] text-champagne-300 hover:text-white transition-colors relative py-1 group font-medium flex items-center gap-1.5"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
+              <span>Hair Academy</span>
+              <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-champagne-400 -translate-x-1/2 group-hover:w-full transition-all duration-300" />
+            </a>
+            <a
+              href="/#gallery"
               id="nav-link-gallery"
               className="text-[11px] uppercase tracking-[0.22em] text-ivory-200/80 hover:text-champagne-300 transition-colors relative py-1 group font-light"
             >
@@ -109,7 +118,7 @@ export function Navbar() {
               <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-champagne-400 -translate-x-1/2 group-hover:w-full transition-all duration-300" />
             </a>
             <a
-              href="#testimonials"
+              href="/#testimonials"
               id="nav-link-testimonials"
               className="text-[11px] uppercase tracking-[0.22em] text-ivory-200/80 hover:text-champagne-300 transition-colors relative py-1 group font-light"
             >
@@ -162,7 +171,18 @@ export function Navbar() {
         >
           <div className="flex flex-col space-y-4">
             <a
-              href="#studio"
+              href="/bhanushairacademy"
+              onClick={() => setMobileMenuOpen(false)}
+              className="group text-sm uppercase tracking-[0.25em] text-champagne-300 font-medium py-1 flex items-center justify-between border-b border-champagne-500/20 pb-3"
+            >
+              <span className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
+                Bhanu&apos;s Hair Academy (Courses)
+              </span>
+              <ArrowUpRight className="w-4 h-4 text-champagne-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+            </a>
+            <a
+              href="/#studio"
               onClick={() => setMobileMenuOpen(false)}
               className="group text-sm uppercase tracking-[0.25em] text-ivory-100 hover:text-champagne-300 transition-colors py-1 flex items-center justify-between"
             >
@@ -170,7 +190,7 @@ export function Navbar() {
               <ArrowUpRight className="w-3.5 h-3.5 text-champagne-400/50 group-hover:text-champagne-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </a>
             <a
-              href="#services"
+              href="/#services"
               onClick={() => setMobileMenuOpen(false)}
               className="group text-sm uppercase tracking-[0.25em] text-ivory-100 hover:text-champagne-300 transition-colors py-1 flex items-center justify-between"
             >
@@ -178,7 +198,7 @@ export function Navbar() {
               <ArrowUpRight className="w-3.5 h-3.5 text-champagne-400/50 group-hover:text-champagne-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </a>
             <a
-              href="#experience"
+              href="/#experience"
               onClick={() => setMobileMenuOpen(false)}
               className="group text-sm uppercase tracking-[0.25em] text-ivory-100 hover:text-champagne-300 transition-colors py-1 flex items-center justify-between"
             >
@@ -186,7 +206,7 @@ export function Navbar() {
               <ArrowUpRight className="w-3.5 h-3.5 text-champagne-400/50 group-hover:text-champagne-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </a>
             <a
-              href="#gallery"
+              href="/#gallery"
               onClick={() => setMobileMenuOpen(false)}
               className="group text-sm uppercase tracking-[0.25em] text-ivory-100 hover:text-champagne-300 transition-colors py-1 flex items-center justify-between"
             >
@@ -194,7 +214,7 @@ export function Navbar() {
               <ArrowUpRight className="w-3.5 h-3.5 text-champagne-400/50 group-hover:text-champagne-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </a>
             <a
-              href="#testimonials"
+              href="/#testimonials"
               onClick={() => setMobileMenuOpen(false)}
               className="group text-sm uppercase tracking-[0.25em] text-ivory-100 hover:text-champagne-300 transition-colors py-1 flex items-center justify-between"
             >

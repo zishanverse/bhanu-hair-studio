@@ -48,33 +48,39 @@ export function Footer() {
               </span>
               <ul className="space-y-2 text-muted font-light">
                 <li>
-                  <a href="#cinematic-hero-section" className="hover:text-champagne-300 transition-colors">
-                    Cinematic Film
+                  <a href="/bhanushairacademy" className="text-champagne-300 font-medium hover:text-white transition-colors flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-champagne-400" />
+                    Hair Academy (Courses)
                   </a>
                 </li>
                 <li>
-                  <a href="#studio" className="hover:text-champagne-300 transition-colors">
+                  <a href="/#studio" className="hover:text-champagne-300 transition-colors">
                     The Studio
                   </a>
                 </li>
                 <li>
-                  <a href="#services" className="hover:text-champagne-300 transition-colors">
+                  <a href="/#services" className="hover:text-champagne-300 transition-colors">
                     Our Expertise
                   </a>
                 </li>
                 <li>
-                  <a href="#experience" className="hover:text-champagne-300 transition-colors">
+                  <a href="/#experience" className="hover:text-champagne-300 transition-colors">
                     Signature Rituals
                   </a>
                 </li>
                 <li>
-                  <a href="#gallery" className="hover:text-champagne-300 transition-colors">
+                  <a href="/#gallery" className="hover:text-champagne-300 transition-colors">
                     Look Archive
                   </a>
                 </li>
                 <li>
-                  <a href="#skincare" className="hover:text-champagne-300 transition-colors">
+                  <a href="/#skincare" className="hover:text-champagne-300 transition-colors">
                     Beyond Hair
+                  </a>
+                </li>
+                <li>
+                  <a href="/#book" className="hover:text-champagne-300 transition-colors">
+                    Book Appointment
                   </a>
                 </li>
               </ul>
@@ -88,7 +94,7 @@ export function Footer() {
               <ul className="space-y-2 text-muted font-light">
                 {servicesCatalog.categories.map((c) => (
                   <li key={c.id}>
-                    <a href="#services" className="hover:text-champagne-300 transition-colors">
+                    <a href="/#services" className="hover:text-champagne-300 transition-colors">
                       {c.title}
                     </a>
                   </li>
@@ -157,16 +163,61 @@ export function Footer() {
           </div>
         </div>
 
+        {/* Middle Tier: 3 Indore Studios Location Roster */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono">
+              OUR INDORE LOCATIONS ({SALON_CONFIG.outlets.length} OUTLETS)
+            </span>
+            <span className="text-[10px] font-mono text-muted uppercase">
+              OPEN DAILY 10:00 AM – 10:00 PM
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {SALON_CONFIG.outlets.map((outlet) => (
+              <div
+                key={outlet.id}
+                className="p-4 sm:p-5 rounded-2xl glass-card border border-champagne-500/15 hover:border-champagne-400/40 transition-colors space-y-2 group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="font-serif text-base text-ivory-50 group-hover:text-champagne-300 transition-colors">
+                    {outlet.name}
+                  </div>
+                  <span className="text-[9px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full glass-panel border border-champagne-500/20 text-champagne-300">
+                    {outlet.area}
+                  </span>
+                </div>
+                <p className="text-xs text-muted font-light leading-relaxed">
+                  {outlet.address}
+                </p>
+                <div className="pt-2 flex items-center justify-between text-[11px] text-champagne-400 font-mono">
+                  <span>{outlet.landmark}</span>
+                  <a
+                    href={outlet.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 hover:text-white transition-colors"
+                  >
+                    <span>Directions</span>
+                    <MapPin className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Bottom Tier: Address, Hours, Copyright */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 text-[10px] sm:text-[11px] text-muted font-light tracking-wider text-center md:text-left">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 text-[10px] sm:text-[11px] text-muted font-light tracking-wider text-center md:text-left border-t border-champagne-500/15 pt-6">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-            <span>{contact.address.line1}, {contact.address.city}, {contact.address.state}</span>
+            <span>Bhanu&apos;s The Hair Studio & Hair Academy</span>
             <span className="hidden sm:inline">•</span>
-            <span className="text-champagne-400">Open Daily 10:00 AM – 10:00 PM</span>
+            <span className="text-champagne-400">Palsikar Colony · Saket Nagar · Vijay Nagar (Indore)</span>
           </div>
 
           <div className="flex items-center gap-6">
-            <span>{identity.brandName} {identity.brandSub} © {new Date().getFullYear()}</span>
+            <span>{identity.brandName} © {new Date().getFullYear()}</span>
             <span>•</span>
             <span className="text-champagne-400/80">All Rights Reserved</span>
           </div>

@@ -157,6 +157,56 @@ export interface SalonConfiguration {
     headingLine2: string;
     subtext: string;
   };
+  outlets: SalonOutlet[];
+  academy: AcademyConfig;
+}
+
+export interface SalonOutlet {
+  id: string;
+  name: string;
+  area: string;
+  address: string;
+  landmark: string;
+  phone: string;
+  hours: string;
+  mapsUrl: string;
+}
+
+export interface AcademyCourse {
+  id: string;
+  discipline: "Hair" | "Makeup" | "Skin" | "Nails" | "Master Diploma";
+  badge: string;
+  title: string;
+  tagline: string;
+  duration: string;
+  level: string;
+  description: string;
+  curriculum: string[];
+  careerOpportunities: string[];
+  certification: string;
+  featured?: boolean;
+}
+
+export interface AcademyConfig {
+  headlineLine1: string;
+  headlineLine2: string;
+  subheading: string;
+  vision: string;
+  highlights: {
+    title: string;
+    description: string;
+  }[];
+  courses: AcademyCourse[];
+  faculty: {
+    name: string;
+    role: string;
+    credentials: string;
+    bio: string;
+  }[];
+  faqs: {
+    question: string;
+    answer: string;
+  }[];
 }
 
 export const SALON_CONFIG: SalonConfiguration = {
@@ -666,6 +716,259 @@ export const SALON_CONFIG: SalonConfiguration = {
     headingLine1: "YOUR NEXT LOOK",
     headingLine2: "STARTS HERE.",
     subtext:
-      "Reserve your bespoke styling session at Bhanu's The Hair Studio Palsikar. Open daily until 10:00 PM for personalized consultations.",
+      "Reserve your bespoke styling session at Bhanu's The Hair Studio. Open daily until 10:00 PM across our 3 Indore locations.",
+  },
+  outlets: [
+    {
+      id: "palsikar",
+      name: "Palsikar Colony Atelier",
+      area: "Palsikar Colony",
+      address: "Shop No.4, Sewak Avenue, 7, Manik Bagh Rd, Palsikar Colony, Indore, MP 452007",
+      landmark: "Manik Bagh Road",
+      phone: "+91 98765 43210",
+      hours: "10:00 AM – 10:00 PM (Open Daily)",
+      mapsUrl: "https://maps.google.com/?q=Shop+No.4,+Sewak+Avenue,+7,+Manik+Bagh+Rd,+Palsikar+Colony,+Indore",
+    },
+    {
+      id: "saket",
+      name: "Saket Nagar Studio",
+      area: "Saket Nagar",
+      address: "Saket Main Road, Near Saket Club, Saket Nagar, Indore, MP 452018",
+      landmark: "Near Saket Club",
+      phone: "+91 98765 43210",
+      hours: "10:00 AM – 10:00 PM (Open Daily)",
+      mapsUrl: "https://maps.google.com/?q=Saket+Nagar+Indore",
+    },
+    {
+      id: "vijay-nagar",
+      name: "Vijay Nagar Flagship",
+      area: "Vijay Nagar",
+      address: "Scheme No. 54, Near Orbit Mall / AB Road, Vijay Nagar, Indore, MP 452010",
+      landmark: "Near Orbit Mall & AB Road",
+      phone: "+91 98765 43210",
+      hours: "10:00 AM – 10:00 PM (Open Daily)",
+      mapsUrl: "https://maps.google.com/?q=Vijay+Nagar+Indore",
+    },
+  ],
+  academy: {
+    headlineLine1: "BHANU'S HAIR ACADEMY",
+    headlineLine2: "PROFESSIONAL SALON TRAINING",
+    subheading: "Complete Beauty & Salon Courses · Hair • Makeup • Skin • Nails",
+    vision:
+      "Transforming passion into mastery. Bhanu's Hair Academy delivers world-class practical training, master-led apprenticeship, and professional salon certifications to launch successful careers in high-end coiffure and aesthetics.",
+    highlights: [
+      {
+        title: "Hands-on Live Training",
+        description:
+          "80% practical training on real salon clients with personalized mentorship at our Indore studios.",
+      },
+      {
+        title: "Master Stylist Mentorship",
+        description:
+          "Direct training and technique mastery guided personally by Master Stylist Bhanu.",
+      },
+      {
+        title: "Recognized Certification",
+        description:
+          "Professional diploma credentials that qualify you for top luxury salons and international careers.",
+      },
+      {
+        title: "100% Placement Support",
+        description:
+          "Direct salon internship and career placement support across our 3 Indore studios and partner salons.",
+      },
+    ],
+    courses: [
+      {
+        id: "grand-diploma-cosmetology",
+        discipline: "Master Diploma",
+        badge: "FLAGSHIP MASTER PROGRAM",
+        title: "Grand Diploma in Salon Cosmetology",
+        tagline:
+          "The complete 360° mastery course covering Hair, Makeup, Skin, and Nails with salon management.",
+        duration: "6 Months / 1 Year",
+        level: "Beginner to Advanced Master",
+        description:
+          "Our comprehensive flagship diploma designed to build elite salon artists and future studio owners. Learn advanced cutting, color chemistry, runway makeup, clinical skin treatments, nail sculpting, and salon business operations.",
+        curriculum: [
+          "Advanced Hair Architecture & Scissor Sculpting",
+          "French Balayage, Global Highlights & Color Theory",
+          "Keratin, Botox, Cystine & Nanoplastia Chemical Artistry",
+          "HD Bridal & Airbrush Makeup Artistry",
+          "Clinical Skin Analysis, Hydra-Facials & Chemical Peels",
+          "Gel & Acrylic Nail Extensions & 3D Nail Art",
+          "Salon Operations, Client Consultation & Pricing Strategy",
+        ],
+        careerOpportunities: [
+          "Master Stylist & Salon Director",
+          "Independent Studio Owner / Entrepreneur",
+          "Celebrity & Runway Cosmetologist",
+          "Luxury Brand Educator",
+        ],
+        certification:
+          "Master Diploma in Professional Cosmetology & Salon Management",
+        featured: true,
+      },
+      {
+        id: "pro-hair-designing",
+        discipline: "Hair",
+        badge: "HAIR ARTISTRY",
+        title: "Professional Hair Designing & Chemical Artistry",
+        tagline:
+          "Master precision haircuts, creative color transitions, and texture transformations.",
+        duration: "3 Months",
+        level: "All Skill Levels",
+        description:
+          "Deep dive into anatomical bone structure assessment, Japanese shear angles, fading, sectioning discipline, and complete hair chemical science including balayage, keratin smoothing, and botox treatments.",
+        curriculum: [
+          "Classic & Creative Sectioning Foundations",
+          "Geometric Graduation, Layering & Texturizing",
+          "Men's Bespoke Fading & Beard Sculpting",
+          "Hair Color Wheel, Decolorization & Toning",
+          "Freehand Balayage, Foilyage & Babylights",
+          "Keratin, Cysteine, Rebonding & Smoothing Treatments",
+          "Scalp Diagnostic & Head Spa Detox Procedures",
+        ],
+        careerOpportunities: [
+          "Senior Hair Stylist",
+          "Color Specialist & Balayage Artist",
+          "Texture & Treatment Technician",
+        ],
+        certification:
+          "Certificate of Excellence in Advanced Hair Designing",
+      },
+      {
+        id: "pro-makeup-bridal",
+        discipline: "Makeup",
+        badge: "MAKEUP ARTISTRY",
+        title: "Professional Makeup & Bridal Aesthetics",
+        tagline:
+          "Learn high-definition bridal, reception, red-carpet, and editorial makeup techniques.",
+        duration: "2 Months",
+        level: "Beginner to Pro",
+        description:
+          "Comprehensive training in skin prep, undertone matching, contour sculpting, eye styling, airbrush techniques, and complete Indian bridal styling including dupatta draping and hair accessories.",
+        curriculum: [
+          "Skin Undertone Science & Foundation Color Matching",
+          "Facial Symmetry, Contouring & Highlight Sculpting",
+          "Smokey Eyes, Cut-Crease & Glitz Eye Applications",
+          "Traditional & Contemporary Indian Bridal Makeup",
+          "Reception, Cocktail & High-Fashion Runway Looks",
+          "Airbrush Makeup Application & Maintenance",
+          "Bridal Hair Styling, Dupatta Draping & Saree Draping",
+        ],
+        careerOpportunities: [
+          "Freelance Bridal Makeup Artist",
+          "Fashion & Studio Makeup Artist",
+          "Luxury Brand Beauty Consultant",
+        ],
+        certification:
+          "Professional Diploma in Bridal & Fashion Makeup Artistry",
+      },
+      {
+        id: "clinical-skincare-facials",
+        discipline: "Skin",
+        badge: "SKINCARE & ESTHETICS",
+        title: "Clinical Skin Care & Dermo-Aesthetics",
+        tagline:
+          "Master dermal analysis, deep extraction, medi-facials, and skin renewal therapies.",
+        duration: "6 Weeks",
+        level: "Foundation to Advanced",
+        description:
+          "Develop hands-on expertise in treating diverse skin conditions, performing clinical cleanup, hydra-dermabrasion, acne treatment protocols, anti-aging therapies, and facial lymphatic massage.",
+        curriculum: [
+          "Skin Anatomy, Physiology & Diagnostic Analysis",
+          "Deep Cleansing, Extraction & Comedone Treatment",
+          "Hydra-Infusion & Oxygen Glow Medi-Facials",
+          "Fruit Acids & Gentle Peeling Protocols",
+          "Pigmentation & Anti-Acne Treatment Regimens",
+          "Facial Lymphatic Drainage & Pressure Point Acupressure",
+          "Sanitization, Hygiene & Client Skin Consultation",
+        ],
+        careerOpportunities: [
+          "Clinical Skin Therapist / Aesthetician",
+          "Medispa Practitioner",
+          "Skincare Brand Advisor",
+        ],
+        certification: "Certificate in Clinical Skin Esthetics & Medi-Facials",
+      },
+      {
+        id: "nail-technology-art",
+        discipline: "Nails",
+        badge: "NAIL ARTISTRY",
+        title: "Artisan Nail Technology & 3D Nail Art",
+        tagline:
+          "Master acrylics, gel extensions, nail embellishments, and luxury spa pedicures.",
+        duration: "4 Weeks",
+        level: "All Levels",
+        description:
+          "From nail prep and cuticle hygiene to stunning gel extensions, acrylic sculpting, chrome mirror finishes, and intricate hand-painted nail art that is in high demand at luxury salons.",
+        curriculum: [
+          "Nail Anatomy, Sanitation & Tool Sterilization",
+          "Manicure & Luxury Pedicure Spa Rituals",
+          "Gel Nail Overlays & Extensions with Form/Tip",
+          "Acrylic Nail Sculpting & French Infill Procedures",
+          "Ombre, Cat-Eye, Chrome & Foil Nail Art",
+          "3D Stone Embedding, Encapsulation & Floral Art",
+          "Safe Extension Removal & Aftercare Advisory",
+        ],
+        careerOpportunities: [
+          "Certified Nail Artist / Technician",
+          "Nail Salon Studio Entrepreneur",
+          "Luxury Spa Nail Specialist",
+        ],
+        certification:
+          "Professional Certificate in Nail Technology & Nail Art",
+      },
+    ],
+    faculty: [
+      {
+        name: "Master Stylist Bhanu",
+        role: "Founder & Master Hair Educator",
+        credentials: "15+ Years Industry Leadership · Certified Master Educator",
+        bio: "Renowned for geometric cutting precision and hair chemical artistry. Bhanu has trained over 500+ aspiring stylists and built Indore's premier unisex studios.",
+      },
+      {
+        name: "Pooja Sharma",
+        role: "Head of Makeup & Bridal Aesthetics",
+        credentials: "HD & Airbrush Certified · 300+ Bridal Portfolio",
+        bio: "Specializing in timeless royal Indian bridal transformations, runway aesthetics, and master color theory.",
+      },
+      {
+        name: "Ananya Mehta",
+        role: "Senior Clinical Skin & Dermo-Esthetics Trainer",
+        credentials: "CIDESCO Standard Esthetician · Medi-Facial Specialist",
+        bio: "Expert in deep dermal extraction, hydra-glow protocols, chemical peels, and holistic scalp detox therapies.",
+      },
+    ],
+    faqs: [
+      {
+        question:
+          "Do I need prior salon experience to enroll in Bhanu's Hair Academy?",
+        answer:
+          "No prior experience is necessary. Our courses start from foundational fundamentals and build systematically to master-level techniques.",
+      },
+      {
+        question: "Will I receive practical training on live models?",
+        answer:
+          "Yes! 80% of your training involves hands-on practice on dummy mannequins followed by live clients under the direct supervision of Master Stylist Bhanu and senior faculty.",
+      },
+      {
+        question:
+          "Does the academy provide placement assistance after course completion?",
+        answer:
+          "Absolutely. We offer 100% placement support. Top performers are directly offered paid internships or stylist positions at Bhanu's 3 Indore studios (Palsikar Colony, Saket Nagar, Vijay Nagar), and we actively place students with premier luxury salon partners.",
+      },
+      {
+        question: "Are toolkits and training materials provided?",
+        answer:
+          "Yes, students in comprehensive courses receive a professional starter kit with essential shears, styling tools, brushes, and mannequin heads.",
+      },
+      {
+        question: "Where are the academy classes conducted in Indore?",
+        answer:
+          "Training takes place at our flagship academy facility with specialized cutting stations, wash stations, makeup vanity mirrors, and skin treatment bays in Indore.",
+      },
+    ],
   },
 };
