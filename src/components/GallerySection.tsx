@@ -174,7 +174,7 @@ export function GallerySection() {
               {selectedItem.transformation ? (
                 /* Interactive Before & After Comparison Slider */
                 <div
-                  className="relative w-full h-full min-h-[400px] cursor-ew-resize group select-none"
+                  className="relative w-full h-full min-h-[400px] cursor-ew-resize group select-none touch-none"
                   onMouseDown={(e) => {
                     const rect = e.currentTarget.getBoundingClientRect();
                     const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
@@ -206,20 +206,18 @@ export function GallerySection() {
                     AFTER
                   </div>
 
-                  {/* Before Image (Clipped overlay) */}
+                  {/* Before Image (Clean uncompressed clip-path overlay) */}
                   <div
                     className="absolute inset-0 overflow-hidden pointer-events-none select-none"
-                    style={{ width: `${sliderPosition}%` }}
+                    style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
                   >
-                    <div className="relative w-full h-full min-h-[400px]" style={{ width: "100%", height: "100%" }}>
-                      <Image
-                        src={selectedItem.transformation.beforeImage}
-                        alt={`${selectedItem.title} Before`}
-                        fill
-                        draggable={false}
-                        className="object-cover object-center pointer-events-none select-none"
-                      />
-                    </div>
+                    <Image
+                      src={selectedItem.transformation.beforeImage}
+                      alt={`${selectedItem.title} Before`}
+                      fill
+                      draggable={false}
+                      className="object-cover object-center pointer-events-none select-none"
+                    />
                     <div className="absolute top-4 left-4 text-[10px] tracking-widest uppercase px-3 py-1 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 font-mono">
                       BEFORE
                     </div>

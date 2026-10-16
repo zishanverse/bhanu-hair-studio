@@ -120,17 +120,21 @@ export function TestimonialsSection() {
         </div>
 
         {/* Carousel Progress Indicators */}
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-1">
           {testimonials.items.map((_, i) => (
             <button
               key={i}
               type="button"
               onClick={() => setActiveIndex(i)}
-              className={`h-1.5 rounded-full transition-all duration-500 ${
-                activeIndex === i ? "w-8 bg-champagne-400" : "w-2 bg-surface hover:bg-muted"
-              }`}
+              className="py-3 px-1.5 focus:outline-none"
               aria-label={`Jump to review ${i + 1}`}
-            />
+            >
+              <div
+                className={`h-1.5 rounded-full transition-all duration-500 ${
+                  activeIndex === i ? "w-8 bg-champagne-400" : "w-2 bg-surface hover:bg-muted"
+                }`}
+              />
+            </button>
           ))}
         </div>
       </div>

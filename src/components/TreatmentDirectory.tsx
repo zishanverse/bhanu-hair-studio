@@ -125,7 +125,7 @@ export function TreatmentDirectory() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search rituals (e.g. Keratin, Cut)..."
-                className="w-full pl-10 pr-14 py-2.5 rounded-full bg-obsidian-900/90 border border-champagne-500/25 text-xs text-ivory-50 placeholder-muted/60 focus:outline-none focus:border-champagne-400 transition-colors shadow-inner"
+                className="w-full pl-10 pr-14 py-2.5 rounded-full bg-obsidian-900/90 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 placeholder-muted/60 focus:outline-none focus:border-champagne-400 transition-colors shadow-inner"
               />
               {searchQuery && (
                 <button
@@ -313,7 +313,7 @@ export function TreatmentDirectory() {
           <div className="flex items-center gap-3">
             <span className="w-2 h-2 rounded-full bg-champagne-400" />
             <span>
-              Shop No.4, Sewak Avenue, Manik Bagh Rd, Palsikar Colony, Indore.
+              Available across all 3 Indore Studios: Palsikar Colony · Saket Nagar · Vijay Nagar.
             </span>
           </div>
           <span className="font-mono text-champagne-400 text-[11px]">

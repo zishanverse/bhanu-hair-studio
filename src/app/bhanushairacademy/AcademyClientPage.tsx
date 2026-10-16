@@ -638,7 +638,7 @@ export function AcademyClientPage() {
                       setFormData({ ...formData, name: e.target.value })
                     }
                     placeholder="e.g. Aarti Sharma"
-                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors"
                   />
                 </div>
 
@@ -654,7 +654,7 @@ export function AcademyClientPage() {
                       setFormData({ ...formData, phone: e.target.value })
                     }
                     placeholder="+91 98765 43210"
-                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors"
                   />
                 </div>
               </div>
@@ -669,7 +669,7 @@ export function AcademyClientPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, course: e.target.value })
                     }
-                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-xs text-ivory-100 focus:outline-none focus:border-champagne-400 transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 focus:outline-none focus:border-champagne-400 transition-colors"
                   >
                     {academy.courses.map((c) => (
                       <option key={c.id} value={c.title} className="bg-obsidian-900">
@@ -690,7 +690,7 @@ export function AcademyClientPage() {
                       setFormData({ ...formData, city: e.target.value })
                     }
                     placeholder="Indore / Other"
-                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors"
                   />
                 </div>
               </div>
@@ -706,7 +706,7 @@ export function AcademyClientPage() {
                     setFormData({ ...formData, message: e.target.value })
                   }
                   placeholder="Ask about batch start dates or syllabus..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-champagne-500/20 text-base sm:text-xs text-ivory-100 placeholder-muted/50 focus:outline-none focus:border-champagne-400 transition-colors resize-none"
                 />
               </div>
 
