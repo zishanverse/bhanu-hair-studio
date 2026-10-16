@@ -1,0 +1,7 @@
+{
+  "totalFrames": 900,
+  "width": 1280,
+  "height": 720,
+  "duration": 60.0,
+  "pattern": "/sequence/frame_{:04d}.webp"
+}

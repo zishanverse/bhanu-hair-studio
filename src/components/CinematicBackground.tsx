@@ -1,198 +1,300 @@
 "use client";
 
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  forwardRef,
-  useImperativeHandle,
-} from "react";
-
-export interface CinematicBackgroundHandle {
-  seekToProgress: (progress: number) => void;
-  getVideoElement: () => HTMLVideoElement | null;
-  getDuration: () => number;
-}
+import React, { useEffect, useRef, useCallback } from "react";
+import Lenis from "lenis";
+import { gsap } from "gsap";
 
 export interface CinematicBackgroundProps {
-  videoSrc: string;
-  posterSrc?: string;
   className?: string;
-  children?: React.ReactNode;
-  activeActIndex?: number;
+  totalFrames?: number;
 }
 
-export const CinematicBackground = forwardRef<
-  CinematicBackgroundHandle,
-  CinematicBackgroundProps
->(function CinematicBackground(
-  { videoSrc, posterSrc, className = "", children, activeActIndex = 0 },
-  ref
-) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+const TOTAL_FRAMES = 900;
+const CACHE_KEY = "v900";
 
-  // Status flags
-  const [isVideoReady, setIsVideoReady] = useState(false);
-  const [hasError, setHasError] = useState(false);
+// Module-level persistent cache across React remounts / StrictMode / Fast-Refresh
+const globalImageCache: (HTMLImageElement | null)[] = new Array(TOTAL_FRAMES + 1).fill(null);
+const globalLoadingStatus: boolean[] = new Array(TOTAL_FRAMES + 1).fill(false);
 
-  // Coalesced Hardware Video Seeking Engine (Strict Single-Flight Seek Lock)
-  const isSeekingRef = useRef<boolean>(false);
-  const pendingTimeRef = useRef<number | null>(null);
-  const lastRequestedTimeRef = useRef<number>(-1);
-  const videoDurationRef = useRef<number>(44.011);
+function getFrameUrl(index: number): string {
+  const padded = String(index).padStart(4, "0");
+  return `/sequence/frame_${padded}.webp?v=${CACHE_KEY}`;
+}
 
-  // Coalesced video seek function
-  const requestSeek = (time: number) => {
-    const video = videoRef.current;
-    if (!video || video.readyState < 1) return;
+export function CinematicBackground({
+  className = "",
+  totalFrames = TOTAL_FRAMES,
+}: CinematicBackgroundProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
-    const clampedTime = Math.max(0, Math.min(videoDurationRef.current - 0.04, time));
+  // Smooth scroll momentum tracking directly synced with Lenis
+  const lenisRef = useRef<Lenis | null>(null);
+  const scrollProgressRef = useRef<number>(0);
+  const lastDrawnFrameRef = useRef<number>(-1);
+  const isLoopActiveRef = useRef<boolean>(false);
+  const rafIdRef = useRef<number | null>(null);
 
-    // Filter out micro-jitter (< 1/120th of a second) to preserve decoder cache
-    if (Math.abs(clampedTime - lastRequestedTimeRef.current) < 0.008) return;
-    lastRequestedTimeRef.current = clampedTime;
-
-    // Coalesce if hardware is already decoding
-    if (isSeekingRef.current) {
-      pendingTimeRef.current = clampedTime;
-      return;
+  // Helper: Get loaded image or nearest available fallback
+  const getLoadedImage = useCallback((index: number): HTMLImageElement | null => {
+    const exact = globalImageCache[index];
+    if (exact && exact.complete && exact.naturalWidth > 0) {
+      return exact;
     }
+    // Search nearby loaded frame so screen never flashes blank
+    let closestDist = Infinity;
+    let closest: HTMLImageElement | null = null;
+    for (let i = 1; i <= totalFrames; i++) {
+      const candidate = globalImageCache[i];
+      if (candidate && candidate.complete && candidate.naturalWidth > 0) {
+        const dist = Math.abs(i - index);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = candidate;
+        }
+      }
+    }
+    return closest;
+  }, [totalFrames]);
 
-    isSeekingRef.current = true;
-    pendingTimeRef.current = null;
+  // Request a frame from network with off-thread GPU decode to eliminate main-thread stutter
+  const requestFrame = useCallback((index: number) => {
+    if (index < 1 || index > totalFrames) return;
+    if (globalImageCache[index] || globalLoadingStatus[index]) return;
 
-    try {
-      if ("fastSeek" in video && typeof (video as any).fastSeek === "function") {
-        (video as any).fastSeek(clampedTime);
+    globalLoadingStatus[index] = true;
+    const img = new Image();
+    img.src = getFrameUrl(index);
+    img.onload = () => {
+      if ("decode" in img) {
+        img
+          .decode()
+          .then(() => {
+            globalImageCache[index] = img;
+          })
+          .catch(() => {
+            globalImageCache[index] = img;
+          });
       } else {
-        video.currentTime = clampedTime;
+        globalImageCache[index] = img;
       }
-    } catch {
-      video.currentTime = clampedTime;
+    };
+    img.onerror = () => {
+      globalLoadingStatus[index] = false;
+    };
+  }, [totalFrames]);
+
+  // Priority window around current scroll
+  const prioritizeWindow = useCallback((centerIndex: number, radius = 32) => {
+    const min = Math.max(1, centerIndex - radius);
+    const max = Math.min(totalFrames, centerIndex + radius);
+    requestFrame(centerIndex);
+    for (let r = 1; r <= radius; r++) {
+      if (centerIndex + r <= max) requestFrame(centerIndex + r);
+      if (centerIndex - r >= min) requestFrame(centerIndex - r);
     }
-  };
+  }, [totalFrames, requestFrame]);
 
-  // Expose imperative API for 60/120fps animation loop with zero React re-renders
-  useImperativeHandle(ref, () => ({
-    seekToProgress: (progress: number) => {
-      const dur = videoDurationRef.current || 44.011;
-      const targetTime = Math.max(0, Math.min(dur - 0.04, progress * dur));
-      requestSeek(targetTime);
+  // Solid, Crisp Single-Frame Canvas Renderer (100% sharp single frames)
+  const drawFrame = useCallback((frameIndex: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-      // Subtle hardware-accelerated pseudo-3D parallax zoom
-      if (videoRef.current) {
-        const subtleScale = 1 + progress * 0.04;
-        const subtleTranslateY = -progress * 24;
-        videoRef.current.style.transform = `scale(${subtleScale.toFixed(4)}) translate3d(0, ${subtleTranslateY.toFixed(1)}px, 0)`;
-      }
-    },
-    getVideoElement: () => videoRef.current,
-    getDuration: () => videoDurationRef.current,
-  }));
+    const cw = canvas.width;
+    const ch = canvas.height;
+    if (cw === 0 || ch === 0) return;
+
+    const img = getLoadedImage(frameIndex);
+    if (!img || !img.complete || img.naturalWidth === 0) return;
+
+    const imgRatio = img.naturalWidth / img.naturalHeight;
+    const canvasRatio = cw / ch;
+    let dw: number, dh: number, dx: number, dy: number;
+    if (canvasRatio > imgRatio) {
+      dw = cw;
+      dh = cw / imgRatio;
+      dx = 0;
+      dy = (ch - dh) / 2;
+    } else {
+      dh = ch;
+      dw = ch * imgRatio;
+      dx = (cw - dw) / 2;
+      dy = 0;
+    }
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.globalAlpha = 1.0;
+    ctx.drawImage(img, dx, dy, dw, dh);
+    lastDrawnFrameRef.current = frameIndex;
+  }, [getLoadedImage]);
 
   useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+    if (typeof window === "undefined") return;
+    if (window.innerWidth < 768) return; // Desktop experience >= 768px
 
-    // Strict video configuration: always paused, hardware muted, inline
-    video.muted = true;
-    video.defaultMuted = true;
-    video.volume = 0;
-    video.playsInline = true;
-    video.pause();
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-    const onSeeked = () => {
-      isSeekingRef.current = false;
-      if (pendingTimeRef.current !== null) {
-        const nextTime = pendingTimeRef.current;
-        pendingTimeRef.current = null;
-        requestSeek(nextTime);
+    // 1. Initialize canvas resolution matching DPR (capped at 2 for max performance)
+    const handleResize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(window.innerWidth * dpr);
+      canvas.height = Math.round(window.innerHeight * dpr);
+      if (lastDrawnFrameRef.current > 0) {
+        drawFrame(lastDrawnFrameRef.current);
       }
     };
+    handleResize();
 
-    const onLoadedMetadata = () => {
-      if (video.duration && !isNaN(video.duration)) {
-        videoDurationRef.current = video.duration;
-      }
-      setIsVideoReady(true);
-      // Pre-seek to first frame to eliminate black decoder flashes
-      requestSeek(0.001);
+    // 2. High-Speed Preloader
+    // Load frame 1 immediately and draw
+    const frame1 = new Image();
+    frame1.src = getFrameUrl(1);
+    frame1.onload = () => {
+      globalImageCache[1] = frame1;
+      drawFrame(1);
     };
 
-    const onError = () => {
-      console.warn("CinematicBackground video failed to load, falling back to ambient luxury canvas.");
-      setHasError(true);
-    };
-
-    video.addEventListener("seeked", onSeeked);
-    video.addEventListener("loadedmetadata", onLoadedMetadata);
-    video.addEventListener("error", onError);
-
-    if (video.readyState >= 1) {
-      onLoadedMetadata();
+    // Preload initial 120 frames for instant hero fluidity
+    for (let i = 2; i <= Math.min(120, totalFrames); i++) {
+      requestFrame(i);
     }
 
-    return () => {
-      video.removeEventListener("seeked", onSeeked);
-      video.removeEventListener("loadedmetadata", onLoadedMetadata);
-      video.removeEventListener("error", onError);
-      video.pause();
-      video.src = "";
-      video.load();
+    // Stream remaining frames in background
+    const streamRest = () => {
+      for (let i = 121; i <= totalFrames; i++) {
+        requestFrame(i);
+      }
     };
-  }, [videoSrc]);
+    if (typeof window.requestIdleCallback !== "undefined") {
+      window.requestIdleCallback(streamRest);
+    } else {
+      setTimeout(streamRest, 60);
+    }
+
+    // 3. Apple-Grade Lenis Smooth Scrolling Engine (Flywheel Luxury Inertia)
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const lenis = new Lenis({
+      duration: prefersReducedMotion ? 0.1 : 1.4,
+      easing: prefersReducedMotion ? (t) => t : (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 0.85,
+      touchMultiplier: 1.5,
+    });
+    lenisRef.current = lenis;
+
+    const updateScrollProgress = () => {
+      const scrollY = window.scrollY || window.pageYOffset;
+      const maxScroll = Math.max(
+        1,
+        document.documentElement.scrollHeight - window.innerHeight
+      );
+      scrollProgressRef.current = Math.max(0, Math.min(1, scrollY / maxScroll));
+    };
+
+    lenis.on("scroll", (e: any) => {
+      if (typeof e.progress === "number") {
+        scrollProgressRef.current = Math.max(0, Math.min(1, e.progress));
+      } else {
+        updateScrollProgress();
+      }
+    });
+
+    window.addEventListener("scroll", updateScrollProgress, { passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
+    updateScrollProgress();
+
+    // GSAP Ticker synchronization for Lenis
+    const tickerCallback = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+    gsap.ticker.add(tickerCallback);
+    gsap.ticker.lagSmoothing(0);
+
+    // 4. Synchronous Momentum-Synced Render Loop (60/120fps)
+    isLoopActiveRef.current = true;
+
+    const loop = () => {
+      if (!isLoopActiveRef.current) return;
+
+      const progress = Math.max(0, Math.min(1, scrollProgressRef.current));
+      
+      // Calculate target integer frame index (1 to 900)
+      const targetFrame = Math.min(
+        totalFrames,
+        Math.max(1, Math.round(progress * (totalFrames - 1)) + 1)
+      );
+
+      // Prioritize buffer around current frame
+      prioritizeWindow(targetFrame, 32);
+
+      // Only repaint if frame index changed
+      if (targetFrame !== lastDrawnFrameRef.current) {
+        drawFrame(targetFrame);
+      }
+
+      // Update bottom gold progress line
+      if (progressBarRef.current) {
+        progressBarRef.current.style.transform = `scaleX(${progress})`;
+      }
+
+      rafIdRef.current = requestAnimationFrame(loop);
+    };
+
+    rafIdRef.current = requestAnimationFrame(loop);
+
+    return () => {
+      isLoopActiveRef.current = false;
+      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
+      window.removeEventListener("scroll", updateScrollProgress);
+      window.removeEventListener("resize", handleResize);
+      gsap.ticker.remove(tickerCallback);
+      lenis.destroy();
+    };
+  }, [totalFrames, drawFrame, requestFrame, prioritizeWindow]);
 
   return (
-    <div
-      ref={containerRef}
-      className={`fixed top-0 left-0 w-full h-[100dvh] overflow-hidden select-none pointer-events-none -z-10 bg-obsidian-950 ${className}`}
-      aria-hidden="true"
-    >
-      {/* 1. Main Synchronized Video */}
-      {!hasError && (
-        <video
-          ref={videoRef}
-          src={videoSrc}
-          poster={posterSrc}
-          muted
-          playsInline
-          preload="auto"
-          webkit-playsinline="true"
-          x5-playsinline="true"
-          className="w-full h-full object-cover object-center filter brightness-[0.94] contrast-[1.06] will-change-transform transition-opacity duration-700"
+    <>
+      {/* 1. FIXED FULL-PAGE CINEMATIC CANVAS BACKGROUND (Desktop >= 768px) */}
+      <div
+        className={`hidden md:block fixed inset-0 w-full h-[100dvh] overflow-hidden select-none pointer-events-none z-0 bg-black ${className}`}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+        }}
+        aria-hidden="true"
+      >
+        <canvas
+          ref={canvasRef}
+          id="cinematic-background-canvas"
+          className="w-full h-full object-cover filter brightness-[1.0] contrast-[1.04]"
           style={{
-            opacity: isVideoReady ? 1 : 0.4,
-            transform: "scale(1) translate3d(0, 0, 0)",
+            width: "100%",
+            height: "100%",
+            display: "block",
           }}
         />
-      )}
 
-      {/* 2. Fallback Ambient Luxury Background (if video fails or is loading) */}
-      {(!isVideoReady || hasError) && (
-        <div className="absolute inset-0 bg-gradient-to-br from-obsidian-950 via-[#0d0d12] to-obsidian-950 flex items-center justify-center">
-          <div className="w-[500px] h-[500px] rounded-full bg-champagne-500/10 blur-[130px] animate-pulse" />
-        </div>
-      )}
+        {/* Minimal subtle ambient vignette: ensures 100% full clarity of sequence */}
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-obsidian-950/40 via-transparent to-obsidian-950/15 opacity-40" />
+      </div>
 
-      {/* 3. Adaptive Readability Overlays: Directed Gradients */}
-      {/* Top Header Protection Gradient */}
-      <div className="absolute top-0 left-0 w-full h-44 bg-gradient-to-b from-obsidian-950/95 via-obsidian-950/50 to-transparent pointer-events-none" />
-
-      {/* Bottom Content & Scene Bridge Gradient */}
-      <div className="absolute bottom-0 left-0 w-full h-56 bg-gradient-to-t from-obsidian-950 via-obsidian-950/70 to-transparent pointer-events-none" />
-
-      {/* Asymmetric Side Readability Gradient (Darkens text area while leaving salon subject visible) */}
-      <div className="absolute inset-0 bg-gradient-to-r from-obsidian-950/80 via-obsidian-950/40 to-transparent pointer-events-none" />
-
-      {/* Soft Ambient Radial Vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_45%,rgba(5,5,5,0.75)_100%)] pointer-events-none" />
-
-      {/* Subtle Cinematic Film Grain Texture */}
-      <div className="absolute inset-0 film-grain opacity-40 pointer-events-none" />
-
-      {/* Dynamic Children (e.g. Scene Overlays or additional depth elements) */}
-      {children}
-    </div>
+      {/* 2. Global Scroll Progress Line along the bottom of the viewport */}
+      <div className="hidden md:block fixed bottom-0 left-0 w-full h-[2px] bg-obsidian-900/60 z-40 pointer-events-none">
+        <div
+          ref={progressBarRef}
+          className="h-full bg-champagne-400 origin-left will-change-transform shadow-[0_0_8px_rgba(200,162,82,0.8)]"
+          style={{ transform: "scaleX(0)" }}
+        />
+      </div>
+    </>
   );
-});
+}
+
+export default CinematicBackground;
