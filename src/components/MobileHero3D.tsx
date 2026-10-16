@@ -105,7 +105,7 @@ export function MobileHero3D() {
           />
         </div>
 
-        {/* Continuous Looping Commercial Film Video Background */}
+        {/* Continuous Looping Commercial Film Video Background (Exact Current Laptop Video) */}
         <video
           ref={videoRef}
           autoPlay
@@ -114,10 +114,10 @@ export function MobileHero3D() {
           playsInline
           preload="auto"
           onLoadedData={() => setIsVideoLoaded(true)}
-          poster="/sequence/frame_0001.webp"
+          poster="/sequence/frame_0001.webp?v=v900"
           className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.72] contrast-[1.12] transition-opacity duration-700"
         >
-          <source src="/bhanu-hero.mp4" type="video/mp4" />
+          <source src="/bhanu-hero.mp4?v=current-scene-v2" type="video/mp4" />
         </video>
 
         {/* Cinematic Multi-Layered Editorial Gradients for Deep Legibility */}

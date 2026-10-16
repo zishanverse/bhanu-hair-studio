@@ -34,9 +34,9 @@ export interface VideoHeroConfig {
 }
 
 export const HERO_CONFIG: VideoHeroConfig = {
-  // Fast Cloudflare CDN Cloudinary streaming URL with byte-range seek and compressed bitrate
-  videoSrc: "https://res.cloudinary.com/deepcnbrz/video/upload/v1792133948/Untitled_Scene_10-16_06_52_45_20261016122527_fz3nai.mp4",
-  posterSrc: "",
+  // Current high-resolution master commercial film for salon hero
+  videoSrc: "/bhanu-hero.mp4",
+  posterSrc: "/sequence/frame_0001.webp?v=v900",
   scrollDistanceVh: 750, // Extended long scroll to scrub the full 44-second film smoothly to the end
   scrubSmoothing: 0.5,
   scenes: [
