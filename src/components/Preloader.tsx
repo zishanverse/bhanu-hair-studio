@@ -80,7 +80,7 @@ export function Preloader() {
         </div>
 
         <div ref={textRef} className="space-y-1">
-          <span className="font-serif text-3xl tracking-[0.2em] uppercase text-ivory-50 block">
+          <span className="font-display text-3xl tracking-[0.2em] uppercase text-ivory-50 block font-normal">
             BHANU&apos;S
           </span>
           <span className="text-[9px] uppercase tracking-[0.35em] text-champagne-400 font-mono block">

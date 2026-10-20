@@ -49,9 +49,10 @@ export default {
         },
       },
       fontFamily: {
-        serif: ["var(--font-cormorant)", "Georgia", "serif"],
-        sans: ["var(--font-outfit)", "system-ui", "sans-serif"],
-        display: ["var(--font-cormorant)", "var(--font-cinzel)", "serif"],
+        display: ["var(--font-cinzel)", "Cinzel", "Georgia", "serif"],
+        serif: ["var(--font-cormorant)", "Cormorant Garamond", "Georgia", "serif"],
+        sans: ["var(--font-jakarta)", "Plus Jakarta Sans", "system-ui", "sans-serif"],
+        mono: ["var(--font-space-grotesk)", "Space Grotesk", "ui-monospace", "monospace"],
       },
       letterSpacing: {
         tightest: "-0.04em",

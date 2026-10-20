@@ -131,7 +131,7 @@ export function Navbar() {
 
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5 sm:gap-2">
-                  <span className="font-serif text-xs xs:text-sm sm:text-lg md:text-xl tracking-[0.12em] xs:tracking-[0.16em] uppercase font-light text-ivory-50 group-hover:text-champagne-300 transition-colors whitespace-nowrap">
+                  <span className="font-display text-xs xs:text-sm sm:text-base md:text-lg tracking-[0.16em] uppercase font-normal text-ivory-50 group-hover:text-champagne-300 transition-colors whitespace-nowrap">
                     {identity.brandName}
                   </span>
                   {/* Micro Live Dot */}

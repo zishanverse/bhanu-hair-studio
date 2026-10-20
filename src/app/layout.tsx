@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cinzel, Outfit, Cormorant_Garamond } from "next/font/google";
+import { Cinzel, Cormorant_Garamond, Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { SmoothScrollProvider } from "@/lib/SmoothScrollProvider";
 import { SALON_CONFIG } from "@/config/salon.config";
@@ -19,10 +19,17 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
-const outfit = Outfit({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-outfit",
+  variable: "--font-jakarta",
   weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -200,7 +207,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cinzel.variable} ${cormorant.variable} ${outfit.variable}`}
+      className={`${cinzel.variable} ${cormorant.variable} ${jakarta.variable} ${spaceGrotesk.variable}`}
     >
       <head>
         <script

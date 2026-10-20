@@ -283,7 +283,7 @@ export function Footer() {
             color: "transparent",
           }}
         >
-          <span className="font-serif text-6xl sm:text-8xl md:text-9xl lg:text-[13rem] font-bold tracking-[0.08em] uppercase opacity-90 inline-block leading-none">
+          <span className="font-display text-5xl sm:text-7xl md:text-9xl lg:text-[12rem] font-bold tracking-[0.12em] uppercase opacity-90 inline-block leading-none">
             BHANU&apos;S
           </span>
         </div>
