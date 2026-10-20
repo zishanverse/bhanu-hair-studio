@@ -2,7 +2,7 @@ import { Navbar } from "@/components/Navbar";
 import { CinematicBackground } from "@/components/CinematicBackground";
 import { CinematicHero } from "@/components/CinematicHero";
 import { TheStudio } from "@/components/TheStudio";
-import { MarqueeRibbon } from "@/components/MarqueeRibbon";
+import { CurvedTextRibbon } from "@/components/CurvedTextRibbon";
 import { TreatmentDirectory } from "@/components/TreatmentDirectory";
 import { SignatureExperience } from "@/components/SignatureExperience";
 import { GallerySection } from "@/components/GallerySection";
@@ -34,8 +34,8 @@ export default function Home() {
       {/* 3. Section 1 — The Studio (Asymmetric editorial layout & heritage) */}
       <TheStudio />
 
-      {/* 4. Kinetic Typography Marquee Bridge */}
-      <MarqueeRibbon />
+      {/* 4. Kinetic Typography Curved Ribbon Bridge */}
+      <CurvedTextRibbon />
 
       {/* 5. Section 2 — Comprehensive 30-Service Atelier Treatment Directory */}
       <TreatmentDirectory />
