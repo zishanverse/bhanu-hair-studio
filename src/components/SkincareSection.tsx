@@ -64,6 +64,41 @@ export function SkincareSection() {
       );
     });
 
+    mm.add("(max-width: 767px)", () => {
+      if (sanctuaryBoxRef.current) {
+        gsap.fromTo(
+          sanctuaryBoxRef.current,
+          { opacity: 0, y: 25 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "luxe",
+            scrollTrigger: {
+              trigger: sanctuaryBoxRef.current,
+              start: "top 88%",
+            },
+          }
+        );
+      }
+
+      gsap.fromTo(
+        ".sanctuary-card-item",
+        { opacity: 0, y: 16 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: "luxe",
+          scrollTrigger: {
+            trigger: ".sanctuary-card-list",
+            start: "top 85%",
+          },
+        }
+      );
+    });
+
     return () => mm.revert();
   }, []);
 

@@ -121,7 +121,7 @@ export function CinematicExperience() {
 
           <h1
             ref={headlineRef}
-            className="font-serif text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-light text-ivory-50 tracking-tight leading-[0.9] drop-shadow-[0_15px_45px_rgba(0,0,0,0.95)] will-change-transform text-balance"
+            className="font-serif text-5xl md:text-6xl lg:text-8xl xl:text-9xl font-light text-ivory-50 tracking-tight leading-[0.92] drop-shadow-[0_15px_45px_rgba(0,0,0,0.95)] will-change-transform text-balance"
           >
             <span className="clip-line">
               <span className="clip-line-inner hero-clip-inner">WHERE STYLE</span>

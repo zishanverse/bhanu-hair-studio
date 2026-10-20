@@ -66,6 +66,41 @@ export function BookingSection() {
       }
     });
 
+    mm.add("(max-width: 767px)", () => {
+      if (archPortalRef.current) {
+        gsap.fromTo(
+          archPortalRef.current,
+          { opacity: 0, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.85,
+            ease: "luxe",
+            scrollTrigger: {
+              trigger: archPortalRef.current,
+              start: "top 85%",
+            },
+          }
+        );
+      }
+
+      if (keystoneLineRef.current) {
+        gsap.fromTo(
+          keystoneLineRef.current,
+          { scaleX: 0, transformOrigin: "center center" },
+          {
+            scaleX: 1,
+            duration: 0.9,
+            ease: "luxe",
+            scrollTrigger: {
+              trigger: archPortalRef.current,
+              start: "top 82%",
+            },
+          }
+        );
+      }
+    });
+
     return () => mm.revert();
   }, []);
 
@@ -242,7 +277,7 @@ export function BookingSection() {
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         placeholder="e.g. Vikram Malhotra"
-                        className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors placeholder:text-muted/50"
+                        className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors placeholder:text-muted/50"
                       />
                     </div>
                     <div>
@@ -257,7 +292,7 @@ export function BookingSection() {
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         placeholder="+91 98765 00000"
-                        className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors placeholder:text-muted/50"
+                        className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors placeholder:text-muted/50"
                       />
                     </div>
                   </div>
@@ -271,7 +306,7 @@ export function BookingSection() {
                         id="booking-outlet"
                         value={formData.outlet}
                         onChange={(e) => setFormData({ ...formData, outlet: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors cursor-pointer"
+                        className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors cursor-pointer"
                       >
                         <option value="Palsikar Colony">Palsikar Colony (Manik Bagh Rd)</option>
                         <option value="Saket Nagar">Saket Nagar (Near Saket Club)</option>
@@ -287,7 +322,7 @@ export function BookingSection() {
                         id="booking-service"
                         value={formData.service}
                         onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors cursor-pointer"
+                        className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors cursor-pointer"
                       >
                         <option value="Haircut & Styling">Haircut & Styling</option>
                         <option value="Beard Cutting & Trimming">Beard Cutting & Trimming</option>
@@ -312,7 +347,7 @@ export function BookingSection() {
                         min={new Date().toISOString().split("T")[0]}
                         value={formData.date}
                         onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
+                        className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
                       />
                     </div>
                     <div>
@@ -324,7 +359,7 @@ export function BookingSection() {
                         type="time"
                         value={formData.time}
                         onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                        className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
+                        className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
                       />
                     </div>
                   </div>

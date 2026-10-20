@@ -76,6 +76,24 @@ export function SignatureExperience() {
       }
     });
 
+    mm.add("(max-width: 767px)", () => {
+      gsap.fromTo(
+        ".chapter-reveal-item",
+        { opacity: 0, y: 22 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.75,
+          stagger: 0.12,
+          ease: "luxe",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+          },
+        }
+      );
+    });
+
     return () => mm.revert();
   }, []);
 

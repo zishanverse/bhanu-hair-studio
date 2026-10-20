@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { SALON_CONFIG } from "@/config/salon.config";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
+import { gsap } from "@/lib/gsap";
 
 export function TestimonialsSection() {
   const { testimonials } = SALON_CONFIG;
@@ -12,7 +13,32 @@ export function TestimonialsSection() {
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
   const touchStartXRef = useRef<number>(0);
+
+  // GSAP scroll entrance animation
+  useEffect(() => {
+    if (typeof window === "undefined" || !cardRef.current) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        cardRef.current,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: "luxe",
+          scrollTrigger: {
+            trigger: cardRef.current,
+            start: "top 82%",
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   // IntersectionObserver: auto-advance ONLY when in viewport
   useEffect(() => {
@@ -113,7 +139,7 @@ export function TestimonialsSection() {
         </div>
 
         {/* Testimonial Quote Display with Masked Line Transitions */}
-        <div className="rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 md:p-16 relative space-y-8 sm:space-y-10 shadow-[0_20px_60px_rgba(0,0,0,0.7)] backdrop-blur-xl">
+        <div ref={cardRef} className="rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 md:p-16 relative space-y-8 sm:space-y-10 shadow-[0_20px_60px_rgba(0,0,0,0.7)] backdrop-blur-xl">
           {/* Gold Quotation Mark Icon */}
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-champagne-500/30 flex items-center justify-center text-champagne-400 bg-surface shadow-inner">
             <Quote className="w-4 h-4 sm:w-5 sm:h-5 rotate-180" />

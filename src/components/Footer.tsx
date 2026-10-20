@@ -47,6 +47,25 @@ export function Footer() {
       }
     });
 
+    mm.add("(max-width: 767px)", () => {
+      if (wordmarkRef.current) {
+        gsap.fromTo(
+          wordmarkRef.current,
+          { backgroundPosition: "100% 0%" },
+          {
+            backgroundPosition: "0% 0%",
+            ease: "none",
+            scrollTrigger: {
+              trigger: footerRef.current,
+              start: "top 90%",
+              end: "bottom bottom",
+              scrub: 1,
+            },
+          }
+        );
+      }
+    });
+
     return () => mm.revert();
   }, []);
 

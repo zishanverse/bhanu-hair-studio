@@ -57,6 +57,24 @@ export function GallerySection() {
       );
     });
 
+    mm.add("(max-width: 767px)", () => {
+      gsap.fromTo(
+        ".gallery-card-item",
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.08,
+          ease: "luxe",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 82%",
+          },
+        }
+      );
+    });
+
     return () => mm.revert();
   }, [filteredItems]);
 

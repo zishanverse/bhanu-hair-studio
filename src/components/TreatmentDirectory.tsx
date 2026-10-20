@@ -12,6 +12,7 @@ import {
   ChevronRight,
   ArrowRight,
 } from "lucide-react";
+import { stageState } from "@/lib/stageState";
 
 export function TreatmentDirectory() {
   const { servicesCatalog, contact } = SALON_CONFIG;
@@ -78,6 +79,24 @@ export function TreatmentDirectory() {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: "top 78%",
+          },
+        }
+      );
+    });
+
+    mm.add("(max-width: 767px)", () => {
+      gsap.fromTo(
+        ".treatment-card-item",
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.1,
+          ease: "luxe",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 82%",
           },
         }
       );
@@ -200,19 +219,17 @@ export function TreatmentDirectory() {
               type="button"
               data-cursor={tab.label}
               onClick={() => setActiveTab(tab.id)}
-              className={`shrink-0 px-4 sm:px-5 py-2 rounded-full text-xs uppercase tracking-wider font-medium transition-all duration-300 flex items-center gap-2 cursor-pointer ${
-                activeTab === tab.id
+              className={`shrink-0 px-4 sm:px-5 py-2 rounded-full text-xs uppercase tracking-wider font-medium transition-all duration-300 flex items-center gap-2 cursor-pointer ${activeTab === tab.id
                   ? "bg-champagne-400 text-obsidian-950 font-semibold shadow-[0_0_20px_rgba(200,162,82,0.35)]"
                   : "glass-panel border-champagne-500/20 text-muted hover:text-ivory-100"
-              }`}
+                }`}
             >
               <span>{tab.label}</span>
               <span
-                className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full tabular-nums ${
-                  activeTab === tab.id
+                className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full tabular-nums ${activeTab === tab.id
                     ? "bg-obsidian-950/20 text-obsidian-950 font-bold"
                     : "bg-surface text-muted"
-                }`}
+                  }`}
               >
                 {tab.count}
               </span>
@@ -273,7 +290,8 @@ export function TreatmentDirectory() {
                   key={service.id}
                   data-cursor="Reserve"
                   style={{ scrollSnapAlign: "start" }}
-                  className="treatment-card-item will-change-transform shrink-0 w-[290px] sm:w-[340px] md:w-[370px] rounded-3xl glass-card border border-champagne-500/15 hover:border-champagne-400/50 p-6 sm:p-7 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.85)] relative group overflow-hidden"
+                  onClick={() => stageState.snip()}
+                  className="treatment-card-item will-change-transform shrink-0 w-[84vw] max-w-[340px] sm:w-[340px] md:w-[370px] rounded-3xl glass-card border border-champagne-500/15 hover:border-champagne-400/50 p-6 sm:p-7 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.85)] relative group overflow-hidden cursor-pointer active:scale-[0.99]"
                 >
                   <div className="space-y-4">
                     {/* Category Eyebrow & Duration Badge */}
@@ -319,6 +337,10 @@ export function TreatmentDirectory() {
                       target="_blank"
                       rel="noopener noreferrer"
                       data-cursor="Reserve"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        stageState.snip();
+                      }}
                       className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-champagne-400 hover:text-white font-medium group-hover:translate-x-0.5 transition-all cursor-pointer"
                     >
                       <span>Reserve</span>

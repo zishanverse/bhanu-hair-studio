@@ -93,6 +93,58 @@ export function TheStudio() {
       );
     });
 
+    // Mobile Animations (< 768px)
+    mm.add("(max-width: 767px)", () => {
+      if (headlineRef.current) {
+        gsap.fromTo(
+          headlineRef.current,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "luxe",
+            scrollTrigger: {
+              trigger: headlineRef.current,
+              start: "top 85%",
+            },
+          }
+        );
+      }
+
+      if (dividerRef.current) {
+        gsap.fromTo(
+          dividerRef.current,
+          { scaleX: 0, transformOrigin: "left center" },
+          {
+            scaleX: 1,
+            duration: 1.0,
+            ease: "luxe",
+            scrollTrigger: {
+              trigger: dividerRef.current,
+              start: "top 88%",
+            },
+          }
+        );
+      }
+
+      gsap.fromTo(
+        ".studio-standard-item",
+        { opacity: 0, y: 18 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.12,
+          ease: "luxe",
+          scrollTrigger: {
+            trigger: ".studio-standards-grid",
+            start: "top 85%",
+          },
+        }
+      );
+    });
+
     return () => mm.revert();
   }, []);
 
@@ -170,18 +222,18 @@ export function TheStudio() {
               </div>
 
               {/* Minimalist Tabular Stats */}
-              <div className="grid grid-cols-3 gap-6 pt-4 border-t border-champagne-500/15">
+              <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-4 border-t border-champagne-500/15">
                 <div>
-                  <div className="text-2xl sm:text-3xl font-serif text-champagne-300 font-light tabular-nums">10 PM</div>
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-muted mt-1">Open Daily</div>
+                  <div className="text-xl sm:text-3xl font-serif text-champagne-300 font-light tabular-nums">10 PM</div>
+                  <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-muted mt-1">Open Daily</div>
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-serif text-champagne-300 font-light tabular-nums">30+</div>
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-muted mt-1">Unisex Disciplines</div>
+                  <div className="text-xl sm:text-3xl font-serif text-champagne-300 font-light tabular-nums">30+</div>
+                  <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-muted mt-1">Disciplines</div>
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-serif text-champagne-300 font-light tabular-nums">4.9 ★</div>
-                  <div className="text-[10px] font-mono uppercase tracking-wider text-muted mt-1">500+ Reviews</div>
+                  <div className="text-xl sm:text-3xl font-serif text-champagne-300 font-light tabular-nums">4.9 ★</div>
+                  <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-muted mt-1">500+ Reviews</div>
                 </div>
               </div>
 

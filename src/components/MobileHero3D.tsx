@@ -5,11 +5,14 @@ import Image from "next/image";
 import { Scissors, Sparkles, MessageCircle, ArrowDown, Star, Phone } from "lucide-react";
 import { SALON_CONFIG } from "@/config/salon.config";
 import { stageState } from "@/lib/stageState";
+import { gsap } from "@/lib/gsap";
 
 export function MobileHero3D() {
   const [activePill, setActivePill] = useState(0);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [snipFlashed, setSnipFlashed] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const heroContentRef = useRef<HTMLDivElement>(null);
 
   const pillars = [
     {
@@ -53,6 +56,28 @@ export function MobileHero3D() {
     stageState.shears.ry = 0.2;
   }, []);
 
+  // GSAP Mobile Hero Entrance Animation
+  useEffect(() => {
+    if (typeof window === "undefined" || !heroContentRef.current) return;
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".mobile-hero-anim",
+        { opacity: 0, y: 18 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          stagger: 0.08,
+          ease: "luxe",
+          delay: 0.15,
+        }
+      );
+    }, heroContentRef);
+
+    return () => ctx.revert();
+  }, []);
+
   // Ensure continuous video background autoplay across mobile browsers
   useEffect(() => {
     const video = videoRef.current;
@@ -78,9 +103,15 @@ export function MobileHero3D() {
     return () => window.removeEventListener("touchstart", handleFirstTouch);
   }, []);
 
+  const triggerMobileSnip = () => {
+    stageState.snip();
+    setSnipFlashed(true);
+    setTimeout(() => setSnipFlashed(false), 350);
+  };
+
   const handlePillClick = (idx: number) => {
     setActivePill(idx);
-    stageState.snip(); // Trigger tactile 3D shears mechanical snip on mobile!
+    triggerMobileSnip();
   };
 
   const handleScrollToStudio = () => {
@@ -144,11 +175,12 @@ export function MobileHero3D() {
 
       {/* 3. CENTER EDITORIAL TYPOGRAPHY & INTERACTIVE 3D SNIP PROMPT */}
       <div
-        onClick={() => stageState.snip()}
+        ref={heroContentRef}
+        onClick={triggerMobileSnip}
         className="relative z-10 my-auto text-center px-2 space-y-3 cursor-pointer active:scale-[0.99] transition-transform"
       >
         {/* Brand Kicker */}
-        <div className="inline-flex items-center gap-2 mx-auto">
+        <div className="mobile-hero-anim inline-flex items-center gap-2 mx-auto">
           <span className="w-5 h-[1px] bg-champagne-400/60 inline-block" />
           <span className="text-[10px] uppercase tracking-[0.28em] text-champagne-300 font-mono font-semibold drop-shadow-md">
             BHANU&apos;S THE HAIR STUDIO
@@ -157,7 +189,7 @@ export function MobileHero3D() {
         </div>
 
         {/* Monumental Headline */}
-        <h1 className="font-serif text-[clamp(2.15rem,8.5vw,2.85rem)] leading-[0.98] font-light text-ivory-50 tracking-tight drop-shadow-[0_15px_40px_rgba(0,0,0,0.98)] text-balance">
+        <h1 className="mobile-hero-anim font-serif text-[clamp(2.15rem,8.5vw,2.85rem)] leading-[0.98] font-light text-ivory-50 tracking-tight drop-shadow-[0_15px_40px_rgba(0,0,0,0.98)] text-balance">
           WHERE STYLE <br />
           BECOMES{" "}
           <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-400 font-serif drop-shadow-[0_0_25px_rgba(200,162,82,0.6)]">
@@ -165,14 +197,26 @@ export function MobileHero3D() {
           </span>
         </h1>
 
-        {/* Tap to Snip Shears Prompt */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-obsidian-950/80 border border-champagne-500/35 backdrop-blur-md text-[9px] font-mono text-champagne-300 shadow-md">
-          <Scissors className="w-3 h-3 text-champagne-400" />
-          <span>Tap anywhere to snip 3D shears</span>
+        {/* Tap to Snip Shears Prompt with Shimmer Feedback */}
+        <div className="mobile-hero-anim inline-flex items-center justify-center">
+          <div
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border backdrop-blur-md text-[9px] font-mono transition-all duration-300 shadow-md ${
+              snipFlashed
+                ? "bg-champagne-400 text-obsidian-950 border-champagne-200 shadow-[0_0_20px_rgba(200,162,82,0.8)] scale-105"
+                : "bg-obsidian-950/80 border-champagne-500/35 text-champagne-300"
+            }`}
+          >
+            <Scissors
+              className={`w-3 h-3 text-champagne-400 transition-transform duration-300 ${
+                snipFlashed ? "rotate-45 scale-125 text-obsidian-950" : ""
+              }`}
+            />
+            <span>{snipFlashed ? "Snip! 3D Shears Actuated" : "Tap anywhere to snip 3D shears"}</span>
+          </div>
         </div>
 
         {/* Dynamic Pillar Description */}
-        <div className="min-h-[46px] flex flex-col items-center justify-center">
+        <div className="mobile-hero-anim min-h-[46px] flex flex-col items-center justify-center">
           <p className="text-[11px] uppercase tracking-[0.14em] text-ivory-100 font-light max-w-[290px] mx-auto leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
             {current.desc}
           </p>

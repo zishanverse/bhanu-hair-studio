@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Scissors, Menu, X, Calendar, Phone, ArrowUpRight } from "lucide-react";
 import { SALON_CONFIG } from "@/config/salon.config";
 import { useMagnetic } from "@/lib/useMagnetic";
+import { gsap } from "@/lib/gsap";
 
 export function Navbar() {
   const { identity, contact } = SALON_CONFIG;
@@ -24,10 +25,8 @@ export function Navbar() {
 
       if (currentScrollY > 150) {
         if (currentScrollY > lastScrollYRef.current + 10) {
-          // Scrolling down
           setIsVisible(false);
         } else if (currentScrollY < lastScrollYRef.current - 10) {
-          // Scrolling up
           setIsVisible(true);
         }
       } else {
@@ -65,7 +64,7 @@ export function Navbar() {
     };
   }, []);
 
-  // Lock body scroll and handle Escape key when mobile menu is open
+  // Animate mobile drawer links staggered on open
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -73,6 +72,14 @@ export function Navbar() {
         if (e.key === "Escape") setMobileMenuOpen(false);
       };
       window.addEventListener("keydown", handleKeyDown);
+
+      // Staggered reveal for mobile links
+      gsap.fromTo(
+        ".mobile-drawer-link",
+        { opacity: 0, x: -16 },
+        { opacity: 1, x: 0, duration: 0.4, stagger: 0.05, ease: "luxe", delay: 0.1 }
+      );
+
       return () => {
         document.body.style.overflow = "";
         window.removeEventListener("keydown", handleKeyDown);
@@ -124,7 +131,7 @@ export function Navbar() {
 
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5 sm:gap-2">
-                  <span className="font-serif text-base sm:text-lg md:text-xl tracking-[0.16em] uppercase font-light text-ivory-50 group-hover:text-champagne-300 transition-colors">
+                  <span className="font-serif text-xs xs:text-sm sm:text-lg md:text-xl tracking-[0.12em] xs:tracking-[0.16em] uppercase font-light text-ivory-50 group-hover:text-champagne-300 transition-colors whitespace-nowrap">
                     {identity.brandName}
                   </span>
                   {/* Micro Live Dot */}
@@ -206,23 +213,23 @@ export function Navbar() {
               href="/#book"
               id="nav-cta-book-btn"
               data-cursor="Reserve Seat"
-              className="group relative inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 rounded-full overflow-hidden text-[10px] sm:text-[11px] uppercase tracking-[0.18em] font-medium text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 hover:shadow-[0_0_20px_rgba(197,164,119,0.45)] transition-all duration-300 transform active:scale-95 shrink-0 cursor-pointer"
+              className="group relative inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 rounded-full overflow-hidden text-[10px] sm:text-[11px] uppercase tracking-[0.18em] font-medium text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 hover:shadow-[0_0_20px_rgba(197,164,119,0.45)] transition-all duration-300 transform active:scale-95 shrink-0 cursor-pointer min-h-[40px]"
             >
               <Calendar className="w-3.5 h-3.5 text-obsidian-900 group-hover:scale-110 transition-transform" />
               <span>Reserve</span>
               <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full duration-1000 bg-gradient-to-r from-transparent via-white/40 to-transparent transform -skew-x-12 transition-transform pointer-events-none" />
             </a>
 
-            {/* Mobile menu toggle */}
+            {/* Mobile menu toggle with minimum 44px touch target */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               id="nav-mobile-toggle"
-              className="lg:hidden p-2 rounded-full bg-surface/80 border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 transition-colors cursor-pointer"
+              className="lg:hidden w-11 h-11 rounded-full bg-surface/80 border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 flex items-center justify-center transition-colors cursor-pointer"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -243,11 +250,11 @@ export function Navbar() {
             aria-label="Mobile Navigation"
             className="lg:hidden relative z-50 pointer-events-auto px-6 py-8 mx-4 mt-3 rounded-3xl glass-card border border-champagne-500/35 shadow-2xl space-y-6 animate-in fade-in slide-in-from-top-4 duration-300 backdrop-blur-2xl max-h-[85vh] overflow-y-auto no-scrollbar"
           >
-            <div className="flex flex-col space-y-4">
+            <div className="flex flex-col space-y-3">
               <a
                 href="/bhanushairacademy"
                 onClick={() => setMobileMenuOpen(false)}
-                className="group text-sm uppercase tracking-[0.22em] text-champagne-300 font-medium py-1 flex items-center justify-between border-b border-champagne-500/20 pb-3"
+                className="mobile-drawer-link group text-sm uppercase tracking-[0.22em] text-champagne-300 font-medium py-3 flex items-center justify-between border-b border-champagne-500/20"
               >
                 <span className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
@@ -267,7 +274,7 @@ export function Navbar() {
                   key={i}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="group text-sm uppercase tracking-[0.22em] text-ivory-100 hover:text-champagne-300 transition-colors py-1 flex items-center justify-between"
+                  className="mobile-drawer-link group text-sm uppercase tracking-[0.22em] text-ivory-100 hover:text-champagne-300 transition-colors py-3 flex items-center justify-between min-h-[44px]"
                 >
                   <span>{link.label}</span>
                   <ArrowUpRight className="w-3.5 h-3.5 text-champagne-400/50 group-hover:text-champagne-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
@@ -278,7 +285,7 @@ export function Navbar() {
             <div className="pt-4 border-t border-champagne-500/20 flex flex-col gap-3">
               <a
                 href={`tel:${contact.phone}`}
-                className="flex items-center gap-2 text-xs tracking-widest text-champagne-300 font-mono"
+                className="flex items-center gap-2 text-xs tracking-widest text-champagne-300 font-mono py-2"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>INDORE SALON DIRECT · {contact.displayPhone}</span>
@@ -286,7 +293,7 @@ export function Navbar() {
               <a
                 href="/#book"
                 onClick={() => setMobileMenuOpen(false)}
-                className="w-full text-center py-3.5 rounded-full text-xs uppercase tracking-[0.2em] font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-colors shadow-[0_0_20px_rgba(197,164,119,0.3)]"
+                className="w-full text-center py-4 rounded-full text-xs uppercase tracking-[0.2em] font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-colors shadow-[0_0_20px_rgba(197,164,119,0.3)] min-h-[48px] flex items-center justify-center cursor-pointer"
               >
                 Reserve Experience
               </a>
