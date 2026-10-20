@@ -28,12 +28,47 @@ export function CinematicExperience() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      // Gentle parallax fade on headline as user scrolls into the studio
+      // 1. Entrance choreography: Clipped-line reveal & gold rule expansion
+      const tl = gsap.timeline({ defaults: { ease: "power3.out" }, delay: 0.15 });
+
+      tl.fromTo(
+        ".hero-clip-inner",
+        { yPercent: 130 },
+        { yPercent: 0, duration: 1.35, stagger: 0.14 }
+      )
+        .fromTo(
+          ".hero-gold-rule",
+          { scaleX: 0, transformOrigin: "left center" },
+          { scaleX: 1, duration: 1.1, ease: "power2.out" },
+          0.3
+        )
+        .fromTo(
+          ".hero-eyebrow-text",
+          { opacity: 0, x: -10 },
+          { opacity: 1, x: 0, duration: 0.9 },
+          0.4
+        )
+        .fromTo(
+          subtextRef.current,
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 1.0 },
+          0.6
+        )
+        .fromTo(
+          ctaRef.current,
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.9 },
+          0.75
+        );
+
+      // 2. Parallax exit with subtle focal defocus matching Reposé reference
       if (headlineRef.current) {
         gsap.to(headlineRef.current, {
-          y: -80,
-          opacity: 0.15,
-          ease: "none",
+          yPercent: -18,
+          scale: 1.02,
+          opacity: 0.12,
+          filter: "blur(5px)",
+          ease: "power2.in",
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top top",
@@ -45,13 +80,13 @@ export function CinematicExperience() {
 
       if (trustBarRef.current) {
         gsap.to(trustBarRef.current, {
-          y: -40,
-          opacity: 0,
+          y: -30,
+          opacity: 0.1,
           ease: "none",
           scrollTrigger: {
             trigger: containerRef.current,
-            start: "20% top",
-            end: "60% top",
+            start: "45% top",
+            end: "85% top",
             scrub: true,
           },
         });
@@ -83,20 +118,26 @@ export function CinematicExperience() {
         {/* Central Editorial Haute Coiffure Masterpiece */}
         <div className="my-auto space-y-7 max-w-4xl pointer-events-auto">
           <div className="inline-flex items-center gap-3">
-            <span className="w-10 h-[1px] bg-champagne-400 inline-block" />
-            <span className="text-xs uppercase tracking-[0.25em] text-champagne-300 font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
-              HAUTE COIFFURE & UNISEX ATELIER
+            <span className="hero-gold-rule w-12 h-[1px] bg-champagne-400 inline-block will-change-transform" />
+            <span className="hero-eyebrow-text text-xs uppercase tracking-[0.28em] text-champagne-300 font-semibold drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
+              HAUTE COIFFURE & UNISEX ATELIER · INDORE
             </span>
           </div>
 
           <h1
             ref={headlineRef}
-            className="font-serif text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-light text-ivory-50 tracking-tight leading-[0.93] drop-shadow-[0_15px_45px_rgba(0,0,0,0.95)] will-change-transform"
+            className="font-serif text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-light text-ivory-50 tracking-tight leading-[0.9] drop-shadow-[0_15px_45px_rgba(0,0,0,0.95)] will-change-transform"
           >
-            WHERE STYLE <br />
-            BECOMES{" "}
-            <span className="italic font-normal text-champagne-300 font-serif">
-              ART.
+            <span className="clip-line">
+              <span className="clip-line-inner hero-clip-inner">WHERE STYLE</span>
+            </span>
+            <span className="clip-line">
+              <span className="clip-line-inner hero-clip-inner">
+                BECOMES{" "}
+                <span className="italic font-normal text-champagne-300 font-serif">
+                  ART.
+                </span>
+              </span>
             </span>
           </h1>
 
@@ -107,10 +148,11 @@ export function CinematicExperience() {
             Indore&apos;s premier unisex salon for precision haircutting, customized balayage, keratin smoothing, and restorative head spa rituals in Palsikar Colony.
           </p>
 
-          {/* Action CTAs */}
+          {/* Action CTAs with contextual cursor labels */}
           <div ref={ctaRef} className="pt-2 flex flex-wrap items-center gap-4">
             <a
               href="#book"
+              data-cursor="Reserve Seat"
               className="px-8 py-4 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-400 hover:shadow-[0_0_35px_rgba(200,162,82,0.7)] transition-all transform hover:scale-105 active:scale-95"
             >
               Book Appointment
@@ -120,6 +162,7 @@ export function CinematicExperience() {
               href={`https://wa.me/${SALON_CONFIG.contact.whatsappNumber}?text=${encodeURIComponent(SALON_CONFIG.contact.whatsappPrefill)}`}
               target="_blank"
               rel="noopener noreferrer"
+              data-cursor="WhatsApp"
               className="inline-flex items-center gap-2.5 px-7 py-4 rounded-full text-xs uppercase tracking-widest font-medium text-ivory-50 border border-champagne-500/35 glass-card hover:border-champagne-300 hover:bg-champagne-500/10 transition-all cursor-pointer"
             >
               <MessageCircle className="w-4 h-4 text-emerald-400" />
@@ -129,6 +172,7 @@ export function CinematicExperience() {
             <button
               type="button"
               onClick={scrollToStudio}
+              data-cursor="Atelier"
               className="px-6 py-4 rounded-full text-xs uppercase tracking-widest font-light text-champagne-300 hover:text-white transition-colors cursor-pointer"
             >
               Explore Studio ↓

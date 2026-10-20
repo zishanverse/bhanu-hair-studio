@@ -11,12 +11,16 @@ import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { BookingSection } from "@/components/BookingSection";
 import { Footer } from "@/components/Footer";
 import { LuxuryCursor } from "@/components/LuxuryCursor";
+import { FloatingConcierge } from "@/components/FloatingConcierge";
 
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-transparent text-ivory-50 overflow-x-hidden selection:bg-champagne-500/30 selection:text-champagne-200">
       {/* 0. Bespoke Luxury Magnetic Cursor (Desktop) */}
       <LuxuryCursor />
+
+      {/* Floating Concierge Direct WhatsApp Access */}
+      <FloatingConcierge />
 
       {/* 1. Fixed Luxury Transparent / Glass Navigation */}
       <Navbar />

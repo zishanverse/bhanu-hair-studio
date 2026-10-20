@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SALON_CONFIG } from "@/config/salon.config";
 import { ThreeScissorsCanvas } from "@/components/ThreeScissorsCanvas";
 import { Sparkles, Check, ChevronRight, RotateCcw, Scissors } from "lucide-react";
@@ -13,6 +15,10 @@ export function SignatureExperience() {
   const [tensionMode, setTensionMode] = useState<"Precision" | "Texturize" | "Scissor-Over-Comb">("Precision");
   const [snipFlashed, setSnipFlashed] = useState(false);
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const laserBeamRef = useRef<HTMLDivElement>(null);
+  const cardsGridRef = useRef<HTMLDivElement>(null);
+
   const activeChapter = signatureExperience.chapters[activeChapterIndex];
 
   const handleTriggerSnip = () => {
@@ -21,8 +27,63 @@ export function SignatureExperience() {
     setTimeout(() => setSnipFlashed(false), 400);
   };
 
+  // Reposé Laser Sweeping & Blueprint Reveal Animation
+  useEffect(() => {
+    if (typeof window === "undefined" || !sectionRef.current) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // 1. Staggered reveal for chapter container
+      gsap.fromTo(
+        ".chapter-reveal-item",
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          stagger: 0.15,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+          },
+        }
+      );
+
+      // 2. Reposé Laser Beam Scan Animation across the Biometric Anatomy Console
+      if (laserBeamRef.current && cardsGridRef.current) {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: cardsGridRef.current,
+            start: "top 80%",
+            end: "bottom 60%",
+            scrub: 1.2,
+          },
+        });
+
+        tl.fromTo(
+          laserBeamRef.current,
+          { scaleX: 0, opacity: 0, transformOrigin: "left center" },
+          { scaleX: 1, opacity: 1, duration: 1, ease: "power2.inOut" }
+        );
+
+        // Stagger cards illumination as laser travels
+        const zoneCards = cardsGridRef.current.querySelectorAll(".biometric-zone-card");
+        tl.fromTo(
+          zoneCards,
+          { opacity: 0.35, y: 20 },
+          { opacity: 1, y: 0, stagger: 0.2, ease: "power2.out" },
+          0.2
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="experience"
       className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden"
     >
@@ -53,6 +114,7 @@ export function SignatureExperience() {
               <button
                 key={ch.id}
                 type="button"
+                data-cursor="Switch Ritual"
                 onClick={() => setActiveChapterIndex(idx)}
                 className={`relative px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest font-medium transition-all duration-300 whitespace-nowrap ${
                   activeChapterIndex === idx
@@ -69,7 +131,7 @@ export function SignatureExperience() {
         {/* Cinematic Chapter Showcase Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           {/* Left Column: Chapter Editorial Narrative */}
-          <div className="lg:col-span-5 rounded-3xl glass-card border border-champagne-500/15 p-6 sm:p-8 md:p-12 flex flex-col justify-between space-y-6 sm:space-y-8">
+          <div className="chapter-reveal-item lg:col-span-5 rounded-3xl glass-card border border-champagne-500/15 p-6 sm:p-8 md:p-12 flex flex-col justify-between space-y-6 sm:space-y-8">
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <span className="font-mono text-xs tracking-widest text-champagne-400 font-semibold">
@@ -112,6 +174,7 @@ export function SignatureExperience() {
               </div>
               <button
                 type="button"
+                data-cursor="Next Chapter"
                 onClick={() =>
                   setActiveChapterIndex((prev) =>
                     prev + 1 < signatureExperience.chapters.length ? prev + 1 : 0
@@ -126,7 +189,7 @@ export function SignatureExperience() {
           </div>
 
           {/* Center/Right Column: Interactive 3D Object & Cinematic Imagery */}
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8">
+          <div className="chapter-reveal-item lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8">
             {/* Interactive 3D Japanese Barber Scissors Canvas */}
             <div className={`rounded-3xl glass-card border p-6 flex flex-col justify-between relative overflow-hidden min-h-[420px] bg-gradient-to-b from-surface via-obsidian-950 to-obsidian-950 transition-all duration-300 ${
               snipFlashed ? "border-champagne-300 shadow-[0_0_35px_rgba(197,164,119,0.35)]" : "border-champagne-500/20"
@@ -144,6 +207,7 @@ export function SignatureExperience() {
                 {/* Snip Action Button */}
                 <button
                   type="button"
+                  data-cursor="Snip Blades"
                   onClick={handleTriggerSnip}
                   className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 active:scale-95 transition-all shadow-md"
                   aria-label="Trigger mechanical snip"
@@ -158,8 +222,11 @@ export function SignatureExperience() {
                 </button>
               </div>
 
-              {/* Three.js Canvas Element */}
-              <div className="absolute inset-0 flex items-center justify-center z-0 pt-10 pb-12 cursor-pointer">
+              {/* Three.js Canvas Element with 3D cursor tag */}
+              <div
+                data-cursor="Rotate 3D"
+                className="absolute inset-0 flex items-center justify-center z-0 pt-10 pb-12 cursor-pointer"
+              >
                 <ThreeScissorsCanvas
                   className="w-full h-full"
                   snipCount={snipCount}
@@ -176,6 +243,7 @@ export function SignatureExperience() {
                       <button
                         key={m}
                         type="button"
+                        data-cursor={m}
                         onClick={() => {
                           setTensionMode(m);
                           handleTriggerSnip();
@@ -198,7 +266,10 @@ export function SignatureExperience() {
             </div>
 
             {/* Chapter Photographic Visual */}
-            <div className="rounded-3xl overflow-hidden border border-champagne-500/20 relative aspect-square sm:aspect-auto min-h-[380px] bg-obsidian-900 group">
+            <div
+              data-cursor="Ritual"
+              className="rounded-3xl overflow-hidden border border-champagne-500/20 relative aspect-square sm:aspect-auto min-h-[380px] bg-obsidian-900 group"
+            >
               <Image
                 src={activeChapter.image}
                 alt={activeChapter.title}
@@ -216,6 +287,111 @@ export function SignatureExperience() {
                   {activeChapter.subtitle}
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Anatomical Hair Architecture & Laser Mapping Console (Reposé Blueprint Hotspot Pattern) */}
+        <div className="rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 md:p-10 relative overflow-hidden space-y-8 bg-gradient-to-b from-surface/40 via-obsidian-950/60 to-obsidian-950">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-champagne-500/15 pb-6">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-champagne-400 animate-pulse" />
+                <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono">
+                  BIOMETRIC ANATOMY & SECTIONING
+                </span>
+              </div>
+              <h4 className="font-serif text-2xl sm:text-3xl text-ivory-50">
+                Architectural Head Mapping & Shear Geometry
+              </h4>
+            </div>
+            <p className="text-xs text-muted max-w-md font-light leading-relaxed">
+              Every cut at Bhanu's is calibrated against cranial topography, bone structure, and natural whorl directional growth using custom Japanese metallurgy.
+            </p>
+          </div>
+
+          {/* Active Scanning Laser Beam (Reposé Pattern) */}
+          <div className="relative pt-2">
+            <div
+              ref={laserBeamRef}
+              className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-champagne-300 to-transparent shadow-[0_0_20px_rgba(200,162,82,0.9)] z-20 pointer-events-none will-change-transform"
+            />
+
+            {/* Interactive Laser Hotspot Grid */}
+            <div ref={cardsGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {[
+                {
+                  zone: "01 / VERTEX & CROWN",
+                  title: "Directional Growth Flow",
+                  spec: "Weight Dispersal & Volume Lift",
+                  technique: "Convex Slide Cutting · 45°",
+                  steel: "Hitachi 440C Japanese Steel",
+                  elevation: "Zero Drag, Natural Fall",
+                },
+                {
+                  zone: "02 / TEMPLE & PARIETAL",
+                  title: "Biometric Face Framing",
+                  spec: "Zygomatic Bone Contour Alignment",
+                  technique: "Point Slicing & Channeling",
+                  steel: "Hand-Honed Convex Edge",
+                  elevation: "Adaptive 15° Elevation",
+                },
+                {
+                  zone: "03 / OCCIPITAL & NAPE",
+                  title: "Structural Weight Line",
+                  spec: "Cervical Spine Ergonomics",
+                  technique: "Scissor-Over-Comb Tapering",
+                  steel: "Micro-Serrated Shear Teeth",
+                  elevation: "Graduated Perimeter Tension",
+                },
+                {
+                  zone: "04 / CHEEKBONE & JAW",
+                  title: "Facial Proportion Anchor",
+                  spec: "Symmetry & Jawline Sculpting",
+                  technique: "Dry-Sculpting & Texturizing",
+                  steel: "Cryogenic Hardened Cobalt",
+                  elevation: "Bespoke Density Calibration",
+                },
+              ].map((hotspot, idx) => (
+                <div
+                  key={idx}
+                  data-cursor="Map Zone"
+                  className="biometric-zone-card group relative rounded-2xl p-5 border border-champagne-500/15 bg-surface/30 hover:bg-surface/70 hover:border-champagne-400/50 transition-all duration-500 cursor-pointer flex flex-col justify-between space-y-4 will-change-transform"
+                >
+                  {/* Horizontal Laser Line on Hover (Reposé Pattern) */}
+                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-champagne-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[9px] tracking-widest text-champagne-400 uppercase font-semibold">
+                        {hotspot.zone}
+                      </span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-champagne-400/40 group-hover:bg-champagne-400 group-hover:scale-125 transition-all" />
+                    </div>
+                    <h5 className="font-serif text-lg text-ivory-100 group-hover:text-champagne-300 transition-colors">
+                      {hotspot.title}
+                    </h5>
+                    <p className="text-[11px] text-muted font-light leading-relaxed">
+                      {hotspot.spec}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-champagne-500/10 space-y-1 font-mono text-[9px]">
+                    <div className="flex items-center justify-between text-ivory-200/80">
+                      <span className="text-muted">Protocol:</span>
+                      <span className="text-champagne-300 font-medium">{hotspot.technique}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-ivory-200/80">
+                      <span className="text-muted">Tooling:</span>
+                      <span>{hotspot.steel}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-ivory-200/80">
+                      <span className="text-muted">Elevation:</span>
+                      <span>{hotspot.elevation}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

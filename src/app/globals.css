@@ -33,29 +33,46 @@ body {
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
-/* STRICTLY HIDE DEFAULT OS CURSOR SO ONLY THE BESPOKE LUXURY CURSOR IS VISIBLE */
+/* BESPOKE LUXURY CURSOR & FORM ERGONOMICS */
 @media (pointer: fine) {
   html,
-  body,
-  *,
-  *::before,
-  *::after,
+  body {
+    cursor: default;
+  }
+  
+  /* Precision text editing ergonomics: Never hide typing cursor on inputs */
+  input,
+  textarea,
+  [contenteditable="true"] {
+    cursor: text !important;
+  }
+
+  select {
+    cursor: pointer !important;
+  }
+
+  /* Interactive elements */
   a,
   button,
-  input,
-  select,
-  textarea,
-  canvas,
-  label,
-  span,
-  div,
   [role="button"],
-  [tabindex],
-  .cursor-pointer,
-  .cursor-grab,
-  .cursor-grabbing {
-    cursor: none !important;
+  .cursor-pointer {
+    cursor: pointer;
   }
+
+  /* Custom drag handles */
+  .cursor-grab {
+    cursor: grab;
+  }
+  .cursor-grabbing {
+    cursor: grabbing;
+  }
+}
+
+/* High-Visibility Luxury Accessible Focus Rings */
+:focus-visible {
+  outline: 2px solid rgba(214, 180, 107, 0.85);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 /* Custom luxury scrollbar */
@@ -129,3 +146,34 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Editorial Clipped-Line Reveal Structure (Inspired by Reposé Residence) */
+.clip-line {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.08em;
+  margin-block: -0.08em;
+}
+
+.clip-line-inner {
+  display: block;
+  transform: translateY(116%);
+  will-change: transform;
+}
+
+/* Luxury Attention Pulse Rings */
+@keyframes wa-pulse {
+  0% {
+    opacity: 0.65;
+    transform: scale(1);
+  }
+  70%, 100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+
+.animate-wa-pulse {
+  animation: wa-pulse 3.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+

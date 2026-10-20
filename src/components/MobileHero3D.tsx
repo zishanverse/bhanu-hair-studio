@@ -155,7 +155,7 @@ export function MobileHero3D() {
         </div>
 
         {/* Monumental Headline */}
-        <h1 className="font-serif text-[2.85rem] leading-[0.98] font-light text-ivory-50 tracking-tight drop-shadow-[0_15px_40px_rgba(0,0,0,0.98)]">
+        <h1 className="font-serif text-[clamp(2.15rem,8.5vw,2.85rem)] leading-[0.98] font-light text-ivory-50 tracking-tight drop-shadow-[0_15px_40px_rgba(0,0,0,0.98)]">
           WHERE STYLE <br />
           BECOMES{" "}
           <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-400 font-serif drop-shadow-[0_0_25px_rgba(200,162,82,0.6)]">

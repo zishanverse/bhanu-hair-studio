@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useMemo, useRef, useEffect } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SALON_CONFIG } from "@/config/salon.config";
 import {
   Scissors,
@@ -18,6 +20,7 @@ export function TreatmentDirectory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [scrollProgress, setScrollProgress] = useState(0);
 
+  const sectionRef = useRef<HTMLElement>(null);
   const reelRef = useRef<HTMLDivElement>(null);
 
   // Flatten all services with parent metadata
@@ -34,7 +37,7 @@ export function TreatmentDirectory() {
   }, [servicesCatalog.categories]);
 
   // Categories list for filter tabs
-  const filterTabs = [
+  const filterTabs = useMemo(() => [
     { id: "all", label: "All Rituals", count: allServices.length },
     { id: "haircuts-styling-men", label: "Hair & Beard", count: 4 },
     { id: "hair-treatments-rebonding", label: "Texture & Rebonding", count: 4 },
@@ -42,7 +45,7 @@ export function TreatmentDirectory() {
     { id: "bridal-makeup-beauty", label: "Bridal & Aesthetics", count: 4 },
     { id: "skin-facials-acne", label: "Skin & Facials", count: 3 },
     { id: "spa-pedicure-waxing", label: "Spa & Waxing", count: 4 },
-  ];
+  ], [allServices.length]);
 
   // Filtered services based on tab and search
   const filteredServices = useMemo(() => {
@@ -56,6 +59,32 @@ export function TreatmentDirectory() {
       return matchesTab && matchesSearch;
     });
   }, [allServices, activeTab, searchQuery]);
+
+  // Reposé Entrance Choreography for Services
+  useEffect(() => {
+    if (typeof window === "undefined" || !sectionRef.current) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".treatment-card-item",
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.85,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 75%",
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [filteredServices]);
 
   // Handle horizontal reel scroll track progress
   const updateScrollProgress = () => {
@@ -88,6 +117,7 @@ export function TreatmentDirectory() {
 
   return (
     <section
+      ref={sectionRef}
       id="services"
       className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-20 sm:py-28 md:py-32 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden"
     >
@@ -166,6 +196,7 @@ export function TreatmentDirectory() {
             <button
               key={tab.id}
               type="button"
+              data-cursor={tab.label}
               onClick={() => setActiveTab(tab.id)}
               className={`shrink-0 px-4 sm:px-5 py-2 rounded-full text-xs uppercase tracking-wider font-medium transition-all duration-300 flex items-center gap-2 ${
                 activeTab === tab.id
@@ -212,6 +243,7 @@ export function TreatmentDirectory() {
               <div className="flex sm:hidden items-center gap-2">
                 <button
                   type="button"
+                  data-cursor="Prev"
                   onClick={() => scrollReel("left")}
                   className="w-8 h-8 rounded-full glass-panel border border-champagne-500/30 flex items-center justify-center text-ivory-100"
                   aria-label="Previous rituals"
@@ -220,6 +252,7 @@ export function TreatmentDirectory() {
                 </button>
                 <button
                   type="button"
+                  data-cursor="Next"
                   onClick={() => scrollReel("right")}
                   className="w-8 h-8 rounded-full glass-panel border border-champagne-500/30 flex items-center justify-center text-ivory-100"
                   aria-label="Next rituals"
@@ -232,15 +265,16 @@ export function TreatmentDirectory() {
             {/* Horizontal Scroll Reel Track */}
             <div
               ref={reelRef}
-              data-cursor="drag"
+              data-cursor="Swipe Reel"
               className="flex items-stretch gap-5 sm:gap-6 overflow-x-auto no-scrollbar scroll-smooth pb-4 pt-1 -mx-4 px-4 sm:-mx-8 sm:px-8 cursor-grab active:cursor-grabbing"
               style={{ scrollSnapType: "x mandatory" }}
             >
               {filteredServices.map((service) => (
                 <div
                   key={service.id}
+                  data-cursor="Book Ritual"
                   style={{ scrollSnapAlign: "start" }}
-                  className="shrink-0 w-[290px] sm:w-[340px] md:w-[370px] rounded-3xl glass-card border border-champagne-500/15 hover:border-champagne-400/50 p-6 sm:p-7 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.85)] relative group overflow-hidden"
+                  className="treatment-card-item will-change-transform shrink-0 w-[290px] sm:w-[340px] md:w-[370px] rounded-3xl glass-card border border-champagne-500/15 hover:border-champagne-400/50 p-6 sm:p-7 flex flex-col justify-between transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.85)] relative group overflow-hidden"
                 >
                   {/* Top Ambient Gold Highlight Line */}
                   <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-champagne-400/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -288,6 +322,7 @@ export function TreatmentDirectory() {
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
+                      data-cursor="Reserve"
                       className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-champagne-400 hover:text-white font-medium group-hover:translate-x-0.5 transition-all"
                     >
                       <span>Reserve</span>

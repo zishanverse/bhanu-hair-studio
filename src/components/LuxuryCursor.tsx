@@ -17,14 +17,17 @@ export function LuxuryCursor() {
   const [mounted, setMounted] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [cursorLabel, setCursorLabel] = useState<string | null>(null);
 
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLDivElement>(null);
 
   const mousePos = useRef({ x: -100, y: -100 });
   const ringPos = useRef({ x: -100, y: -100 });
   const isVisibleRef = useRef(false);
   const isHoveredRef = useRef(false);
+  const cursorLabelRef = useRef<string | null>(null);
   const rafId = useRef<number | null>(null);
   const lastTargetCheck = useRef<number>(0);
 
@@ -52,18 +55,37 @@ export function LuxuryCursor() {
         setIsVisible(true);
       }
 
-      // Throttle interactive element lookup to at most once every 60ms to prevent CPU thrash
+      // Throttle interactive element lookup to at most once every 50ms to prevent CPU thrash
       const now = performance.now();
-      if (now - lastTargetCheck.current > 60) {
+      if (now - lastTargetCheck.current > 50) {
         lastTargetCheck.current = now;
         const target = e.target as HTMLElement | null;
         if (target) {
+          const isTextInput = Boolean(target.closest("input, textarea, select, [contenteditable='true']"));
+          if (isTextInput) {
+            if (isVisibleRef.current) {
+              isVisibleRef.current = false;
+              setIsVisible(false);
+            }
+            return;
+          } else if (!isVisibleRef.current) {
+            isVisibleRef.current = true;
+            setIsVisible(true);
+          }
+
           const interactive = Boolean(
-            target.closest("a, button, [role='button'], input, select, textarea, [data-cursor]")
+            target.closest("a, button, [role='button'], [data-cursor], .cursor-pointer")
           );
           if (interactive !== isHoveredRef.current) {
             isHoveredRef.current = interactive;
             setIsHovered(interactive);
+          }
+
+          const cursorElement = target.closest("[data-cursor]") as HTMLElement | null;
+          const label = cursorElement?.dataset.cursor?.trim() || null;
+          if (label !== cursorLabelRef.current) {
+            cursorLabelRef.current = label;
+            setCursorLabel(label);
           }
         }
       }
@@ -88,7 +110,7 @@ export function LuxuryCursor() {
     const render = () => {
       if (!isRunning) return;
 
-      // Smooth lerp (0.22)
+      // Smooth inertia lerp (0.22)
       ringPos.current.x += (mousePos.current.x - ringPos.current.x) * 0.22;
       ringPos.current.y += (mousePos.current.y - ringPos.current.y) * 0.22;
 
@@ -98,6 +120,10 @@ export function LuxuryCursor() {
 
       if (ringRef.current) {
         ringRef.current.style.transform = `translate3d(${ringPos.current.x}px, ${ringPos.current.y}px, 0)`;
+      }
+
+      if (labelRef.current) {
+        labelRef.current.style.transform = `translate3d(${ringPos.current.x + 18}px, ${ringPos.current.y + 14}px, 0)`;
       }
 
       rafId.current = requestAnimationFrame(render);
@@ -136,7 +162,7 @@ export function LuxuryCursor() {
       aria-hidden="true"
       className="hidden md:block pointer-events-none fixed inset-0 z-[9999] overflow-hidden select-none"
     >
-      {/* Precision Core Dot (Follows exact pointer) */}
+      {/* 1. Precision Core Dot (Follows exact pointer) */}
       <div
         ref={dotRef}
         className={`fixed top-0 left-0 w-2 h-2 -ml-1 -mt-1 rounded-full bg-champagne-300 pointer-events-none will-change-transform shadow-[0_0_8px_rgba(222,199,169,0.7)] transition-opacity duration-150 ${
@@ -144,8 +170,7 @@ export function LuxuryCursor() {
         } ${isHovered ? "scale-150 bg-champagne-200" : "scale-100"}`}
       />
 
-      {/* Smooth Trailing Champagne Aura Ring */}
-      {/* CRITICAL: ONLY transition width/height/border/opacity, NEVER 'transform' */}
+      {/* 2. Smooth Trailing Champagne Aura Ring */}
       <div
         ref={ringRef}
         className={`fixed top-0 left-0 rounded-full pointer-events-none will-change-transform border transition-[width,height,margin,border-color,opacity,box-shadow] duration-200 ease-out ${
@@ -156,6 +181,19 @@ export function LuxuryCursor() {
             : "w-7 h-7 -ml-3.5 -mt-3.5 border-champagne-400/35 bg-transparent"
         }`}
       />
+
+      {/* 3. Contextual Cursor Label Badge (Inspired by Reposé Residence) */}
+      <div
+        ref={labelRef}
+        className={`fixed top-0 left-0 pointer-events-none will-change-transform transition-all duration-200 ${
+          cursorLabel ? "opacity-100 scale-100" : "opacity-0 scale-80"
+        }`}
+        style={{ transform: `translate3d(-100px, -100px, 0)` }}
+      >
+        <span className="inline-block text-[10px] uppercase font-sans tracking-[0.24em] px-2.5 py-1 rounded-full bg-champagne-300 text-obsidian-950 font-semibold shadow-[0_4px_16px_rgba(0,0,0,0.85)] border border-champagne-100/60">
+          {cursorLabel}
+        </span>
+      </div>
     </div>
   );
 }

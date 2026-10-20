@@ -99,6 +99,40 @@ export function TheStudio() {
           }
         );
       }
+
+      // Reposé-Inspired Atelier Standards Grid Reveal
+      gsap.fromTo(
+        ".atelier-standard-card",
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.9,
+          stagger: 0.14,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: ".atelier-standards-grid",
+            start: "top 80%",
+          },
+        }
+      );
+
+      // Reposé-Inspired Urban Reach Commute Tiles Reveal
+      gsap.fromTo(
+        ".urban-reach-card",
+        { y: 35, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: ".urban-reach-grid",
+            start: "top 85%",
+          },
+        }
+      );
     }, section);
 
     return () => ctx.revert();
@@ -197,6 +231,7 @@ export function TheStudio() {
               <div className="pt-2">
                 <a
                   href="#services"
+                  data-cursor="All Rituals"
                   className="group inline-flex items-center gap-3 text-xs uppercase tracking-widest text-champagne-400 hover:text-white transition-colors"
                 >
                   <span className="relative">
@@ -214,7 +249,10 @@ export function TheStudio() {
           {/* Right Column: Architectural Photography */}
           <div className="lg:col-span-6 relative mt-8 lg:mt-0">
             <div ref={imageWrapperRef} className="relative z-10">
-              <div className="relative rounded-3xl overflow-hidden border border-champagne-500/20 shadow-2xl aspect-[4/5] bg-obsidian-900 group">
+              <div
+                data-cursor="Sanctuary"
+                className="relative rounded-3xl overflow-hidden border border-champagne-500/20 shadow-2xl aspect-[4/5] bg-obsidian-900 group"
+              >
                 <Image
                   src={theStudio.featuredImage}
                   alt="Bhanu's The Hair Studio Palsikar Interior"
@@ -236,6 +274,152 @@ export function TheStudio() {
                   </div>
                   <Sparkles className="w-4 h-4 text-champagne-400" />
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 2. ATELIER CRAFT STANDARDS (Inspired by Reposé Living Essentials) */}
+        <div className="pt-16 sm:pt-20 border-t border-champagne-500/15 mt-16 sm:mt-20">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+            <div className="space-y-2">
+              <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-champagne-400">
+                DISCIPLINE & MATERIAL CRAFT
+              </span>
+              <h3 className="font-serif text-2xl sm:text-4xl text-ivory-50 font-light tracking-tight">
+                Craft, Considered.
+              </h3>
+            </div>
+            <p className="text-xs text-muted max-w-md font-light leading-relaxed">
+              Every appointment at Bhanu&apos;s Palsikar Atelier is engineered with surgical toolsets, anatomical diagnostics, and couture chemistry.
+            </p>
+          </div>
+
+          <div className="atelier-standards-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="atelier-standard-card p-6 rounded-2xl glass-card border border-champagne-500/15 space-y-4 hover:border-champagne-400/40 transition-all duration-300 will-change-transform">
+              <span className="text-[10px] font-mono text-champagne-400/80 uppercase tracking-widest block">
+                01 / STEEL TOOLING
+              </span>
+              <div className="font-serif text-3xl sm:text-4xl text-champagne-300 font-light">
+                440C
+              </div>
+              <div className="text-xs uppercase tracking-wider font-medium text-ivory-100 font-sans">
+                Japanese Convex Shears
+              </div>
+              <p className="text-xs text-muted font-light leading-relaxed">
+                Hand-honed convex blades forged for micro-point cutting, scissor-over-comb, and zero follicle split ends.
+              </p>
+            </div>
+
+            <div className="atelier-standard-card p-6 rounded-2xl glass-card border border-champagne-500/15 space-y-4 hover:border-champagne-400/40 transition-all duration-300 will-change-transform">
+              <span className="text-[10px] font-mono text-champagne-400/80 uppercase tracking-widest block">
+                02 / ARCHITECTURE
+              </span>
+              <div className="font-serif text-3xl sm:text-4xl text-champagne-300 font-light">
+                Anatomical
+              </div>
+              <div className="text-xs uppercase tracking-wider font-medium text-ivory-100 font-sans">
+                Follicle & Bone Mapping
+              </div>
+              <p className="text-xs text-muted font-light leading-relaxed">
+                Every fade, bob, and layer is mapped to head shape, parietal ridge, and growth direction for effortless growth.
+              </p>
+            </div>
+
+            <div className="atelier-standard-card p-6 rounded-2xl glass-card border border-champagne-500/15 space-y-4 hover:border-champagne-400/40 transition-all duration-300 will-change-transform">
+              <span className="text-[10px] font-mono text-champagne-400/80 uppercase tracking-widest block">
+                03 / COLOR FORMULA
+              </span>
+              <div className="font-serif text-3xl sm:text-4xl text-champagne-300 font-light">
+                Bespoke
+              </div>
+              <div className="text-xs uppercase tracking-wider font-medium text-ivory-100 font-sans">
+                Ammonia-Free French Gloss
+              </div>
+              <p className="text-xs text-muted font-light leading-relaxed">
+                Dimensional balayage, babylights, and custom toners formulated to enrich Indian hair textures with radiant shine.
+              </p>
+            </div>
+
+            <div className="atelier-standard-card p-6 rounded-2xl glass-card border border-champagne-500/15 space-y-4 hover:border-champagne-400/40 transition-all duration-300 will-change-transform">
+              <span className="text-[10px] font-mono text-champagne-400/80 uppercase tracking-widest block">
+                04 / PRIVACY & RITUAL
+              </span>
+              <div className="font-serif text-3xl sm:text-4xl text-champagne-300 font-light">
+                Quietude
+              </div>
+              <div className="text-xs uppercase tracking-wider font-medium text-ivory-100 font-sans">
+                Head Spa & VIP Suites
+              </div>
+              <p className="text-xs text-muted font-light leading-relaxed">
+                Dedicated sound-softened suites with warm ultrasonic mist therapy for restorative scalp care and bridal preparations.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. URBAN CONNECTEDNESS & COMMUTE (Inspired by Reposé Connectedness Map) */}
+        <div className="pt-16 sm:pt-20 border-t border-champagne-500/15 mt-16 sm:mt-20">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+            <div className="space-y-2">
+              <span className="text-[10px] font-mono uppercase tracking-[0.28em] text-champagne-400">
+                LOCATION & URBAN REACH · INDORE
+              </span>
+              <h3 className="font-serif text-2xl sm:text-4xl text-ivory-50 font-light tracking-tight">
+                Your sanctuary. Within reach.
+              </h3>
+            </div>
+            <div className="text-xs text-muted font-mono tracking-widest uppercase">
+              Shop No. 4, Sewak Avenue, Manik Bagh Rd, Palsikar
+            </div>
+          </div>
+
+          <div className="urban-reach-grid grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="urban-reach-card p-5 rounded-2xl glass-card border border-champagne-500/15 will-change-transform hover:border-champagne-400/40 transition-all">
+              <div className="font-serif text-3xl sm:text-4xl text-ivory-50 font-light">
+                05 <span className="text-xs font-mono text-champagne-400 uppercase">MIN</span>
+              </div>
+              <div className="text-xs font-medium text-ivory-100 uppercase tracking-wider font-sans mt-2">
+                Tower Square
+              </div>
+              <div className="text-[10px] text-muted font-mono uppercase tracking-widest mt-0.5">
+                Central Arterial Junction
+              </div>
+            </div>
+
+            <div className="urban-reach-card p-5 rounded-2xl glass-card border border-champagne-500/15 will-change-transform hover:border-champagne-400/40 transition-all">
+              <div className="font-serif text-3xl sm:text-4xl text-ivory-50 font-light">
+                08 <span className="text-xs font-mono text-champagne-400 uppercase">MIN</span>
+              </div>
+              <div className="text-xs font-medium text-ivory-100 uppercase tracking-wider font-sans mt-2">
+                Chhappan Dukan
+              </div>
+              <div className="text-[10px] text-muted font-mono uppercase tracking-widest mt-0.5">
+                Central City Landmark
+              </div>
+            </div>
+
+            <div className="urban-reach-card p-5 rounded-2xl glass-card border border-champagne-500/15 will-change-transform hover:border-champagne-400/40 transition-all">
+              <div className="font-serif text-3xl sm:text-4xl text-ivory-50 font-light">
+                15 <span className="text-xs font-mono text-champagne-400 uppercase">MIN</span>
+              </div>
+              <div className="text-xs font-medium text-ivory-100 uppercase tracking-wider font-sans mt-2">
+                Vijay Nagar
+              </div>
+              <div className="text-[10px] text-muted font-mono uppercase tracking-widest mt-0.5">
+                AB Road Luxury Corridor
+              </div>
+            </div>
+
+            <div className="urban-reach-card p-5 rounded-2xl glass-card border border-champagne-500/15 will-change-transform hover:border-champagne-400/40 transition-all">
+              <div className="font-serif text-3xl sm:text-4xl text-ivory-50 font-light">
+                25 <span className="text-xs font-mono text-champagne-400 uppercase">MIN</span>
+              </div>
+              <div className="text-xs font-medium text-ivory-100 uppercase tracking-wider font-sans mt-2">
+                Devi Ahilyabai Airport
+              </div>
+              <div className="text-[10px] text-muted font-mono uppercase tracking-widest mt-0.5">
+                Domestic & Regional Hub
               </div>
             </div>
           </div>

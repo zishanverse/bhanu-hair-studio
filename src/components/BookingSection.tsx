@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SALON_CONFIG } from "@/config/salon.config";
 import { MessageCircle, Phone, MapPin, Calendar, Clock, CheckCircle2, Sparkles, Send } from "lucide-react";
 
@@ -16,6 +18,55 @@ export function BookingSection() {
     time: "",
   });
 
+  const sectionRef = useRef<HTMLElement>(null);
+  const archPortalRef = useRef<HTMLDivElement>(null);
+  const keystoneLineRef = useRef<HTMLDivElement>(null);
+
+  // Reposé Grand Finale Arch Portal Mask & Expansion Animation (Video 02:02 – 02:14)
+  useEffect(() => {
+    if (typeof window === "undefined" || !archPortalRef.current) return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      // 1. Arch Portal Zooms in with Smooth Scroll Scrub
+      gsap.fromTo(
+        archPortalRef.current,
+        { scale: 0.92, y: 50, opacity: 0.75 },
+        {
+          scale: 1,
+          y: 0,
+          opacity: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: archPortalRef.current,
+            start: "top 90%",
+            end: "top 25%",
+            scrub: 1.2,
+          },
+        }
+      );
+
+      // 2. Keystone horizontal laser hairline expansion
+      if (keystoneLineRef.current) {
+        gsap.fromTo(
+          keystoneLineRef.current,
+          { scaleX: 0, transformOrigin: "center center" },
+          {
+            scaleX: 1,
+            duration: 1.1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: archPortalRef.current,
+              start: "top 75%",
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Create WhatsApp direct link with form details
@@ -26,6 +77,7 @@ export function BookingSection() {
 
   return (
     <section
+      ref={sectionRef}
       id="book"
       className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/20 overflow-hidden"
     >
@@ -33,27 +85,43 @@ export function BookingSection() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[400px] bg-gradient-to-b from-champagne-500/10 via-champagne-500/5 to-transparent blur-[160px] pointer-events-none" />
       <div className="absolute bottom-0 right-10 w-96 h-96 bg-champagne-500/5 blur-[120px] pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto space-y-12 sm:space-y-16 relative z-10">
-        {/* Section Header */}
-        <div className="text-center space-y-4 sm:space-y-6 max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full glass-panel border border-champagne-500/25 text-champagne-300 text-[10px] sm:text-xs tracking-ultra uppercase font-mono">
-            <span>CONSULTATION & RESERVATIONS</span>
+      <div className="max-w-6xl mx-auto relative z-10">
+        {/* Reposé-Inspired Monumental Arch Portal Proscenium */}
+        <div
+          ref={archPortalRef}
+          className="rounded-t-[120px] sm:rounded-t-[180px] md:rounded-t-[240px] rounded-b-[32px] sm:rounded-b-[40px] border border-champagne-500/30 bg-gradient-to-b from-surface/60 via-obsidian-950/80 to-obsidian-950/95 p-6 sm:p-10 md:p-16 lg:p-20 relative overflow-hidden shadow-[0_40px_140px_rgba(0,0,0,0.95)] space-y-12 sm:space-y-16 will-change-transform"
+        >
+          {/* Subtle Arch Keystones & Laser Radial Glow */}
+          <div
+            ref={keystoneLineRef}
+            className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-[2px] bg-gradient-to-r from-transparent via-champagne-400 to-transparent pointer-events-none will-change-transform"
+          />
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 opacity-60">
+            <span className="w-1.5 h-1.5 rounded-full bg-champagne-400" />
+            <span className="text-[8px] font-mono tracking-widest text-champagne-400 uppercase">ATELIER PORTAL</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-champagne-400" />
           </div>
 
-          <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-ivory-50 tracking-tight leading-[1.05] sm:leading-[0.95]">
-            {booking.headingLine1} <br />
-            <span className="italic font-normal text-champagne-300 font-serif">
-              {booking.headingLine2}
-            </span>
-          </h2>
+          {/* Section Header */}
+          <div className="text-center space-y-4 sm:space-y-6 max-w-3xl mx-auto pt-6 sm:pt-8">
+            <div className="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 rounded-full glass-panel border border-champagne-500/25 text-champagne-300 text-[10px] sm:text-xs tracking-ultra uppercase font-mono">
+              <span>CONSULTATION & RESERVATIONS</span>
+            </div>
 
-          <p className="text-xs sm:text-sm md:text-base text-muted font-light max-w-xl mx-auto leading-relaxed px-2">
-            {booking.subtext}
-          </p>
-        </div>
+            <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-ivory-50 tracking-tight leading-[1.05] sm:leading-[0.92]">
+              {booking.headingLine1} <br />
+              <span className="italic font-normal text-champagne-300 font-serif">
+                {booking.headingLine2}
+              </span>
+            </h2>
 
-        {/* Primary Action Buttons (WhatsApp, Phone, Directions) */}
-        <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-4 max-w-3xl mx-auto w-full">
+            <p className="text-xs sm:text-sm md:text-base text-muted font-light max-w-xl mx-auto leading-relaxed px-2">
+              {booking.subtext}
+            </p>
+          </div>
+
+          {/* Primary Action Buttons (WhatsApp, Phone, Directions) */}
+          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 sm:gap-4 max-w-3xl mx-auto w-full">
           {/* Primary WhatsApp Action Button */}
           <a
             href={`https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(contact.whatsappPrefill)}`}
@@ -170,42 +238,46 @@ export function BookingSection() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] tracking-widest uppercase text-muted mb-1.5 font-mono">
+                    <label htmlFor="booking-name" className="block text-[10px] tracking-widest uppercase text-champagne-300 mb-1.5 font-mono">
                       Your Full Name *
                     </label>
                     <input
+                      id="booking-name"
                       type="text"
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="e.g. Vikram Malhotra"
-                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/20 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 focus:ring-1 focus:ring-champagne-400/40 transition-colors placeholder:text-muted/50"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] tracking-widest uppercase text-muted mb-1.5 font-mono">
+                    <label htmlFor="booking-phone" className="block text-[10px] tracking-widest uppercase text-champagne-300 mb-1.5 font-mono">
                       Phone Number *
                     </label>
                     <input
+                      id="booking-phone"
                       type="tel"
+                      inputMode="tel"
                       required
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="+91 98765 00000"
-                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/20 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 focus:ring-1 focus:ring-champagne-400/40 transition-colors placeholder:text-muted/50"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] tracking-widest uppercase text-muted mb-1.5 font-mono">
+                    <label htmlFor="booking-outlet" className="block text-[10px] tracking-widest uppercase text-champagne-300 mb-1.5 font-mono">
                       Select Studio Location *
                     </label>
                     <select
+                      id="booking-outlet"
                       value={formData.outlet}
                       onChange={(e) => setFormData({ ...formData, outlet: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/20 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 focus:ring-1 focus:ring-champagne-400/40 transition-colors"
                     >
                       <option value="Palsikar Colony">Palsikar Colony (Manik Bagh Rd)</option>
                       <option value="Saket Nagar">Saket Nagar (Near Saket Club)</option>
@@ -214,13 +286,14 @@ export function BookingSection() {
                   </div>
 
                   <div>
-                    <label className="block text-[10px] tracking-widest uppercase text-muted mb-1.5 font-mono">
+                    <label htmlFor="booking-service" className="block text-[10px] tracking-widest uppercase text-champagne-300 mb-1.5 font-mono">
                       Preferred Discipline *
                     </label>
                     <select
+                      id="booking-service"
                       value={formData.service}
                       onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/20 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 focus:ring-1 focus:ring-champagne-400/40 transition-colors"
                     >
                       <option value="Haircut & Styling">Haircut & Styling</option>
                       <option value="Beard Cutting & Beard Trimming">Beard Cutting & Beard Trimming</option>
@@ -246,32 +319,35 @@ export function BookingSection() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] tracking-widest uppercase text-muted mb-1.5 font-mono">
+                    <label htmlFor="booking-date" className="block text-[10px] tracking-widest uppercase text-champagne-300 mb-1.5 font-mono">
                       Preferred Date
                     </label>
                     <input
+                      id="booking-date"
                       type="date"
+                      min={new Date().toISOString().split("T")[0]}
                       value={formData.date}
                       onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/20 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 focus:ring-1 focus:ring-champagne-400/40 transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] tracking-widest uppercase text-muted mb-1.5 font-mono">
+                    <label htmlFor="booking-time" className="block text-[10px] tracking-widest uppercase text-champagne-300 mb-1.5 font-mono">
                       Preferred Time
                     </label>
                     <input
+                      id="booking-time"
                       type="time"
                       value={formData.time}
                       onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/20 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-base sm:text-xs text-ivory-50 focus:outline-none focus:border-champagne-400 focus:ring-1 focus:ring-champagne-400/40 transition-colors"
                     />
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-4 rounded-xl text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 hover:shadow-[0_0_25px_rgba(197,164,119,0.5)] transition-all flex items-center justify-center gap-2"
+                  className="w-full py-4 rounded-xl text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 hover:shadow-[0_0_25px_rgba(197,164,119,0.5)] transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>Send Reservation Request</span>
@@ -281,6 +357,7 @@ export function BookingSection() {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 }

@@ -18,6 +18,23 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Lock body scroll and handle Escape key when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") setMobileMenuOpen(false);
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        document.body.style.overflow = "";
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [mobileMenuOpen]);
+
   useEffect(() => {
     const checkStatus = () => {
       // Calculate Indian Standard Time (UTC + 5:30)
@@ -169,18 +186,27 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Menu Backdrop & Dropdown */}
       {mobileMenuOpen && (
-        <div
-          id="nav-mobile-drawer"
-          className="lg:hidden pointer-events-auto px-6 py-8 mx-4 mt-3 rounded-3xl glass-card border border-champagne-500/30 shadow-2xl space-y-6 animate-in fade-in slide-in-from-top-4 duration-300 backdrop-blur-2xl"
-        >
-          <div className="flex flex-col space-y-4">
-            <a
-              href="/bhanushairacademy"
-              onClick={() => setMobileMenuOpen(false)}
-              className="group text-sm uppercase tracking-[0.25em] text-champagne-300 font-medium py-1 flex items-center justify-between border-b border-champagne-500/20 pb-3"
-            >
+        <>
+          <div
+            className="lg:hidden fixed inset-0 bg-obsidian-950/80 backdrop-blur-md z-40 pointer-events-auto animate-in fade-in duration-300"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
+          />
+          <div
+            id="nav-mobile-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile Navigation"
+            className="lg:hidden relative z-50 pointer-events-auto px-6 py-8 mx-4 mt-3 rounded-3xl glass-card border border-champagne-500/35 shadow-2xl space-y-6 animate-in fade-in slide-in-from-top-4 duration-300 backdrop-blur-2xl max-h-[85vh] overflow-y-auto no-scrollbar"
+          >
+            <div className="flex flex-col space-y-4">
+              <a
+                href="/bhanushairacademy"
+                onClick={() => setMobileMenuOpen(false)}
+                className="group text-sm uppercase tracking-[0.25em] text-champagne-300 font-medium py-1 flex items-center justify-between border-b border-champagne-500/20 pb-3"
+              >
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
                 Bhanu&apos;s Hair Academy (Courses)
@@ -246,6 +272,7 @@ export function Navbar() {
             </a>
           </div>
         </div>
+      </>
       )}
     </header>
   );

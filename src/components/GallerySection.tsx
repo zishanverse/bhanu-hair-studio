@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SALON_CONFIG, GalleryItem } from "@/config/salon.config";
 import { X, ZoomIn, ChevronLeft, ChevronRight, SlidersHorizontal, Sparkles } from "lucide-react";
 
@@ -10,6 +12,10 @@ export function GallerySection() {
   const [activeTab, setActiveTab] = useState<string>("all");
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number | null>(null);
   const [sliderPosition, setSliderPosition] = useState<number>(50); // for before/after comparison slider
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
   const categories = [
     { id: "all", label: "All Looks" },
@@ -27,12 +33,69 @@ export function GallerySection() {
   const selectedItem =
     activeLightboxIndex !== null ? filteredItems[activeLightboxIndex] : null;
 
+  // Reposé-Inspired GSAP Pinned Horizontal Reel Animation (Video 01:21 – 01:33)
+  useEffect(() => {
+    if (typeof window === "undefined" || !sectionRef.current || !trackRef.current) return;
+    if (window.innerWidth < 1024) return; // Dedicated mobile/tablet swipe layout
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const track = trackRef.current;
+    const section = sectionRef.current;
+
+    const ctx = gsap.context(() => {
+      // Calculate total horizontal travel distance
+      const getScrollAmount = () => -(track.scrollWidth - window.innerWidth + 160);
+
+      const tween = gsap.to(track, {
+        x: getScrollAmount,
+        ease: "none",
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: () => `+=${Math.max(track.scrollWidth - window.innerWidth, 1200)}`,
+          pin: true,
+          scrub: 1.1,
+          invalidateOnRefresh: true,
+          anticipatePin: 1,
+          onUpdate: (self) => {
+            if (progressBarRef.current) {
+              progressBarRef.current.style.transform = `scaleX(${self.progress})`;
+            }
+          },
+        },
+      });
+
+      // Internal multi-plane parallax for each arched card's image
+      const cards = track.querySelectorAll(".gallery-card-inner-img");
+      cards.forEach((img) => {
+        gsap.fromTo(
+          img,
+          { xPercent: -10 },
+          {
+            xPercent: 10,
+            ease: "none",
+            scrollTrigger: {
+              trigger: section,
+              start: "top top",
+              end: () => `+=${Math.max(track.scrollWidth - window.innerWidth, 1200)}`,
+              scrub: 1.1,
+            },
+          }
+        );
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [activeTab]);
+
   return (
     <section
+      ref={sectionRef}
       id="gallery"
-      className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15"
+      className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-16 sm:py-24 lg:py-0 lg:min-h-screen lg:flex lg:flex-col lg:justify-center border-t border-champagne-500/15 overflow-hidden select-none"
     >
-      <div className="max-w-7xl mx-auto space-y-12 sm:space-y-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-20 w-full mb-8 lg:mb-10">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8">
           <div className="space-y-3 sm:space-y-4 max-w-2xl">
@@ -50,13 +113,20 @@ export function GallerySection() {
             </h2>
           </div>
 
-          <p className="text-xs sm:text-sm md:text-base text-muted max-w-md font-light leading-relaxed">
-            {gallery.description}
-          </p>
+          <div className="flex flex-col items-start md:items-end gap-3">
+            <p className="text-xs sm:text-sm text-muted max-w-md font-light leading-relaxed">
+              {gallery.description}
+            </p>
+            <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest uppercase text-champagne-400/80">
+              <span className="hidden lg:inline">SCROLL DOWN TO EXPLORE REEL</span>
+              <span className="lg:hidden">SWIPE TO EXPLORE ARCHIVE</span>
+              <span className="text-base leading-none">→</span>
+            </div>
+          </div>
         </div>
 
         {/* Filter Navigation Tabs */}
-        <div className="flex flex-wrap items-center gap-2 md:gap-3 border-b border-champagne-500/15 pb-6">
+        <div className="flex flex-wrap items-center gap-2 md:gap-3 border-b border-champagne-500/15 pb-4 mt-6">
           {categories.map((cat) => (
             <button
               key={cat.id}
@@ -75,9 +145,14 @@ export function GallerySection() {
             </button>
           ))}
         </div>
+      </div>
 
-        {/* Asymmetric Gallery Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* Reposé-Style Horizontal Reel Track on Desktop, Swipe Track on Mobile */}
+      <div className="w-full px-4 sm:px-8 md:px-12 lg:px-20 overflow-visible">
+        <div
+          ref={trackRef}
+          className="flex flex-row overflow-x-auto lg:overflow-visible no-scrollbar snap-x snap-mandatory lg:snap-none gap-5 sm:gap-6 lg:gap-8 w-auto lg:w-max lg:will-change-transform pb-6 pt-1 -mx-4 px-4 sm:-mx-8 sm:px-8 lg:mx-0 lg:px-0"
+        >
           {filteredItems.map((item, index) => {
             const isTall = item.aspect === "tall";
             const isWide = item.aspect === "wide";
@@ -96,23 +171,30 @@ export function GallerySection() {
                     setActiveLightboxIndex(index);
                   }
                 }}
-                className={`group relative rounded-3xl overflow-hidden glass-card border border-champagne-500/15 hover:border-champagne-400/50 transition-all duration-700 cursor-pointer ${
-                  isWide ? "md:col-span-2 aspect-[16/10]" : "aspect-[4/5]"
-                } flex flex-col justify-end p-6 md:p-8 transform hover:-translate-y-1 hover:shadow-[0_20px_50px_rgba(0,0,0,0.8)] focus:outline-none focus:ring-1 focus:ring-champagne-400`}
+                className={`group relative rounded-t-[100px] sm:rounded-t-[140px] rounded-b-2xl md:rounded-b-3xl overflow-hidden glass-card border border-champagne-500/20 hover:border-champagne-400/60 transition-all duration-700 cursor-pointer snap-start shrink-0 ${
+                  isWide
+                    ? "w-[290px] xs:w-[340px] sm:w-[440px] lg:w-[540px] aspect-[16/11]"
+                    : "w-[240px] xs:w-[280px] sm:w-[340px] lg:w-[380px] aspect-[3.5/5]"
+                } flex flex-col justify-between p-5 md:p-7 transform hover:-translate-y-2 hover:shadow-[0_30px_70px_rgba(0,0,0,0.85)] focus:outline-none focus:ring-1 focus:ring-champagne-400`}
               >
-                {/* Background Image with Unified Champagne Tone Grading */}
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover object-center filter brightness-[0.85] contrast-[1.08] transition-transform duration-1000 group-hover:scale-105"
-                />
+                {/* Background Image with Multi-Plane Parallax Container */}
+                <div className="absolute inset-0 overflow-hidden">
+                  <div className="gallery-card-inner-img relative w-[120%] h-[120%] -left-[10%] -top-[10%]">
+                    <Image
+                      src={item.image}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 768px) 320px, 450px"
+                      className="object-cover object-center filter brightness-[0.88] contrast-[1.08] transition-transform duration-1000 group-hover:scale-105"
+                    />
+                  </div>
+                </div>
+
                 {/* Film Grade Duotone Overlay to eliminate stock photo temperature clash */}
-                <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950 via-obsidian-950/40 to-champagne-900/10 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/90 via-obsidian-950/25 to-champagne-900/10 pointer-events-none" />
 
                 {/* Top Corner Badge & Editorial Plate Number */}
-                <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-10">
+                <div className="relative flex items-center justify-between z-10">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] tracking-ultra uppercase px-3 py-1 rounded-full glass-pill border border-champagne-500/25 text-champagne-300 font-mono">
                       {item.categoryLabel}
@@ -126,24 +208,42 @@ export function GallerySection() {
                   </div>
                 </div>
 
-                {/* Bottom Content Overlay */}
-                <div className="relative z-10 space-y-2">
-                  <h3 className="font-serif text-2xl md:text-3xl text-ivory-50 group-hover:text-champagne-200 transition-colors">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-muted font-light leading-relaxed max-w-md">
-                    {item.description}
-                  </p>
-                  {item.transformation && (
-                    <div className="pt-2 flex items-center gap-1.5 text-[10px] tracking-widest uppercase text-champagne-400 font-mono">
-                      <Sparkles className="w-3 h-3" />
-                      <span>Before / After Transformation Available</span>
+                {/* Center Hover Halo Play/Inspect Badge (Reposé Pattern) */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none z-20">
+                  <div className="relative flex items-center justify-center">
+                    <div className="w-20 h-20 rounded-full border border-champagne-400/40 animate-ping absolute inset-0 pointer-events-none" />
+                    <div className="w-16 h-16 rounded-full bg-champagne-400/95 text-obsidian-950 flex flex-col items-center justify-center font-mono text-[9px] uppercase tracking-widest font-bold shadow-[0_0_35px_rgba(200,162,82,0.7)] backdrop-blur-md">
+                      <span>INSPECT</span>
+                      <span className="text-[7px] tracking-normal font-sans text-obsidian-950/70 font-semibold">TAP / VIEW</span>
                     </div>
+                  </div>
+                </div>
+
+                {/* Clean Bottom Plate Identifier (Text removed from inside card to prevent border radius overlap) */}
+                <div className="relative z-10 flex items-center justify-between">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-champagne-300 font-medium px-2.5 py-1 rounded-full glass-panel border border-champagne-500/20">
+                    {item.title}
+                  </span>
+                  {item.transformation && (
+                    <span className="inline-flex items-center gap-1 text-[9px] font-mono uppercase tracking-wider text-champagne-300 px-2 py-0.5 rounded-full bg-champagne-500/20 border border-champagne-500/30">
+                      <Sparkles className="w-2.5 h-2.5 text-champagne-400" />
+                      <span>B/A</span>
+                    </span>
                   )}
                 </div>
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* Scrub Progress Track (Desktop >=1024px) */}
+      <div className="hidden lg:block w-full max-w-7xl mx-auto px-20 mt-8">
+        <div className="w-full h-[2px] bg-champagne-500/20 rounded-full overflow-hidden">
+          <div
+            ref={progressBarRef}
+            className="w-full h-full bg-gradient-to-r from-champagne-400 to-champagne-200 origin-left scale-x-0 transition-transform duration-75"
+          />
         </div>
       </div>
 
@@ -186,6 +286,12 @@ export function GallerySection() {
                       const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
                       setSliderPosition((x / rect.width) * 100);
                     }
+                  }}
+                  onTouchStart={(e) => {
+                    const touch = e.touches[0];
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const x = Math.max(0, Math.min(touch.clientX - rect.left, rect.width));
+                    setSliderPosition((x / rect.width) * 100);
                   }}
                   onTouchMove={(e) => {
                     const touch = e.touches[0];
@@ -266,6 +372,26 @@ export function GallerySection() {
                   {selectedItem.description}
                 </p>
 
+                {/* Craft Specifications Grid (Reposé Architecture Pattern) */}
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div className="p-3 rounded-xl glass-panel border border-champagne-500/15">
+                    <div className="text-[9px] uppercase tracking-widest text-champagne-400 font-mono">
+                      Craft Discipline
+                    </div>
+                    <div className="text-xs text-ivory-100 font-medium mt-0.5">
+                      Haute Coiffure Precision
+                    </div>
+                  </div>
+                  <div className="p-3 rounded-xl glass-panel border border-champagne-500/15">
+                    <div className="text-[9px] uppercase tracking-widest text-champagne-400 font-mono">
+                      Maintenance Cycle
+                    </div>
+                    <div className="text-xs text-ivory-100 font-medium mt-0.5">
+                      4 – 6 Weeks
+                    </div>
+                  </div>
+                </div>
+
                 {selectedItem.transformation && (
                   <div className="p-4 rounded-xl glass-panel border border-champagne-500/20 text-xs text-ivory-200/90 font-light space-y-1">
                     <div className="text-[10px] tracking-widest uppercase text-champagne-400 font-medium">
@@ -277,7 +403,7 @@ export function GallerySection() {
               </div>
 
               {/* Lightbox Footer & Navigation */}
-              <div className="pt-6 border-t border-champagne-500/20 flex items-center justify-between">
+              <div className="pt-6 border-t border-champagne-500/20 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
@@ -305,13 +431,16 @@ export function GallerySection() {
                   </button>
                 </div>
 
-                <a
-                  href="#book"
-                  onClick={() => setActiveLightboxIndex(null)}
-                  className="px-6 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-all"
-                >
-                  Book This Look
-                </a>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={`https://wa.me/${SALON_CONFIG.contact.whatsappNumber}?text=${encodeURIComponent(`Hello Bhanu's The Hair Studio, I would like to book an appointment for "${selectedItem.title}" (${selectedItem.categoryLabel}).`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-all shadow-[0_0_20px_rgba(200,162,82,0.4)]"
+                  >
+                    Book on WhatsApp
+                  </a>
+                </div>
               </div>
             </div>
           </div>
