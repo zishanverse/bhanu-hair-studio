@@ -1,132 +1,126 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SALON_CONFIG, GalleryItem } from "@/config/salon.config";
-import { X, ZoomIn, ChevronLeft, ChevronRight, SlidersHorizontal, Sparkles } from "lucide-react";
+import { X, ZoomIn, ChevronLeft, ChevronRight, SlidersHorizontal, ArrowRight } from "lucide-react";
 
 export function GallerySection() {
   const { gallery } = SALON_CONFIG;
   const [activeTab, setActiveTab] = useState<string>("all");
   const [activeLightboxIndex, setActiveLightboxIndex] = useState<number | null>(null);
   const [sliderPosition, setSliderPosition] = useState<number>(50); // for before/after comparison slider
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const progressBarRef = useRef<HTMLDivElement>(null);
+  const reelRef = useRef<HTMLDivElement>(null);
 
-  const categories = [
+  const categories = useMemo(() => [
     { id: "all", label: "All Looks" },
     { id: "mens", label: "Men's Hair" },
     { id: "womens", label: "Women's Hair" },
     { id: "colour", label: "Hair Colour" },
     { id: "treatments", label: "Treatments" },
-  ];
+  ], []);
 
-  const filteredItems =
-    activeTab === "all"
+  const filteredItems = useMemo(() => {
+    return activeTab === "all"
       ? gallery.items
       : gallery.items.filter((item) => item.category === activeTab);
+  }, [activeTab, gallery.items]);
 
   const selectedItem =
     activeLightboxIndex !== null ? filteredItems[activeLightboxIndex] : null;
 
-  // Reposé-Inspired GSAP Pinned Horizontal Reel Animation (Video 01:21 – 01:33)
+  // Track horizontal reel scroll progress
+  const updateScrollProgress = () => {
+    if (!reelRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = reelRef.current;
+    const maxScroll = scrollWidth - clientWidth;
+    if (maxScroll <= 0) {
+      setScrollProgress(0);
+      return;
+    }
+    setScrollProgress(Math.min(1, Math.max(0, scrollLeft / maxScroll)));
+  };
+
   useEffect(() => {
-    if (typeof window === "undefined" || !sectionRef.current || !trackRef.current) return;
-    if (window.innerWidth < 1024) return; // Dedicated mobile/tablet swipe layout
+    const el = reelRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", updateScrollProgress, { passive: true });
+    updateScrollProgress();
+    return () => el.removeEventListener("scroll", updateScrollProgress);
+  }, [filteredItems]);
 
-    gsap.registerPlugin(ScrollTrigger);
-
-    const track = trackRef.current;
-    const section = sectionRef.current;
-
-    const ctx = gsap.context(() => {
-      // Calculate total horizontal travel distance
-      const getScrollAmount = () => -(track.scrollWidth - window.innerWidth + 160);
-
-      const tween = gsap.to(track, {
-        x: getScrollAmount,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: () => `+=${Math.max(track.scrollWidth - window.innerWidth, 1200)}`,
-          pin: true,
-          scrub: 1.1,
-          invalidateOnRefresh: true,
-          anticipatePin: 1,
-          onUpdate: (self) => {
-            if (progressBarRef.current) {
-              progressBarRef.current.style.transform = `scaleX(${self.progress})`;
-            }
-          },
-        },
-      });
-
-      // Internal multi-plane parallax for each arched card's image
-      const cards = track.querySelectorAll(".gallery-card-inner-img");
-      cards.forEach((img) => {
-        gsap.fromTo(
-          img,
-          { xPercent: -10 },
-          {
-            xPercent: 10,
-            ease: "none",
-            scrollTrigger: {
-              trigger: section,
-              start: "top top",
-              end: () => `+=${Math.max(track.scrollWidth - window.innerWidth, 1200)}`,
-              scrub: 1.1,
-            },
-          }
-        );
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, [activeTab]);
+  const scrollReel = (direction: "left" | "right") => {
+    if (!reelRef.current) return;
+    const amount = reelRef.current.clientWidth * 0.75;
+    reelRef.current.scrollBy({
+      left: direction === "right" ? amount : -amount,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <section
       ref={sectionRef}
       id="gallery"
-      className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-16 sm:py-24 lg:py-0 lg:min-h-screen lg:flex lg:flex-col lg:justify-center border-t border-champagne-500/15 overflow-hidden select-none"
+      className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-20 sm:py-28 md:py-32 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden select-none"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 lg:px-20 w-full mb-8 lg:mb-10">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8">
-          <div className="space-y-3 sm:space-y-4 max-w-2xl">
+      {/* Background ambient lighting */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-champagne-500/5 blur-[180px] pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10 relative z-10">
+        {/* Section Header with Responsive Controls */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-2">
+          <div className="space-y-3 max-w-2xl">
             <div className="flex items-center gap-3">
-              <span className="w-6 sm:w-8 h-[1px] bg-champagne-500/80 inline-block" />
-              <span className="text-[10px] sm:text-xs uppercase tracking-ultra text-champagne-400 font-medium">
+              <span className="w-8 h-[1px] bg-champagne-500 inline-block" />
+              <span className="text-[11px] uppercase tracking-ultra text-champagne-400 font-medium">
                 {gallery.sectionNum} / {gallery.sectionLabel}
               </span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-ivory-50 tracking-tight leading-[1.05] sm:leading-[0.96]">
+            <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-ivory-50 tracking-tight leading-[1.02]">
               {gallery.headingLine1} <br />
-              <span className="italic font-normal text-champagne-300 font-serif">
+              <span className="italic font-normal text-champagne-400 font-serif">
                 {gallery.headingLine2}
               </span>
             </h2>
-          </div>
-
-          <div className="flex flex-col items-start md:items-end gap-3">
-            <p className="text-xs sm:text-sm text-muted max-w-md font-light leading-relaxed">
+            <p className="text-sm md:text-base text-muted font-light leading-relaxed max-w-lg">
               {gallery.description}
             </p>
-            <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest uppercase text-champagne-400/80">
-              <span className="hidden lg:inline">SCROLL DOWN TO EXPLORE REEL</span>
-              <span className="lg:hidden">SWIPE TO EXPLORE ARCHIVE</span>
-              <span className="text-base leading-none">→</span>
+          </div>
+
+          {/* Glide Navigation Controls */}
+          <div className="flex items-center justify-between lg:justify-end gap-3 w-full lg:w-auto">
+            <div className="flex items-center gap-2 font-mono uppercase tracking-widest text-[11px] text-champagne-400">
+              <ArrowRight className="w-3.5 h-3.5 animate-pulse" />
+              <span>SWIPE / GLIDE LOOKS</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => scrollReel("left")}
+                className="w-10 h-10 rounded-full glass-panel border border-champagne-500/30 flex items-center justify-center text-ivory-100 hover:text-champagne-400 hover:border-champagne-400 transition-colors"
+                aria-label="Previous looks"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollReel("right")}
+                className="w-10 h-10 rounded-full glass-panel border border-champagne-500/30 flex items-center justify-center text-ivory-100 hover:text-champagne-400 hover:border-champagne-400 transition-colors"
+                aria-label="Next looks"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </div>
 
         {/* Filter Navigation Tabs */}
-        <div className="flex flex-wrap items-center gap-2 md:gap-3 border-b border-champagne-500/15 pb-4 mt-6">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 border-b border-champagne-500/15">
           {categories.map((cat) => (
             <button
               key={cat.id}
@@ -135,119 +129,88 @@ export function GallerySection() {
                 setActiveTab(cat.id);
                 setActiveLightboxIndex(null);
               }}
-              className={`px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest font-medium transition-all duration-300 ${
+              className={`shrink-0 px-4 sm:px-5 py-2 rounded-full text-xs uppercase tracking-wider font-medium transition-all duration-300 ${
                 activeTab === cat.id
-                  ? "bg-champagne-400 text-obsidian-950 shadow-[0_0_20px_rgba(197,164,119,0.35)]"
-                  : "text-muted hover:text-ivory-100 hover:bg-surface"
+                  ? "bg-champagne-400 text-obsidian-950 font-semibold shadow-[0_0_20px_rgba(200,162,82,0.35)]"
+                  : "glass-panel border-champagne-500/20 text-muted hover:text-ivory-100"
               }`}
             >
               {cat.label}
             </button>
           ))}
         </div>
-      </div>
 
-      {/* Reposé-Style Horizontal Reel Track on Desktop, Swipe Track on Mobile */}
-      <div className="w-full px-4 sm:px-8 md:px-12 lg:px-20 overflow-visible">
-        <div
-          ref={trackRef}
-          className="flex flex-row overflow-x-auto lg:overflow-visible no-scrollbar snap-x snap-mandatory lg:snap-none gap-5 sm:gap-6 lg:gap-8 w-auto lg:w-max lg:will-change-transform pb-6 pt-1 -mx-4 px-4 sm:-mx-8 sm:px-8 lg:mx-0 lg:px-0"
-        >
-          {filteredItems.map((item, index) => {
-            const isTall = item.aspect === "tall";
-            const isWide = item.aspect === "wide";
+        {/* 100% RESPONSIVE REEL: PURE VISUAL CARDS WITH ZERO TEXT CLUTTER */}
+        <div className="space-y-5">
+          <div
+            ref={reelRef}
+            data-cursor="Inspect Look"
+            className="flex items-stretch gap-5 sm:gap-6 overflow-x-auto no-scrollbar scroll-smooth pb-4 pt-1 -mx-4 px-4 sm:-mx-8 sm:px-8 cursor-grab active:cursor-grabbing"
+            style={{ scrollSnapType: "x mandatory" }}
+          >
+            {filteredItems.map((item, index) => {
+              const isWide = item.aspect === "wide";
 
-            return (
-              <div
-                key={item.id}
-                tabIndex={0}
-                role="button"
-                data-cursor="INSPECT"
-                aria-label={`View look: ${item.title}`}
-                onClick={() => setActiveLightboxIndex(index)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    setActiveLightboxIndex(index);
-                  }
-                }}
-                className={`group relative rounded-t-[100px] sm:rounded-t-[140px] rounded-b-2xl md:rounded-b-3xl overflow-hidden glass-card border border-champagne-500/20 hover:border-champagne-400/60 transition-all duration-700 cursor-pointer snap-start shrink-0 ${
-                  isWide
-                    ? "w-[290px] xs:w-[340px] sm:w-[440px] lg:w-[540px] aspect-[16/11]"
-                    : "w-[240px] xs:w-[280px] sm:w-[340px] lg:w-[380px] aspect-[3.5/5]"
-                } flex flex-col justify-between p-5 md:p-7 transform hover:-translate-y-2 hover:shadow-[0_30px_70px_rgba(0,0,0,0.85)] focus:outline-none focus:ring-1 focus:ring-champagne-400`}
-              >
-                {/* Background Image with Multi-Plane Parallax Container */}
-                <div className="absolute inset-0 overflow-hidden">
-                  <div className="gallery-card-inner-img relative w-[120%] h-[120%] -left-[10%] -top-[10%]">
+              return (
+                <div
+                  key={item.id}
+                  tabIndex={0}
+                  role="button"
+                  data-cursor="View"
+                  aria-label={`View look ${index + 1}`}
+                  onClick={() => setActiveLightboxIndex(index)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setActiveLightboxIndex(index);
+                    }
+                  }}
+                  style={{ scrollSnapAlign: "start" }}
+                  className={`group relative rounded-2xl sm:rounded-3xl overflow-hidden glass-card border border-champagne-500/20 hover:border-champagne-400/60 transition-all duration-500 cursor-pointer shrink-0 ${
+                    isWide
+                      ? "w-[280px] xs:w-[320px] sm:w-[400px] md:w-[480px] aspect-[16/11]"
+                      : "w-[220px] xs:w-[260px] sm:w-[300px] md:w-[340px] aspect-[4/5]"
+                  } p-4 flex flex-col justify-between transform hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(0,0,0,0.85)] focus:outline-none focus:ring-1 focus:ring-champagne-400`}
+                >
+                  {/* Clean High-Resolution Hair Imagery */}
+                  <div className="absolute inset-0 overflow-hidden">
                     <Image
                       src={item.image}
-                      alt={item.title}
+                      alt={`Bhanu's The Hair Studio Atelier Look ${index + 1}`}
                       fill
-                      sizes="(max-width: 768px) 320px, 450px"
-                      className="object-cover object-center filter brightness-[0.88] contrast-[1.08] transition-transform duration-1000 group-hover:scale-105"
+                      sizes="(max-width: 640px) 280px, (max-width: 1024px) 340px, 480px"
+                      className="object-cover object-center filter brightness-[0.92] contrast-[1.06] transition-transform duration-700 group-hover:scale-105"
                     />
                   </div>
-                </div>
 
-                {/* Film Grade Duotone Overlay to eliminate stock photo temperature clash */}
-                <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/90 via-obsidian-950/25 to-champagne-900/10 pointer-events-none" />
+                  {/* Elegant Subtle Vignette Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/70 via-transparent to-obsidian-950/30 pointer-events-none" />
 
-                {/* Top Corner Badge & Editorial Plate Number */}
-                <div className="relative flex items-center justify-between z-10">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] tracking-ultra uppercase px-3 py-1 rounded-full glass-pill border border-champagne-500/25 text-champagne-300 font-mono">
-                      {item.categoryLabel}
-                    </span>
-                    <span className="text-[9px] font-mono tracking-widest text-champagne-400/70 uppercase hidden sm:inline">
-                      PLATE 0{index + 1}
-                    </span>
-                  </div>
-                  <div className="w-8 h-8 rounded-full glass-panel border border-champagne-500/30 flex items-center justify-center text-champagne-300 group-hover:bg-champagne-400 group-hover:text-obsidian-950 transition-all">
-                    <ZoomIn className="w-3.5 h-3.5" />
-                  </div>
-                </div>
-
-                {/* Center Hover Halo Play/Inspect Badge (Reposé Pattern) */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 pointer-events-none z-20">
-                  <div className="relative flex items-center justify-center">
-                    <div className="w-20 h-20 rounded-full border border-champagne-400/40 animate-ping absolute inset-0 pointer-events-none" />
-                    <div className="w-16 h-16 rounded-full bg-champagne-400/95 text-obsidian-950 flex flex-col items-center justify-center font-mono text-[9px] uppercase tracking-widest font-bold shadow-[0_0_35px_rgba(200,162,82,0.7)] backdrop-blur-md">
-                      <span>INSPECT</span>
-                      <span className="text-[7px] tracking-normal font-sans text-obsidian-950/70 font-semibold">TAP / VIEW</span>
+                  {/* Top-Right Floating Zoom Icon Indicator (NO TEXT) */}
+                  <div className="relative z-10 flex justify-end w-full">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full glass-panel border border-champagne-500/35 flex items-center justify-center text-champagne-300 group-hover:bg-champagne-400 group-hover:text-obsidian-950 transition-all shadow-md">
+                      <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </div>
                   </div>
-                </div>
 
-                {/* Clean Bottom Plate Identifier (Text removed from inside card to prevent border radius overlap) */}
-                <div className="relative z-10 flex items-center justify-between">
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-champagne-300 font-medium px-2.5 py-1 rounded-full glass-panel border border-champagne-500/20">
-                    {item.title}
-                  </span>
-                  {item.transformation && (
-                    <span className="inline-flex items-center gap-1 text-[9px] font-mono uppercase tracking-wider text-champagne-300 px-2 py-0.5 rounded-full bg-champagne-500/20 border border-champagne-500/30">
-                      <Sparkles className="w-2.5 h-2.5 text-champagne-400" />
-                      <span>B/A</span>
-                    </span>
-                  )}
+                  {/* Bottom Area: Completely Clean - Zero Text Clutter */}
+                  <div className="relative z-10 h-2" />
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+
+          {/* Horizontal Scroll Progress Bar */}
+          <div className="w-full h-1 bg-surface rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-champagne-600 via-champagne-400 to-champagne-300 transition-all duration-150"
+              style={{ width: `${Math.max(10, scrollProgress * 100)}%` }}
+            />
+          </div>
         </div>
       </div>
 
-      {/* Scrub Progress Track (Desktop >=1024px) */}
-      <div className="hidden lg:block w-full max-w-7xl mx-auto px-20 mt-8">
-        <div className="w-full h-[2px] bg-champagne-500/20 rounded-full overflow-hidden">
-          <div
-            ref={progressBarRef}
-            className="w-full h-full bg-gradient-to-r from-champagne-400 to-champagne-200 origin-left scale-x-0 transition-transform duration-75"
-          />
-        </div>
-      </div>
-
-      {/* Fullscreen Lightbox Modal */}
+      {/* Fullscreen Lightbox Modal (Displays complete details, before/after comparison & booking) */}
       {selectedItem && (
         <div
           role="dialog"
@@ -281,7 +244,7 @@ export function GallerySection() {
                     setSliderPosition((x / rect.width) * 100);
                   }}
                   onMouseMove={(e) => {
-                    if (e.buttons === 1) { // Left mouse button held down (drag)
+                    if (e.buttons === 1) {
                       const rect = e.currentTarget.getBoundingClientRect();
                       const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
                       setSliderPosition((x / rect.width) * 100);
@@ -300,7 +263,7 @@ export function GallerySection() {
                     setSliderPosition((x / rect.width) * 100);
                   }}
                 >
-                  {/* After Image (Full width background) */}
+                  {/* After Image */}
                   <Image
                     src={selectedItem.transformation.afterImage}
                     alt={`${selectedItem.title} After`}
@@ -312,7 +275,7 @@ export function GallerySection() {
                     AFTER
                   </div>
 
-                  {/* Before Image (Clean uncompressed clip-path overlay) */}
+                  {/* Before Image */}
                   <div
                     className="absolute inset-0 overflow-hidden pointer-events-none select-none"
                     style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
@@ -339,7 +302,7 @@ export function GallerySection() {
                     </div>
                   </div>
 
-                  {/* Subtle Drag Prompt Overlay */}
+                  {/* Drag Prompt Overlay */}
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[9px] tracking-widest uppercase px-3 py-1 rounded-full glass-panel border border-champagne-500/20 text-champagne-200/80 font-mono pointer-events-none">
                     DRAG TO REVEAL TRANSFORMATION
                   </div>
@@ -372,7 +335,7 @@ export function GallerySection() {
                   {selectedItem.description}
                 </p>
 
-                {/* Craft Specifications Grid (Reposé Architecture Pattern) */}
+                {/* Craft Specifications Grid */}
                 <div className="grid grid-cols-2 gap-3 pt-2">
                   <div className="p-3 rounded-xl glass-panel border border-champagne-500/15">
                     <div className="text-[9px] uppercase tracking-widest text-champagne-400 font-mono">
@@ -433,7 +396,9 @@ export function GallerySection() {
 
                 <div className="flex items-center gap-2">
                   <a
-                    href={`https://wa.me/${SALON_CONFIG.contact.whatsappNumber}?text=${encodeURIComponent(`Hello Bhanu's The Hair Studio, I would like to book an appointment for "${selectedItem.title}" (${selectedItem.categoryLabel}).`)}`}
+                    href={`https://wa.me/${SALON_CONFIG.contact.whatsappNumber}?text=${encodeURIComponent(
+                      `Hello Bhanu's The Hair Studio, I would like to book an appointment for "${selectedItem.title}" (${selectedItem.categoryLabel}).`
+                    )}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-all shadow-[0_0_20px_rgba(200,162,82,0.4)]"
@@ -449,3 +414,5 @@ export function GallerySection() {
     </section>
   );
 }
+
+export default GallerySection;
