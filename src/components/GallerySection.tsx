@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import Image from "next/image";
-import { SALON_CONFIG, GalleryItem } from "@/config/salon.config";
+import { SALON_CONFIG } from "@/config/salon.config";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { X, ZoomIn, ChevronLeft, ChevronRight, SlidersHorizontal, ArrowRight } from "lucide-react";
 
 export function GallerySection() {
@@ -31,6 +32,33 @@ export function GallerySection() {
 
   const selectedItem =
     activeLightboxIndex !== null ? filteredItems[activeLightboxIndex] : null;
+
+  // Staggered Entrance Animation with GSAP
+  useEffect(() => {
+    if (typeof window === "undefined" || !sectionRef.current) return;
+
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 768px)", () => {
+      gsap.fromTo(
+        ".gallery-card-item",
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.85,
+          stagger: 0.08,
+          ease: "luxe",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 78%",
+          },
+        }
+      );
+    });
+
+    return () => mm.revert();
+  }, [filteredItems]);
 
   // Track horizontal reel scroll progress
   const updateScrollProgress = () => {
@@ -65,24 +93,26 @@ export function GallerySection() {
     <section
       ref={sectionRef}
       id="gallery"
-      className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-20 sm:py-28 md:py-32 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden select-none"
+      data-stage="gallery"
+      aria-labelledby="gallery-heading"
+      className="relative z-10 w-full bg-obsidian-950/60 text-ivory-200 py-24 sm:py-32 md:py-40 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden select-none"
     >
-      {/* Background ambient lighting */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-champagne-500/5 blur-[180px] pointer-events-none" />
-
-      <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10 relative z-10">
+      <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12 relative z-10">
         {/* Section Header with Responsive Controls */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 pb-2">
           <div className="space-y-3 max-w-2xl">
             <div className="flex items-center gap-3">
               <span className="w-8 h-[1px] bg-champagne-500 inline-block" />
-              <span className="text-[11px] uppercase tracking-ultra text-champagne-400 font-medium">
+              <span className="text-[11px] uppercase tracking-ultra text-champagne-400 font-mono font-medium">
                 {gallery.sectionNum} / {gallery.sectionLabel}
               </span>
             </div>
-            <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-ivory-50 tracking-tight leading-[1.02]">
+            <h2
+              id="gallery-heading"
+              className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-ivory-50 tracking-tight leading-[1.0]"
+            >
               {gallery.headingLine1} <br />
-              <span className="italic font-normal text-champagne-400 font-serif">
+              <span className="italic font-normal text-champagne-300 font-serif">
                 {gallery.headingLine2}
               </span>
             </h2>
@@ -102,7 +132,7 @@ export function GallerySection() {
               <button
                 type="button"
                 onClick={() => scrollReel("left")}
-                className="w-10 h-10 rounded-full glass-panel border border-champagne-500/30 flex items-center justify-center text-ivory-100 hover:text-champagne-400 hover:border-champagne-400 transition-colors"
+                className="w-10 h-10 rounded-full glass-panel border border-champagne-500/30 flex items-center justify-center text-ivory-100 hover:text-champagne-400 hover:border-champagne-400 transition-colors cursor-pointer"
                 aria-label="Previous looks"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -110,7 +140,7 @@ export function GallerySection() {
               <button
                 type="button"
                 onClick={() => scrollReel("right")}
-                className="w-10 h-10 rounded-full glass-panel border border-champagne-500/30 flex items-center justify-center text-ivory-100 hover:text-champagne-400 hover:border-champagne-400 transition-colors"
+                className="w-10 h-10 rounded-full glass-panel border border-champagne-500/30 flex items-center justify-center text-ivory-100 hover:text-champagne-400 hover:border-champagne-400 transition-colors cursor-pointer"
                 aria-label="Next looks"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -125,11 +155,12 @@ export function GallerySection() {
             <button
               key={cat.id}
               type="button"
+              data-cursor={cat.label}
               onClick={() => {
                 setActiveTab(cat.id);
                 setActiveLightboxIndex(null);
               }}
-              className={`shrink-0 px-4 sm:px-5 py-2 rounded-full text-xs uppercase tracking-wider font-medium transition-all duration-300 ${
+              className={`shrink-0 px-4 sm:px-5 py-2 rounded-full text-xs uppercase tracking-wider font-medium transition-all duration-300 cursor-pointer ${
                 activeTab === cat.id
                   ? "bg-champagne-400 text-obsidian-950 font-semibold shadow-[0_0_20px_rgba(200,162,82,0.35)]"
                   : "glass-panel border-champagne-500/20 text-muted hover:text-ivory-100"
@@ -140,7 +171,7 @@ export function GallerySection() {
           ))}
         </div>
 
-        {/* 100% RESPONSIVE REEL: PURE VISUAL CARDS WITH ZERO TEXT CLUTTER */}
+        {/* Clean Visual Reel */}
         <div className="space-y-5">
           <div
             ref={reelRef}
@@ -157,7 +188,7 @@ export function GallerySection() {
                   tabIndex={0}
                   role="button"
                   data-cursor="View"
-                  aria-label={`View look ${index + 1}`}
+                  aria-label={`View look ${index + 1}: ${item.title}`}
                   onClick={() => setActiveLightboxIndex(index)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
@@ -166,7 +197,7 @@ export function GallerySection() {
                     }
                   }}
                   style={{ scrollSnapAlign: "start" }}
-                  className={`group relative rounded-2xl sm:rounded-3xl overflow-hidden glass-card border border-champagne-500/20 hover:border-champagne-400/60 transition-all duration-500 cursor-pointer shrink-0 ${
+                  className={`gallery-card-item group relative rounded-2xl sm:rounded-3xl overflow-hidden glass-card border border-champagne-500/20 hover:border-champagne-400/60 transition-all duration-500 cursor-pointer shrink-0 will-change-transform ${
                     isWide
                       ? "w-[280px] xs:w-[320px] sm:w-[400px] md:w-[480px] aspect-[16/11]"
                       : "w-[220px] xs:w-[260px] sm:w-[300px] md:w-[340px] aspect-[4/5]"
@@ -176,7 +207,7 @@ export function GallerySection() {
                   <div className="absolute inset-0 overflow-hidden">
                     <Image
                       src={item.image}
-                      alt={`Bhanu's The Hair Studio Atelier Look ${index + 1}`}
+                      alt={`Bhanu's The Hair Studio Atelier Look: ${item.title}`}
                       fill
                       sizes="(max-width: 640px) 280px, (max-width: 1024px) 340px, 480px"
                       className="object-cover object-center filter brightness-[0.92] contrast-[1.06] transition-transform duration-700 group-hover:scale-105"
@@ -186,14 +217,13 @@ export function GallerySection() {
                   {/* Elegant Subtle Vignette Gradient */}
                   <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/70 via-transparent to-obsidian-950/30 pointer-events-none" />
 
-                  {/* Top-Right Floating Zoom Icon Indicator (NO TEXT) */}
+                  {/* Top-Right Floating Zoom Icon Indicator */}
                   <div className="relative z-10 flex justify-end w-full">
                     <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full glass-panel border border-champagne-500/35 flex items-center justify-center text-champagne-300 group-hover:bg-champagne-400 group-hover:text-obsidian-950 transition-all shadow-md">
                       <ZoomIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </div>
                   </div>
 
-                  {/* Bottom Area: Completely Clean - Zero Text Clutter */}
                   <div className="relative z-10 h-2" />
                 </div>
               );
@@ -210,7 +240,7 @@ export function GallerySection() {
         </div>
       </div>
 
-      {/* Fullscreen Lightbox Modal (Displays complete details, before/after comparison & booking) */}
+      {/* Fullscreen Lightbox Modal */}
       {selectedItem && (
         <div
           role="dialog"
@@ -226,7 +256,7 @@ export function GallerySection() {
             <button
               type="button"
               onClick={() => setActiveLightboxIndex(null)}
-              className="absolute top-4 right-4 z-30 p-2.5 rounded-full glass-panel border border-champagne-500/40 text-champagne-300 hover:text-ivory-50 hover:bg-champagne-500/20 transition-all"
+              className="absolute top-4 right-4 z-30 p-2.5 rounded-full glass-panel border border-champagne-500/40 text-champagne-300 hover:text-ivory-50 hover:bg-champagne-500/20 transition-all cursor-pointer"
               aria-label="Close lightbox"
             >
               <X className="w-5 h-5" />
@@ -235,7 +265,6 @@ export function GallerySection() {
             {/* Left: Interactive Media Area (Image or Before/After slider) */}
             <div className="lg:w-7/12 relative min-h-[350px] lg:min-h-[550px] bg-obsidian-900 overflow-hidden select-none">
               {selectedItem.transformation ? (
-                /* Interactive Before & After Comparison Slider */
                 <div
                   className="relative w-full h-full min-h-[400px] cursor-ew-resize group select-none touch-none"
                   onMouseDown={(e) => {
@@ -263,10 +292,9 @@ export function GallerySection() {
                     setSliderPosition((x / rect.width) * 100);
                   }}
                 >
-                  {/* After Image */}
                   <Image
                     src={selectedItem.transformation.afterImage}
-                    alt={`${selectedItem.title} After`}
+                    alt={`${selectedItem.title} After Styling`}
                     fill
                     draggable={false}
                     className="object-cover object-center pointer-events-none select-none"
@@ -275,14 +303,13 @@ export function GallerySection() {
                     AFTER
                   </div>
 
-                  {/* Before Image */}
                   <div
                     className="absolute inset-0 overflow-hidden pointer-events-none select-none"
                     style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
                   >
                     <Image
                       src={selectedItem.transformation.beforeImage}
-                      alt={`${selectedItem.title} Before`}
+                      alt={`${selectedItem.title} Before Styling`}
                       fill
                       draggable={false}
                       className="object-cover object-center pointer-events-none select-none"
@@ -292,7 +319,6 @@ export function GallerySection() {
                     </div>
                   </div>
 
-                  {/* Draggable Divider Handle */}
                   <div
                     className="absolute top-0 bottom-0 w-[2px] bg-champagne-400 pointer-events-none shadow-[0_0_15px_rgba(197,164,119,0.8)]"
                     style={{ left: `${sliderPosition}%` }}
@@ -302,13 +328,11 @@ export function GallerySection() {
                     </div>
                   </div>
 
-                  {/* Drag Prompt Overlay */}
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[9px] tracking-widest uppercase px-3 py-1 rounded-full glass-panel border border-champagne-500/20 text-champagne-200/80 font-mono pointer-events-none">
                     DRAG TO REVEAL TRANSFORMATION
                   </div>
                 </div>
               ) : (
-                /* Standard High-Res Image */
                 <div className="relative w-full h-full">
                   <Image
                     src={selectedItem.image}
@@ -335,7 +359,6 @@ export function GallerySection() {
                   {selectedItem.description}
                 </p>
 
-                {/* Craft Specifications Grid */}
                 <div className="grid grid-cols-2 gap-3 pt-2">
                   <div className="p-3 rounded-xl glass-panel border border-champagne-500/15">
                     <div className="text-[9px] uppercase tracking-widest text-champagne-400 font-mono">
@@ -365,7 +388,6 @@ export function GallerySection() {
                 )}
               </div>
 
-              {/* Lightbox Footer & Navigation */}
               <div className="pt-6 border-t border-champagne-500/20 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2">
                   <button
@@ -375,7 +397,7 @@ export function GallerySection() {
                         prev !== null && prev > 0 ? prev - 1 : filteredItems.length - 1
                       )
                     }
-                    className="p-2 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 transition-colors"
+                    className="p-2 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 transition-colors cursor-pointer"
                     aria-label="Previous image"
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -387,7 +409,7 @@ export function GallerySection() {
                         prev !== null && prev + 1 < filteredItems.length ? prev + 1 : 0
                       )
                     }
-                    className="p-2 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 transition-colors"
+                    className="p-2 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 transition-colors cursor-pointer"
                     aria-label="Next image"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -401,7 +423,7 @@ export function GallerySection() {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-all shadow-[0_0_20px_rgba(200,162,82,0.4)]"
+                    className="px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-all shadow-[0_0_20px_rgba(200,162,82,0.4)] cursor-pointer"
                   >
                     Book on WhatsApp
                   </a>

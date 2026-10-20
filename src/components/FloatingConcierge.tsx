@@ -6,36 +6,57 @@ import { MessageCircle } from "lucide-react";
 
 export function FloatingConcierge() {
   const [shown, setShown] = useState(false);
+  const [isBookInView, setIsBookInView] = useState(false);
 
   useEffect(() => {
-    // Show concierge button after initial hero scroll or 1.5s
+    // Show concierge button after initial hero scroll or 1.2s
     const timer = setTimeout(() => setShown(true), 1200);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Fade out while #book is in view to eliminate UI overlap
+  useEffect(() => {
+    const bookEl = document.getElementById("book");
+    if (!bookEl || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsBookInView(entry.isIntersecting);
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(bookEl);
+    return () => observer.disconnect();
   }, []);
 
   const whatsappHref = `https://wa.me/${SALON_CONFIG.contact.whatsappNumber}?text=${encodeURIComponent(
     SALON_CONFIG.contact.whatsappPrefill
   )}`;
 
+  const shouldBeVisible = shown && !isBookInView;
+
   return (
     <aside
       aria-label="Salon Concierge Desk"
-      className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 pointer-events-auto"
+      className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-40 transition-all duration-500 transform ${
+        shouldBeVisible
+          ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
+          : "opacity-0 translate-y-4 scale-90 pointer-events-none"
+      }`}
     >
       <a
         href={whatsappHref}
         target="_blank"
         rel="noopener noreferrer"
-        data-cursor="Concierge"
+        data-cursor="WhatsApp"
         aria-label="Direct WhatsApp Concierge Consultation"
-        className={`group relative flex items-center justify-center w-14 h-14 rounded-full text-white transition-all duration-500 transform ${
-          shown ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-90"
-        } hover:scale-105 active:scale-95 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_12px_36px_rgba(0,0,0,0.65),inset_0_0_0_1px_rgba(255,255,255,0.25)]`}
+        className="group relative flex items-center justify-center w-14 h-14 rounded-full text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_12px_36px_rgba(0,0,0,0.65),inset_0_0_0_1px_rgba(255,255,255,0.25)]"
         style={{
           background: "radial-gradient(120% 120% at 32% 24%, #4fe085 0%, #25d366 48%, #17b053 100%)",
         }}
       >
-        {/* Concentric Pulse Ring (Inspired by Reposé wa__pulse) */}
+        {/* Concentric Pulse Ring */}
         <span
           className="animate-wa-pulse absolute inset-0 rounded-full border border-[#25d366] pointer-events-none"
           aria-hidden="true"

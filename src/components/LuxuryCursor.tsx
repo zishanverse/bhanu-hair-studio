@@ -176,7 +176,11 @@ export function LuxuryCursor() {
         className={`fixed top-0 left-0 rounded-full pointer-events-none will-change-transform border transition-[width,height,margin,border-color,opacity,box-shadow] duration-200 ease-out ${
           isVisible ? "opacity-75" : "opacity-0"
         } ${
-          isHovered
+          cursorLabel === "Drag" || cursorLabel === "Swipe Reel"
+            ? "w-14 h-14 -ml-7 -mt-7 border-champagne-300 bg-champagne-400/20 shadow-[0_0_25px_rgba(200,162,82,0.4)]"
+            : cursorLabel === "View" || cursorLabel === "Inspect"
+            ? "w-12 h-12 -ml-6 -mt-6 border-white/80 bg-white/10 shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+            : isHovered
             ? "w-10 h-10 -ml-5 -mt-5 border-champagne-300/80 bg-champagne-400/10 shadow-[0_0_15px_rgba(197,164,119,0.3)]"
             : "w-7 h-7 -ml-3.5 -mt-3.5 border-champagne-400/35 bg-transparent"
         }`}

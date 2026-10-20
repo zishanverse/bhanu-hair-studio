@@ -1,15 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { MobileHero3D } from "@/components/MobileHero3D";
+import { useMagnetic } from "@/lib/useMagnetic";
 import {
   Scissors,
   Sparkles,
   MessageCircle,
-  ArrowDown,
-  ArrowUpRight,
   Star,
 } from "lucide-react";
 import { SALON_CONFIG } from "@/config/salon.config";
@@ -20,92 +18,89 @@ export function CinematicExperience() {
   const subtextRef = useRef<HTMLParagraphElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
   const trustBarRef = useRef<HTMLDivElement>(null);
+  const reserveBtnRef = useMagnetic<HTMLAnchorElement>({ strength: 0.3 });
 
   useEffect(() => {
     if (typeof window === "undefined" || !containerRef.current) return;
-    if (window.innerWidth < 768) return;
 
-    gsap.registerPlugin(ScrollTrigger);
+    const mm = gsap.matchMedia();
 
-    const ctx = gsap.context(() => {
-      // 1. Entrance choreography: Clipped-line reveal & gold rule expansion
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" }, delay: 0.15 });
+    // Only apply animations when screen >= 768px and user does not prefer reduced motion
+    mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
+      // 1. Initial hidden state set by GSAP (not CSS, preventing invisible text bugs)
+      gsap.set(".hero-clip-inner", { yPercent: 120 });
+      gsap.set(".hero-gold-rule", { scaleX: 0, transformOrigin: "left center" });
+      gsap.set(".hero-eyebrow-text", { opacity: 0, x: -12 });
+      if (subtextRef.current) gsap.set(subtextRef.current, { opacity: 0, y: 16 });
+      if (ctaRef.current) gsap.set(ctaRef.current, { opacity: 0, y: 16 });
 
-      tl.fromTo(
-        ".hero-clip-inner",
-        { yPercent: 130 },
-        { yPercent: 0, duration: 1.35, stagger: 0.14 }
-      )
-        .fromTo(
-          ".hero-gold-rule",
-          { scaleX: 0, transformOrigin: "left center" },
-          { scaleX: 1, duration: 1.1, ease: "power2.out" },
-          0.3
-        )
-        .fromTo(
-          ".hero-eyebrow-text",
-          { opacity: 0, x: -10 },
-          { opacity: 1, x: 0, duration: 0.9 },
-          0.4
-        )
-        .fromTo(
-          subtextRef.current,
-          { opacity: 0, y: 18 },
-          { opacity: 1, y: 0, duration: 1.0 },
-          0.6
-        )
-        .fromTo(
-          ctaRef.current,
-          { opacity: 0, y: 16 },
-          { opacity: 1, y: 0, duration: 0.9 },
-          0.75
-        );
+      // Entrance timeline
+      const tl = gsap.timeline({ defaults: { ease: "luxe" }, delay: 0.1 });
 
-      // 2. Parallax exit with subtle focal defocus matching Reposé reference
+      tl.to(".hero-clip-inner", {
+        yPercent: 0,
+        duration: 1.25,
+        stagger: 0.12,
+      })
+        .to(".hero-gold-rule", {
+          scaleX: 1,
+          duration: 1.0,
+          ease: "power2.out",
+        }, 0.25)
+        .to(".hero-eyebrow-text", {
+          opacity: 1,
+          x: 0,
+          duration: 0.8,
+        }, 0.35)
+        .to(subtextRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+        }, 0.5)
+        .to(ctaRef.current, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+        }, 0.65);
+
+      // 2. Parallax exit with subtle focal defocus on scroll
       if (headlineRef.current) {
         gsap.to(headlineRef.current, {
           yPercent: -18,
           scale: 1.02,
-          opacity: 0.12,
-          filter: "blur(5px)",
-          ease: "power2.in",
+          opacity: 0.15,
+          filter: "blur(4px)",
+          ease: "none",
           scrollTrigger: {
             trigger: containerRef.current,
             start: "top top",
             end: "bottom top",
-            scrub: true,
+            scrub: 1,
           },
         });
       }
 
       if (trustBarRef.current) {
         gsap.to(trustBarRef.current, {
-          y: -30,
-          opacity: 0.1,
+          y: -24,
+          opacity: 0.15,
           ease: "none",
           scrollTrigger: {
             trigger: containerRef.current,
-            start: "45% top",
-            end: "85% top",
-            scrub: true,
+            start: "35% top",
+            end: "80% top",
+            scrub: 1,
           },
         });
       }
-    }, containerRef);
+    });
 
-    return () => ctx.revert();
+    return () => mm.revert();
   }, []);
-
-  const scrollToStudio = () => {
-    const el = document.getElementById("studio");
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   return (
     <div id="cinematic-experience" className="relative w-full">
-      {/* 1. DEDICATED 3D ENGINE FOR MOBILE (< 768px) */}
+      {/* 1. DEDICATED MOBILE HERO (< 768px) */}
       <div className="block md:hidden">
         <MobileHero3D />
       </div>
@@ -113,7 +108,7 @@ export function CinematicExperience() {
       {/* 2. WORLD-CLASS EDITORIAL LUXURY DESKTOP HERO (>= 768px) */}
       <div
         ref={containerRef}
-        className="hidden md:block relative w-full text-ivory-50 select-none min-h-[100dvh] flex flex-col justify-between pt-32 pb-16 px-8 md:px-14 lg:px-20 max-w-7xl mx-auto"
+        className="hidden md:flex relative w-full text-ivory-50 select-none min-h-[100dvh] flex-col justify-between pt-32 pb-16 px-8 md:px-14 lg:px-20 max-w-7xl mx-auto"
       >
         {/* Central Editorial Haute Coiffure Masterpiece */}
         <div className="my-auto space-y-7 max-w-4xl pointer-events-auto">
@@ -126,7 +121,7 @@ export function CinematicExperience() {
 
           <h1
             ref={headlineRef}
-            className="font-serif text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-light text-ivory-50 tracking-tight leading-[0.9] drop-shadow-[0_15px_45px_rgba(0,0,0,0.95)] will-change-transform"
+            className="font-serif text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-light text-ivory-50 tracking-tight leading-[0.9] drop-shadow-[0_15px_45px_rgba(0,0,0,0.95)] will-change-transform text-balance"
           >
             <span className="clip-line">
               <span className="clip-line-inner hero-clip-inner">WHERE STYLE</span>
@@ -151,9 +146,10 @@ export function CinematicExperience() {
           {/* Action CTAs with contextual cursor labels */}
           <div ref={ctaRef} className="pt-2 flex flex-wrap items-center gap-4">
             <a
+              ref={reserveBtnRef}
               href="#book"
               data-cursor="Reserve Seat"
-              className="px-8 py-4 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-400 hover:shadow-[0_0_35px_rgba(200,162,82,0.7)] transition-all transform hover:scale-105 active:scale-95"
+              className="px-8 py-4 rounded-full text-xs uppercase tracking-widest font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-400 hover:shadow-[0_0_35px_rgba(200,162,82,0.7)] transition-all transform active:scale-95 cursor-pointer"
             >
               Book Appointment
             </a>
@@ -169,14 +165,13 @@ export function CinematicExperience() {
               <span>WhatsApp Inquiry</span>
             </a>
 
-            <button
-              type="button"
-              onClick={scrollToStudio}
+            <a
+              href="#studio"
               data-cursor="Atelier"
               className="px-6 py-4 rounded-full text-xs uppercase tracking-widest font-light text-champagne-300 hover:text-white transition-colors cursor-pointer"
             >
               Explore Studio ↓
-            </button>
+            </a>
           </div>
         </div>
 

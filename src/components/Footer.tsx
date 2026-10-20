@@ -1,28 +1,71 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { SALON_CONFIG } from "@/config/salon.config";
-import { Scissors, ArrowUp, MapPin, Phone, Mail, Clock, Globe } from "lucide-react";
+import { Scissors, ArrowUp, MapPin, Phone } from "lucide-react";
+import { stageState } from "@/lib/stageState";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 export function Footer() {
   const { identity, contact, social, servicesCatalog } = SALON_CONFIG;
+  const [isSnipping, setIsSnipping] = useState(false);
+  const footerRef = useRef<HTMLElement>(null);
+  const wordmarkRef = useRef<HTMLDivElement>(null);
 
   const scrollToTop = () => {
+    setIsSnipping(true);
+    stageState.snip();
+    setTimeout(() => setIsSnipping(false), 600);
     window.scrollTo({
       top: 0,
       behavior: "smooth",
     });
   };
 
+  useEffect(() => {
+    if (typeof window === "undefined" || !footerRef.current) return;
+
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 768px)", () => {
+      // Oversized wordmark fill on scroll
+      if (wordmarkRef.current) {
+        gsap.fromTo(
+          wordmarkRef.current,
+          { backgroundPosition: "100% 0%" },
+          {
+            backgroundPosition: "0% 0%",
+            ease: "none",
+            scrollTrigger: {
+              trigger: footerRef.current,
+              start: "top bottom",
+              end: "bottom bottom",
+              scrub: 1,
+            },
+          }
+        );
+      }
+    });
+
+    return () => mm.revert();
+  }, []);
+
   return (
-    <footer className="relative z-10 w-full bg-obsidian-950/40 backdrop-blur-sm text-ivory-200 pt-16 sm:pt-20 pb-12 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden">
+    <footer
+      ref={footerRef}
+      className="relative z-10 w-full bg-obsidian-950/80 backdrop-blur-md text-ivory-200 pt-16 sm:pt-20 pb-12 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto space-y-12 sm:space-y-16">
-        {/* Top Tier: Logo, Brand Statement, and Back to Top */}
+        {/* Top Tier: Brand Statement, Navigation & Back to Top */}
         <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-8 sm:gap-10 pb-10 sm:pb-12 border-b border-champagne-500/15">
           <div className="space-y-4 max-w-md">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full border border-champagne-500/40 flex items-center justify-center bg-surface">
-                <Scissors className="w-4 h-4 text-champagne-400 transform -rotate-45" />
+                <Scissors
+                  className={`w-4 h-4 text-champagne-400 transform transition-transform duration-300 ${
+                    isSnipping ? "rotate-45 scale-125 text-white" : "-rotate-45"
+                  }`}
+                />
               </div>
               <div>
                 <span className="font-serif text-2xl tracking-[0.2em] uppercase font-light text-ivory-50 block">
@@ -43,14 +86,14 @@ export function Footer() {
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 text-xs">
             {/* Quick Links */}
             <div className="space-y-3">
-              <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono block">
+              <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono block font-semibold">
                 NAVIGATION
               </span>
               <ul className="space-y-2 text-muted font-light">
                 <li>
                   <a href="/bhanushairacademy" className="text-champagne-300 font-medium hover:text-white transition-colors flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-champagne-400" />
-                    Hair Academy (Courses)
+                    <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
+                    Hair Academy
                   </a>
                 </li>
                 <li>
@@ -88,7 +131,7 @@ export function Footer() {
 
             {/* Service Categories */}
             <div className="space-y-3">
-              <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono block">
+              <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono block font-semibold">
                 DISCIPLINES
               </span>
               <ul className="space-y-2 text-muted font-light">
@@ -104,7 +147,7 @@ export function Footer() {
 
             {/* Social & Studio Links */}
             <div className="space-y-3 col-span-2 sm:col-span-1">
-              <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono block">
+              <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono block font-semibold">
                 CONNECT
               </span>
               <ul className="space-y-2 text-muted font-light">
@@ -149,25 +192,26 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Back to Top Button */}
+          {/* Back to Top Button with Snip Glyph */}
           <div className="flex lg:flex-col items-center lg:items-end justify-between">
             <button
               type="button"
+              data-cursor="Top"
               onClick={scrollToTop}
-              className="group flex items-center gap-2.5 px-5 py-2.5 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 hover:bg-champagne-500/10 transition-all text-xs uppercase tracking-widest"
+              className="group flex items-center gap-2.5 px-5 py-2.5 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 hover:bg-champagne-500/10 transition-all text-xs uppercase tracking-widest cursor-pointer shadow-lg active:scale-95"
               aria-label="Back to top"
             >
               <span>Back to Top</span>
-              <ArrowUp className="w-3.5 h-3.5 transform group-hover:-translate-y-0.5 transition-transform" />
+              <ArrowUp className="w-3.5 h-3.5 transform group-hover:-translate-y-1 transition-transform" />
             </button>
           </div>
         </div>
 
-        {/* Middle Tier: 3 Indore Studios Location Roster */}
+        {/* Middle Tier: 3 Indore Studios Roster */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono">
-              OUR INDORE LOCATIONS ({SALON_CONFIG.outlets.length} OUTLETS)
+            <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono font-semibold">
+              OUR INDORE ATELIERS ({SALON_CONFIG.outlets.length} LOCATIONS)
             </span>
             <span className="text-[10px] font-mono text-muted uppercase">
               OPEN DAILY 10:00 AM – 10:00 PM
@@ -197,7 +241,7 @@ export function Footer() {
                     href={outlet.mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 hover:text-white transition-colors"
+                    className="inline-flex items-center gap-1 hover:text-white transition-colors cursor-pointer"
                   >
                     <span>Directions</span>
                     <MapPin className="w-3 h-3" />
@@ -208,7 +252,24 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom Tier: Address, Hours, Copyright */}
+        {/* Oversized Outlined Brand Wordmark */}
+        <div
+          ref={wordmarkRef}
+          className="w-full text-center py-6 select-none overflow-hidden"
+          style={{
+            backgroundImage: "linear-gradient(90deg, #C8A252 0%, #F8F6F2 50%, rgba(200,162,82,0.15) 100%)",
+            backgroundSize: "200% 100%",
+            WebkitBackgroundClip: "text",
+            WebkitTextStroke: "1px rgba(200, 162, 82, 0.4)",
+            color: "transparent",
+          }}
+        >
+          <span className="font-serif text-6xl sm:text-8xl md:text-9xl lg:text-[13rem] font-bold tracking-[0.08em] uppercase opacity-90 inline-block leading-none">
+            BHANU&apos;S
+          </span>
+        </div>
+
+        {/* Bottom Tier: Copyright & Address */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 text-[10px] sm:text-[11px] text-muted font-light tracking-wider text-center md:text-left border-t border-champagne-500/15 pt-6">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
             <span>Bhanu&apos;s The Hair Studio & Hair Academy</span>
@@ -226,3 +287,5 @@ export function Footer() {
     </footer>
   );
 }
+
+export default Footer;

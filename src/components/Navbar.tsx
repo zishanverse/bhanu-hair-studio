@@ -1,21 +1,68 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Scissors, Menu, X, Calendar, Phone, ArrowUpRight, Sparkles } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { Scissors, Menu, X, Calendar, Phone, ArrowUpRight } from "lucide-react";
 import { SALON_CONFIG } from "@/config/salon.config";
+import { useMagnetic } from "@/lib/useMagnetic";
 
 export function Navbar() {
   const { identity, contact } = SALON_CONFIG;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [activeSection, setActiveSection] = useState<string>("hero");
   const [isOpenNow, setIsOpenNow] = useState(true);
 
+  const lastScrollYRef = useRef<number>(0);
+  const reserveBtnRef = useMagnetic<HTMLAnchorElement>({ strength: 0.25 });
+
+  // Hide on scroll down, show on scroll up
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const currentScrollY = window.scrollY;
+      setIsScrolled(currentScrollY > 50);
+
+      if (currentScrollY > 150) {
+        if (currentScrollY > lastScrollYRef.current + 10) {
+          // Scrolling down
+          setIsVisible(false);
+        } else if (currentScrollY < lastScrollYRef.current - 10) {
+          // Scrolling up
+          setIsVisible(true);
+        }
+      } else {
+        setIsVisible(true);
+      }
+      lastScrollYRef.current = currentScrollY;
     };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Active section tracking via IntersectionObserver
+  useEffect(() => {
+    const sections = ["studio", "services", "experience", "gallery", "skincare", "testimonials", "book"];
+    const observers: IntersectionObserver[] = [];
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setActiveSection(id);
+          }
+        },
+        { threshold: 0.25 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => {
+      observers.forEach((obs) => obs.disconnect());
+    };
   }, []);
 
   // Lock body scroll and handle Escape key when mobile menu is open
@@ -35,9 +82,9 @@ export function Navbar() {
     }
   }, [mobileMenuOpen]);
 
+  // Live IST Open/Closed indicator
   useEffect(() => {
     const checkStatus = () => {
-      // Calculate Indian Standard Time (UTC + 5:30)
       const now = new Date();
       const utc = now.getTime() + now.getTimezoneOffset() * 60000;
       const ist = new Date(utc + 3600000 * 5.5);
@@ -50,7 +97,11 @@ export function Navbar() {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 pointer-events-none transition-all duration-500">
+    <header
+      className={`fixed top-0 left-0 w-full z-50 pointer-events-none transition-transform duration-500 ease-out ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 sm:pt-4">
         <div
           className={`w-full rounded-full grid grid-cols-12 items-center px-4 sm:px-6 py-2 sm:py-2.5 pointer-events-auto transition-all duration-500 ${
@@ -100,53 +151,42 @@ export function Navbar() {
             </a>
           </div>
 
-          {/* 2. Center: Mathematically Centered Navigation Links (Desktop) */}
+          {/* 2. Center: Mathematically Centered Navigation Links with Active Highlighting */}
           <div className="hidden lg:flex lg:col-span-6 items-center justify-center">
             <nav
-              className="flex items-center gap-4 xl:gap-6 px-5 py-2 rounded-full bg-surface/70 border border-champagne-500/15 backdrop-blur-md shadow-sm"
+              className="flex items-center gap-3 xl:gap-5 px-5 py-2 rounded-full bg-surface/70 border border-champagne-500/15 backdrop-blur-md shadow-sm"
               aria-label="Main Navigation"
             >
-              <a
-                href="/#studio"
-                id="nav-link-studio"
-                className="text-[11px] uppercase tracking-[0.18em] text-ivory-200/85 hover:text-champagne-300 transition-colors relative py-0.5 group font-light"
-              >
-                Studio
-                <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-champagne-400 -translate-x-1/2 group-hover:w-full transition-all duration-300" />
-              </a>
-              <a
-                href="/#services"
-                id="nav-link-services"
-                className="text-[11px] uppercase tracking-[0.18em] text-ivory-200/85 hover:text-champagne-300 transition-colors relative py-0.5 group font-light"
-              >
-                Rituals
-                <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-champagne-400 -translate-x-1/2 group-hover:w-full transition-all duration-300" />
-              </a>
-              <a
-                href="/bhanushairacademy"
-                id="nav-link-academy"
-                className="text-[11px] uppercase tracking-[0.18em] text-champagne-300 hover:text-white transition-colors relative py-0.5 group font-medium flex items-center gap-1.5"
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
-                <span>Hair Academy</span>
-                <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-champagne-400 -translate-x-1/2 group-hover:w-full transition-all duration-300" />
-              </a>
-              <a
-                href="/#gallery"
-                id="nav-link-gallery"
-                className="text-[11px] uppercase tracking-[0.18em] text-ivory-200/85 hover:text-champagne-300 transition-colors relative py-0.5 group font-light"
-              >
-                Looks
-                <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-champagne-400 -translate-x-1/2 group-hover:w-full transition-all duration-300" />
-              </a>
-              <a
-                href="/#testimonials"
-                id="nav-link-testimonials"
-                className="text-[11px] uppercase tracking-[0.18em] text-ivory-200/85 hover:text-champagne-300 transition-colors relative py-0.5 group font-light"
-              >
-                Stories
-                <span className="absolute bottom-0 left-1/2 w-0 h-[1px] bg-champagne-400 -translate-x-1/2 group-hover:w-full transition-all duration-300" />
-              </a>
+              {[
+                { href: "/#studio", id: "studio", label: "Studio" },
+                { href: "/#services", id: "services", label: "Rituals" },
+                { href: "/bhanushairacademy", id: "academy", label: "Academy", isAcademy: true },
+                { href: "/#gallery", id: "gallery", label: "Looks" },
+                { href: "/#skincare", id: "skincare", label: "Beyond Hair" },
+                { href: "/#testimonials", id: "testimonials", label: "Stories" },
+              ].map((item) => {
+                const isActive = activeSection === item.id;
+                return (
+                  <a
+                    key={item.id}
+                    href={item.href}
+                    id={`nav-link-${item.id}`}
+                    className={`text-[10px] xl:text-[11px] uppercase tracking-[0.16em] transition-colors relative py-0.5 group font-light flex items-center gap-1.5 ${
+                      isActive ? "text-champagne-300 font-medium" : "text-ivory-200/80 hover:text-champagne-300"
+                    }`}
+                  >
+                    {item.isAcademy && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
+                    )}
+                    <span>{item.label}</span>
+                    <span
+                      className={`absolute bottom-0 left-1/2 h-[1px] bg-champagne-400 -translate-x-1/2 transition-all duration-300 ${
+                        isActive ? "w-full" : "w-0 group-hover:w-full"
+                      }`}
+                    />
+                  </a>
+                );
+              })}
             </nav>
           </div>
 
@@ -162,9 +202,11 @@ export function Navbar() {
             </a>
 
             <a
+              ref={reserveBtnRef}
               href="/#book"
               id="nav-cta-book-btn"
-              className="group relative inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 rounded-full overflow-hidden text-[10px] sm:text-[11px] uppercase tracking-[0.18em] font-medium text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 hover:shadow-[0_0_20px_rgba(197,164,119,0.45)] transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 shrink-0"
+              data-cursor="Reserve Seat"
+              className="group relative inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 rounded-full overflow-hidden text-[10px] sm:text-[11px] uppercase tracking-[0.18em] font-medium text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-400 to-champagne-300 hover:shadow-[0_0_20px_rgba(197,164,119,0.45)] transition-all duration-300 transform active:scale-95 shrink-0 cursor-pointer"
             >
               <Calendar className="w-3.5 h-3.5 text-obsidian-900 group-hover:scale-110 transition-transform" />
               <span>Reserve</span>
@@ -176,7 +218,7 @@ export function Navbar() {
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               id="nav-mobile-toggle"
-              className="lg:hidden p-2 rounded-full bg-surface/80 border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 transition-colors"
+              className="lg:hidden p-2 rounded-full bg-surface/80 border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 transition-colors cursor-pointer"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
             >
@@ -186,11 +228,11 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu Backdrop & Dropdown */}
+      {/* Mobile Menu Backdrop & Drawer */}
       {mobileMenuOpen && (
         <>
           <div
-            className="lg:hidden fixed inset-0 bg-obsidian-950/80 backdrop-blur-md z-40 pointer-events-auto animate-in fade-in duration-300"
+            className="lg:hidden fixed inset-0 bg-obsidian-950/85 backdrop-blur-md z-40 pointer-events-auto animate-in fade-in duration-300"
             onClick={() => setMobileMenuOpen(false)}
             aria-hidden="true"
           />
@@ -205,75 +247,55 @@ export function Navbar() {
               <a
                 href="/bhanushairacademy"
                 onClick={() => setMobileMenuOpen(false)}
-                className="group text-sm uppercase tracking-[0.25em] text-champagne-300 font-medium py-1 flex items-center justify-between border-b border-champagne-500/20 pb-3"
+                className="group text-sm uppercase tracking-[0.22em] text-champagne-300 font-medium py-1 flex items-center justify-between border-b border-champagne-500/20 pb-3"
               >
-              <span className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
-                Bhanu&apos;s Hair Academy (Courses)
-              </span>
-              <ArrowUpRight className="w-4 h-4 text-champagne-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-            </a>
-            <a
-              href="/#studio"
-              onClick={() => setMobileMenuOpen(false)}
-              className="group text-sm uppercase tracking-[0.25em] text-ivory-100 hover:text-champagne-300 transition-colors py-1 flex items-center justify-between"
-            >
-              <span>01. The Studio</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-champagne-400/50 group-hover:text-champagne-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-            </a>
-            <a
-              href="/#services"
-              onClick={() => setMobileMenuOpen(false)}
-              className="group text-sm uppercase tracking-[0.25em] text-ivory-100 hover:text-champagne-300 transition-colors py-1 flex items-center justify-between"
-            >
-              <span>02. Rituals & Directory</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-champagne-400/50 group-hover:text-champagne-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-            </a>
-            <a
-              href="/#experience"
-              onClick={() => setMobileMenuOpen(false)}
-              className="group text-sm uppercase tracking-[0.25em] text-ivory-100 hover:text-champagne-300 transition-colors py-1 flex items-center justify-between"
-            >
-              <span>03. Japanese Scissors Ritual</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-champagne-400/50 group-hover:text-champagne-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-            </a>
-            <a
-              href="/#gallery"
-              onClick={() => setMobileMenuOpen(false)}
-              className="group text-sm uppercase tracking-[0.25em] text-ivory-100 hover:text-champagne-300 transition-colors py-1 flex items-center justify-between"
-            >
-              <span>04. Look Archive</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-champagne-400/50 group-hover:text-champagne-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-            </a>
-            <a
-              href="/#testimonials"
-              onClick={() => setMobileMenuOpen(false)}
-              className="group text-sm uppercase tracking-[0.25em] text-ivory-100 hover:text-champagne-300 transition-colors py-1 flex items-center justify-between"
-            >
-              <span>05. Client Stories</span>
-              <ArrowUpRight className="w-3.5 h-3.5 text-champagne-400/50 group-hover:text-champagne-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
-            </a>
-          </div>
+                <span className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
+                  Bhanu&apos;s Hair Academy (Courses)
+                </span>
+                <ArrowUpRight className="w-4 h-4 text-champagne-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+              </a>
+              {[
+                { href: "/#studio", label: "01. The Studio" },
+                { href: "/#services", label: "02. Rituals & Directory" },
+                { href: "/#experience", label: "03. Japanese Scissors Ritual" },
+                { href: "/#gallery", label: "04. Look Archive" },
+                { href: "/#skincare", label: "05. Beyond Hair (Skincare)" },
+                { href: "/#testimonials", label: "06. Client Stories" },
+              ].map((link, i) => (
+                <a
+                  key={i}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="group text-sm uppercase tracking-[0.22em] text-ivory-100 hover:text-champagne-300 transition-colors py-1 flex items-center justify-between"
+                >
+                  <span>{link.label}</span>
+                  <ArrowUpRight className="w-3.5 h-3.5 text-champagne-400/50 group-hover:text-champagne-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                </a>
+              ))}
+            </div>
 
-          <div className="pt-4 border-t border-champagne-500/20 flex flex-col gap-3">
-            <a
-              href={`tel:${contact.phone}`}
-              className="flex items-center gap-2 text-xs tracking-widest text-champagne-300 font-mono"
-            >
-              <Phone className="w-3.5 h-3.5" />
-              <span>INDORE SALON DIRECT · {contact.displayPhone}</span>
-            </a>
-            <a
-              href="#book"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full text-center py-3.5 rounded-full text-xs uppercase tracking-[0.2em] font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-colors shadow-[0_0_20px_rgba(197,164,119,0.3)]"
-            >
-              Reserve Experience
-            </a>
+            <div className="pt-4 border-t border-champagne-500/20 flex flex-col gap-3">
+              <a
+                href={`tel:${contact.phone}`}
+                className="flex items-center gap-2 text-xs tracking-widest text-champagne-300 font-mono"
+              >
+                <Phone className="w-3.5 h-3.5" />
+                <span>INDORE SALON DIRECT · {contact.displayPhone}</span>
+              </a>
+              <a
+                href="/#book"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full text-center py-3.5 rounded-full text-xs uppercase tracking-[0.2em] font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-colors shadow-[0_0_20px_rgba(197,164,119,0.3)]"
+              >
+                Reserve Experience
+              </a>
+            </div>
           </div>
-        </div>
-      </>
+        </>
       )}
     </header>
   );
 }
+
+export default Navbar;

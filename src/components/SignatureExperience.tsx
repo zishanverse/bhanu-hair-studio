@@ -2,17 +2,15 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { SALON_CONFIG } from "@/config/salon.config";
-import { ThreeScissorsCanvas } from "@/components/ThreeScissorsCanvas";
-import { Sparkles, Check, ChevronRight, RotateCcw, Scissors } from "lucide-react";
+import { stageState } from "@/lib/stageState";
+import { Check, ChevronRight, Scissors, Sparkles } from "lucide-react";
 
 export function SignatureExperience() {
   const { signatureExperience } = SALON_CONFIG;
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
   const [snipCount, setSnipCount] = useState(0);
-  const [tensionMode, setTensionMode] = useState<"Precision" | "Texturize" | "Scissor-Over-Comb">("Precision");
   const [snipFlashed, setSnipFlashed] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
@@ -22,18 +20,19 @@ export function SignatureExperience() {
   const activeChapter = signatureExperience.chapters[activeChapterIndex];
 
   const handleTriggerSnip = () => {
+    stageState.snip();
     setSnipCount((prev) => prev + 1);
     setSnipFlashed(true);
-    setTimeout(() => setSnipFlashed(false), 400);
+    setTimeout(() => setSnipFlashed(false), 450);
   };
 
-  // Reposé Laser Sweeping & Blueprint Reveal Animation
   useEffect(() => {
     if (typeof window === "undefined" || !sectionRef.current) return;
-    gsap.registerPlugin(ScrollTrigger);
 
-    const ctx = gsap.context(() => {
-      // 1. Staggered reveal for chapter container
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 768px)", () => {
+      // Staggered reveal for chapter container
       gsap.fromTo(
         ".chapter-reveal-item",
         { opacity: 0, y: 35 },
@@ -50,7 +49,7 @@ export function SignatureExperience() {
         }
       );
 
-      // 2. Reposé Laser Beam Scan Animation across the Biometric Anatomy Console
+      // Scanning Laser Beam Animation across Biometric Anatomy Grid
       if (laserBeamRef.current && cardsGridRef.current) {
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -67,7 +66,6 @@ export function SignatureExperience() {
           { scaleX: 1, opacity: 1, duration: 1, ease: "power2.inOut" }
         );
 
-        // Stagger cards illumination as laser travels
         const zoneCards = cardsGridRef.current.querySelectorAll(".biometric-zone-card");
         tl.fromTo(
           zoneCards,
@@ -76,16 +74,17 @@ export function SignatureExperience() {
           0.2
         );
       }
-    }, sectionRef);
+    });
 
-    return () => ctx.revert();
+    return () => mm.revert();
   }, []);
 
   return (
     <section
       ref={sectionRef}
       id="experience"
-      className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden"
+      data-stage="experience"
+      className="relative z-10 w-full bg-obsidian-950/40 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden"
     >
       {/* Background ambient gold gradient glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-champagne-500/5 blur-[160px] pointer-events-none" />
@@ -108,15 +107,18 @@ export function SignatureExperience() {
             </h2>
           </div>
 
-          {/* Chapter Selector Tabs / Gold Progress Bar */}
+          {/* Chapter Selector Tabs / Progress Buttons */}
           <div className="flex items-center gap-2 sm:gap-3 bg-surface p-1.5 rounded-full border border-champagne-500/20 max-w-full overflow-x-auto no-scrollbar">
             {signatureExperience.chapters.map((ch, idx) => (
               <button
                 key={ch.id}
                 type="button"
-                data-cursor="Switch Ritual"
-                onClick={() => setActiveChapterIndex(idx)}
-                className={`relative px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest font-medium transition-all duration-300 whitespace-nowrap ${
+                data-cursor="Select Ritual"
+                onClick={() => {
+                  setActiveChapterIndex(idx);
+                  handleTriggerSnip();
+                }}
+                className={`relative px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest font-medium transition-all duration-300 whitespace-nowrap cursor-pointer ${
                   activeChapterIndex === idx
                     ? "text-obsidian-950 bg-champagne-400 shadow-[0_0_20px_rgba(197,164,119,0.4)]"
                     : "text-muted hover:text-ivory-100"
@@ -175,12 +177,13 @@ export function SignatureExperience() {
               <button
                 type="button"
                 data-cursor="Next Chapter"
-                onClick={() =>
+                onClick={() => {
                   setActiveChapterIndex((prev) =>
                     prev + 1 < signatureExperience.chapters.length ? prev + 1 : 0
-                  )
-                }
-                className="group flex items-center gap-2 text-xs uppercase tracking-widest text-champagne-400 hover:text-ivory-50 transition-colors"
+                  );
+                  handleTriggerSnip();
+                }}
+                className="group flex items-center gap-2 text-xs uppercase tracking-widest text-champagne-400 hover:text-ivory-50 transition-colors cursor-pointer"
               >
                 <span>Next Chapter</span>
                 <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
@@ -188,32 +191,36 @@ export function SignatureExperience() {
             </div>
           </div>
 
-          {/* Center/Right Column: Interactive 3D Object & Cinematic Imagery */}
+          {/* Center/Right Column: 3D Inspection Portal & Cinematic Visual */}
           <div className="chapter-reveal-item lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {/* Interactive 3D Japanese Barber Scissors Canvas */}
-            <div className={`rounded-3xl glass-card border p-6 flex flex-col justify-between relative overflow-hidden min-h-[420px] bg-gradient-to-b from-surface via-obsidian-950 to-obsidian-950 transition-all duration-300 ${
-              snipFlashed ? "border-champagne-300 shadow-[0_0_35px_rgba(197,164,119,0.35)]" : "border-champagne-500/20"
-            }`}>
+            {/* Interactive 3D Japanese Barber Shears Inspection Card */}
+            <div
+              className={`rounded-3xl glass-card border p-6 flex flex-col justify-between relative overflow-hidden min-h-[420px] bg-gradient-to-b from-surface/60 via-obsidian-950/80 to-obsidian-950 transition-all duration-300 ${
+                snipFlashed
+                  ? "border-champagne-300 shadow-[0_0_35px_rgba(200,162,82,0.4)]"
+                  : "border-champagne-500/20"
+              }`}
+            >
               <div className="flex items-center justify-between z-10">
                 <div className="space-y-0.5">
                   <span className="text-[10px] tracking-widest uppercase text-champagne-300 font-medium block">
-                    JAPANESE SHEAR CRAFTSMANSHIP
+                    MASTER METALLURGY
                   </span>
                   <span className="text-[10px] text-muted tracking-wider uppercase font-sans">
-                    Hand-Honed Convex Edge · Master Tooling
+                    Hitachi 440C · Honed Hamaguri Edge
                   </span>
                 </div>
-                
+
                 {/* Snip Action Button */}
                 <button
                   type="button"
                   data-cursor="Snip Blades"
                   onClick={handleTriggerSnip}
-                  className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 active:scale-95 transition-all shadow-md"
+                  className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 active:scale-95 transition-all shadow-md cursor-pointer"
                   aria-label="Trigger mechanical snip"
                 >
                   <Scissors className="w-3 h-3 text-obsidian-950" />
-                  <span>Inspect Shears</span>
+                  <span>Snip Shears</span>
                   {snipCount > 0 && (
                     <span className="ml-1 px-1.5 py-0.2 rounded-full bg-obsidian-950 text-champagne-300 text-[9px] font-mono">
                       {snipCount}
@@ -222,45 +229,39 @@ export function SignatureExperience() {
                 </button>
               </div>
 
-              {/* Three.js Canvas Element with 3D cursor tag */}
+              {/* Exploded View Anatomy Annotation Overlays */}
               <div
-                data-cursor="Rotate 3D"
-                className="absolute inset-0 flex items-center justify-center z-0 pt-10 pb-12 cursor-pointer"
+                onClick={handleTriggerSnip}
+                data-cursor="Click / Snip"
+                className="absolute inset-0 flex flex-col items-center justify-center z-10 cursor-pointer p-6"
               >
-                <ThreeScissorsCanvas
-                  className="w-full h-full"
-                  snipCount={snipCount}
-                  onSnip={handleTriggerSnip}
-                />
-              </div>
+                {/* Floating Callout Labels (Hairline pointers) */}
+                <div className="w-full h-full relative flex items-center justify-center pointer-events-none">
+                  {/* Callout 1: Hamaguri Blade */}
+                  <div className="absolute top-14 left-4 flex items-center gap-2 bg-obsidian-950/80 border border-champagne-500/30 px-2.5 py-1 rounded-full text-[9px] font-mono text-champagne-300 backdrop-blur-md">
+                    <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-ping" />
+                    <span>Convex Clamshell Blade</span>
+                  </div>
 
-              {/* Bottom Interactive Dial & Controls */}
-              <div className="relative z-10 pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[10px] text-muted tracking-widest uppercase border-t border-champagne-500/15">
-                <div className="flex items-center gap-2">
-                  <span className="text-champagne-300">Blade Angle:</span>
-                  <div className="flex items-center gap-1">
-                    {(["Precision", "Texturize", "Scissor-Over-Comb"] as const).map((m) => (
-                      <button
-                        key={m}
-                        type="button"
-                        data-cursor={m}
-                        onClick={() => {
-                          setTensionMode(m);
-                          handleTriggerSnip();
-                        }}
-                        className={`px-2 py-0.5 rounded text-[8px] transition-colors ${
-                          tensionMode === m
-                            ? "bg-champagne-400/20 text-champagne-300 border border-champagne-400/40"
-                            : "hover:text-ivory-100 text-muted"
-                        }`}
-                      >
-                        {m}
-                      </button>
-                    ))}
+                  {/* Callout 2: Gold Tension Screw */}
+                  <div className="absolute top-1/2 right-4 -translate-y-1/2 flex items-center gap-2 bg-obsidian-950/80 border border-champagne-500/30 px-2.5 py-1 rounded-full text-[9px] font-mono text-champagne-300 backdrop-blur-md">
+                    <span className="w-1.5 h-1.5 rounded-full bg-champagne-400" />
+                    <span>Micro-Click Tension Dial</span>
+                  </div>
+
+                  {/* Callout 3: Ergonomic Tang */}
+                  <div className="absolute bottom-16 left-6 flex items-center gap-2 bg-obsidian-950/80 border border-champagne-500/30 px-2.5 py-1 rounded-full text-[9px] font-mono text-champagne-300 backdrop-blur-md">
+                    <span className="w-1.5 h-1.5 rounded-full bg-champagne-400" />
+                    <span>Anatomical Pinky Tang</span>
                   </div>
                 </div>
-                <span className="text-champagne-400/90 text-right font-mono text-[9px]">
-                  Click / Drag 3D Canvas
+              </div>
+
+              {/* Bottom Interactive Dial & Feedback */}
+              <div className="relative z-20 pt-4 flex items-center justify-between text-[10px] text-muted tracking-widest uppercase border-t border-champagne-500/15">
+                <span className="text-champagne-300">Tap / Click anywhere to snip</span>
+                <span className="text-champagne-400 font-mono text-[9px]">
+                  Real-time 3D Physics
                 </span>
               </div>
             </div>
@@ -277,7 +278,7 @@ export function SignatureExperience() {
                 sizes="(max-width: 1024px) 100vw, 35vw"
                 className="object-cover object-center filter brightness-[0.85] contrast-[1.08] transition-transform duration-1000 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/80 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/85 via-transparent to-transparent pointer-events-none" />
 
               <div className="absolute bottom-6 left-6 right-6 p-4 rounded-xl glass-panel border border-champagne-500/25">
                 <div className="text-[10px] tracking-widest uppercase text-champagne-400 font-mono">
@@ -291,7 +292,7 @@ export function SignatureExperience() {
           </div>
         </div>
 
-        {/* Anatomical Hair Architecture & Laser Mapping Console (Reposé Blueprint Hotspot Pattern) */}
+        {/* Anatomical Hair Architecture & Laser Mapping Console */}
         <div className="rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 md:p-10 relative overflow-hidden space-y-8 bg-gradient-to-b from-surface/40 via-obsidian-950/60 to-obsidian-950">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-champagne-500/15 pb-6">
             <div className="space-y-1">
@@ -310,7 +311,7 @@ export function SignatureExperience() {
             </p>
           </div>
 
-          {/* Active Scanning Laser Beam (Reposé Pattern) */}
+          {/* Active Scanning Laser Beam */}
           <div className="relative pt-2">
             <div
               ref={laserBeamRef}
@@ -358,7 +359,6 @@ export function SignatureExperience() {
                   data-cursor="Map Zone"
                   className="biometric-zone-card group relative rounded-2xl p-5 border border-champagne-500/15 bg-surface/30 hover:bg-surface/70 hover:border-champagne-400/50 transition-all duration-500 cursor-pointer flex flex-col justify-between space-y-4 will-change-transform"
                 >
-                  {/* Horizontal Laser Line on Hover (Reposé Pattern) */}
                   <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-champagne-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                   <div className="space-y-2">
@@ -399,3 +399,5 @@ export function SignatureExperience() {
     </section>
   );
 }
+
+export default SignatureExperience;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { SALON_CONFIG } from "@/config/salon.config";
 import { ChevronLeft, ChevronRight, Star, Quote } from "lucide-react";
 
@@ -8,27 +8,81 @@ export function TestimonialsSection() {
   const { testimonials } = SALON_CONFIG;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isInView, setIsInView] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Auto-advance carousel every 6 seconds unless hovered
+  const sectionRef = useRef<HTMLElement>(null);
+  const touchStartXRef = useRef<number>(0);
+
+  // IntersectionObserver: auto-advance ONLY when in viewport
   useEffect(() => {
-    if (isPaused) return;
+    const el = sectionRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Auto-advance timer (only active if in view and not hovered)
+  useEffect(() => {
+    if (isPaused || !isInView) return;
     const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % testimonials.items.length);
+      changeIndex((activeIndex + 1) % testimonials.items.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, [isPaused, testimonials.items.length]);
+  }, [isPaused, isInView, activeIndex, testimonials.items.length]);
+
+  const changeIndex = (newIndex: number) => {
+    if (newIndex === activeIndex || isTransitioning) return;
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setActiveIndex(newIndex);
+      setIsTransitioning(false);
+    }, 250);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const deltaX = e.changedTouches[0].clientX - touchStartXRef.current;
+    if (deltaX > 50) {
+      // Swipe Right -> Prev
+      changeIndex(activeIndex > 0 ? activeIndex - 1 : testimonials.items.length - 1);
+    } else if (deltaX < -50) {
+      // Swipe Left -> Next
+      changeIndex((activeIndex + 1) % testimonials.items.length);
+    }
+  };
 
   const current = testimonials.items[activeIndex];
 
   return (
     <section
+      ref={sectionRef}
       id="testimonials"
-      className="relative z-10 w-full bg-obsidian-950/20 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden"
+      data-stage="testimonials"
+      className="relative z-10 w-full bg-obsidian-950/40 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-champagne-500/5 blur-[180px] pointer-events-none" />
+
+      {/* Large faint decorative background quotation watermark with subtle depth */}
+      <div className="absolute right-8 top-1/2 -translate-y-1/2 text-champagne-400/5 pointer-events-none select-none">
+        <Quote className="w-96 h-96 rotate-180" />
+      </div>
 
       <div className="max-w-5xl mx-auto space-y-12 sm:space-y-16 relative z-10">
         {/* Section Header */}
@@ -58,23 +112,31 @@ export function TestimonialsSection() {
           </div>
         </div>
 
-        {/* Testimonial Quote Display */}
-        <div className="rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 md:p-16 relative space-y-8 sm:space-y-10 shadow-[0_20px_60px_rgba(0,0,0,0.7)]">
+        {/* Testimonial Quote Display with Masked Line Transitions */}
+        <div className="rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 md:p-16 relative space-y-8 sm:space-y-10 shadow-[0_20px_60px_rgba(0,0,0,0.7)] backdrop-blur-xl">
           {/* Gold Quotation Mark Icon */}
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-champagne-500/30 flex items-center justify-center text-champagne-400 bg-surface">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-champagne-500/30 flex items-center justify-center text-champagne-400 bg-surface shadow-inner">
             <Quote className="w-4 h-4 sm:w-5 sm:h-5 rotate-180" />
           </div>
 
-          {/* Large Editorial Serif Quote */}
-          <div className="min-h-[120px] sm:min-h-[140px] flex items-center">
-            <blockquote className="font-serif text-lg sm:text-2xl md:text-3xl lg:text-4xl font-light text-ivory-50 leading-[1.3] italic">
+          {/* Masked Line Editorial Quote */}
+          <div className="min-h-[120px] sm:min-h-[140px] flex items-center overflow-hidden">
+            <blockquote
+              className={`font-serif text-lg sm:text-2xl md:text-3xl lg:text-4xl font-light text-ivory-50 leading-[1.3] italic transition-all duration-300 ease-out ${
+                isTransitioning ? "opacity-0 translate-y-3 filter blur-sm" : "opacity-100 translate-y-0 filter blur-0"
+              }`}
+            >
               “{current.quote}”
             </blockquote>
           </div>
 
           {/* Client Details & Star Rating */}
           <div className="pt-6 border-t border-champagne-500/15 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-            <div className="space-y-1">
+            <div
+              className={`space-y-1 transition-opacity duration-300 ${
+                isTransitioning ? "opacity-0" : "opacity-100"
+              }`}
+            >
               <div className="font-serif text-xl text-champagne-200">
                 {current.clientName}
               </div>
@@ -94,22 +156,20 @@ export function TestimonialsSection() {
               <div className="flex items-center gap-2">
                 <button
                   type="button"
+                  data-cursor="Prev"
                   onClick={() =>
-                    setActiveIndex((prev) =>
-                      prev > 0 ? prev - 1 : testimonials.items.length - 1
-                    )
+                    changeIndex(activeIndex > 0 ? activeIndex - 1 : testimonials.items.length - 1)
                   }
-                  className="p-2.5 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 hover:bg-champagne-500/20 transition-all"
+                  className="p-2.5 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 hover:bg-champagne-500/20 transition-all cursor-pointer"
                   aria-label="Previous testimonial"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
                   type="button"
-                  onClick={() =>
-                    setActiveIndex((prev) => (prev + 1) % testimonials.items.length)
-                  }
-                  className="p-2.5 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 hover:bg-champagne-500/20 transition-all"
+                  data-cursor="Next"
+                  onClick={() => changeIndex((activeIndex + 1) % testimonials.items.length)}
+                  className="p-2.5 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 hover:bg-champagne-500/20 transition-all cursor-pointer"
                   aria-label="Next testimonial"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -125,8 +185,9 @@ export function TestimonialsSection() {
             <button
               key={i}
               type="button"
-              onClick={() => setActiveIndex(i)}
-              className="py-3 px-1.5 focus:outline-none"
+              data-cursor={`Review ${i + 1}`}
+              onClick={() => changeIndex(i)}
+              className="py-3 px-1.5 focus:outline-none cursor-pointer"
               aria-label={`Jump to review ${i + 1}`}
             >
               <div
@@ -141,3 +202,5 @@ export function TestimonialsSection() {
     </section>
   );
 }
+
+export default TestimonialsSection;

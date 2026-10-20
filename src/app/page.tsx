@@ -1,8 +1,9 @@
+import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
 import { CinematicBackground } from "@/components/CinematicBackground";
-import { CinematicHero } from "@/components/CinematicHero";
+import { CinematicExperience } from "@/components/CinematicExperience";
 import { TheStudio } from "@/components/TheStudio";
-import { CurvedTextRibbon } from "@/components/CurvedTextRibbon";
+import { MarqueeRibbon } from "@/components/MarqueeRibbon";
 import { TreatmentDirectory } from "@/components/TreatmentDirectory";
 import { SignatureExperience } from "@/components/SignatureExperience";
 import { GallerySection } from "@/components/GallerySection";
@@ -13,9 +14,15 @@ import { Footer } from "@/components/Footer";
 import { LuxuryCursor } from "@/components/LuxuryCursor";
 import { FloatingConcierge } from "@/components/FloatingConcierge";
 
+import { Preloader } from "@/components/Preloader";
+import { StageWrapper } from "@/components/stage/StageWrapper";
+
 export default function Home() {
   return (
-    <main className="relative min-h-screen bg-transparent text-ivory-50 overflow-x-hidden selection:bg-champagne-500/30 selection:text-champagne-200">
+    <main id="main-content" className="relative min-h-screen bg-obsidian-950 text-ivory-50 overflow-x-hidden selection:bg-champagne-500/30 selection:text-champagne-200">
+      {/* First-Visit Editorial Preloader */}
+      <Preloader />
+
       {/* 0. Bespoke Luxury Magnetic Cursor (Desktop) */}
       <LuxuryCursor />
 
@@ -25,37 +32,40 @@ export default function Home() {
       {/* 1. Fixed Luxury Transparent / Glass Navigation */}
       <Navbar />
 
-      {/* 2. Global Full-Page Fixed Synchronized Background Video (Desktop >=768px) */}
+      {/* 2. Persistent 3D R3F Stage (The Single Pair of Master Japanese Shears Walking Through the Salon) */}
+      <StageWrapper />
+
+      {/* 3. Pinned Hero Cinematic Background Video Scrubber */}
       <CinematicBackground />
 
-      {/* 3. Dual-Engine Hero: 3D Sculpture for Mobile (<768px) & Natural Narrative for Desktop (>=768px) */}
-      <CinematicHero />
+      {/* 4. Dual-Engine Hero: 3D Sculpture for Mobile (<768px) & Editorial Narrative for Desktop (>=768px) */}
+      <CinematicExperience />
 
-      {/* 3. Section 1 — The Studio (Asymmetric editorial layout & heritage) */}
+      {/* 5. Section 1 — The Studio (Asymmetric editorial layout & heritage) */}
       <TheStudio />
 
-      {/* 4. Kinetic Typography Curved Ribbon Bridge */}
-      <CurvedTextRibbon />
+      {/* 6. Kinetic Typography Marquee Bridge */}
+      <MarqueeRibbon />
 
-      {/* 5. Section 2 — Comprehensive 30-Service Atelier Treatment Directory */}
+      {/* 7. Section 2 — Comprehensive 30-Service Atelier Treatment Directory */}
       <TreatmentDirectory />
 
-      {/* 6. Section 3 — The Signature Experience (3 Chapters with Interactive 3D Japanese Scissors) */}
+      {/* 8. Section 3 — The Signature Experience (3 Chapters with Exploded 3D Japanese Shears) */}
       <SignatureExperience />
 
-      {/* 7. Section 4 — Signature Looks / Gallery (Filter tabs, before/after comparison slider & lightbox) */}
+      {/* 9. Section 4 — Signature Looks / Gallery (Filter tabs, before/after comparison slider & lightbox) */}
       <GallerySection />
 
-      {/* 8. Section 5 — Skin Care / Beyond Hair (Calming split composition & clinical treatments) */}
+      {/* 10. Section 5 — Skin Care / Beyond Hair (Ivory pavilion expansion & clinical treatments) */}
       <SkincareSection />
 
-      {/* 9. Section 6 — Testimonials (Editorial serif quotation carousel) */}
+      {/* 11. Section 6 — Testimonials (Editorial serif quotation carousel) */}
       <TestimonialsSection />
 
-      {/* 10. Section 7 — Booking Experience (Final CTA with WhatsApp, phone, and inquiry form) */}
+      {/* 12. Section 7 — Booking Experience (Ribbon cutting finale & appointment form) */}
       <BookingSection />
 
-      {/* 11. Editorial Footer (Brand narrative, sitemap, studio hours, and social links) */}
+      {/* 13. Editorial Footer (Curtain reveal, studio hours, and back-to-top snip glyph) */}
       <Footer />
     </main>
   );
