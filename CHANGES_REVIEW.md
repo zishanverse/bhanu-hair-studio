@@ -205,9 +205,32 @@ Following the initial audit and the roadmap established in `implementation_plan.
 
 ---
 
+### 5. AI Tropes & Jargon Elimination (UI/UX Pro Max Luxury Audit)
+
+To eliminate generic "AI-generated" web patterns and SaaS tropes in favor of an authentic high-fashion salon aesthetic:
+
+1. **Pulsing Server Status Dots Removed**:
+   - **Navbar**: Removed the pulsating green dot (`bg-emerald-400 animate-pulse`) and "OPEN" SaaS badge next to the atelier name; also removed the pulsing indicator from desktop/mobile "Hair Academy" links.
+   - **Treatment Directory**: Replaced the pulsing green dot on the bottom assurance bar with a handcrafted luxury editorial glyph (`✦`).
+   - **Mobile Hero**: Removed the pulsating green status pill on the mobile 3D stage.
+   - **Hair Academy Hero**: Replaced the pulsating dot with a calm, static champagne marker.
+   - **Gallery Section**: Removed `animate-pulse` from the swipe guidance arrow.
+
+2. **Developer & 3D Stage Jargon Replaced**:
+   - In `SignatureExperience.tsx`, replaced developer badge `"SCROLL DRIVEN 3D PIN"` with `"MASTER ATELIER RITUAL"`.
+   - Replaced technical debug percentage scrub text `"({Math.round(stageState.explode * 100)}% Explode)"` with artisan craft title `"02. Micro-Ball Bearing Pivot Assembly"`.
+   - Replaced `"Exploded State: {Math.round(stageState.explode * 100)}%"` with bespoke salon label `"Artisan Hand-Balanced"`.
+
+3. **Color Palette Harmonization**:
+   - Eliminated all artificial neon emerald highlights across navigation bars, contact cards, and confirmation screens.
+   - Restored warm champagne (`#C8A252`), deep bronze (`#7A5B20`), and rich espresso (`#110F0C`) across all components (`MobileBottomBar`, `CinematicExperience`, `BookingSection`, `OutletsSection`, and `AcademyClientPage`).
+
+---
+
 ## Verification & Build Results
 
 1. **TypeScript Type Check**: `npx tsc --noEmit` passed with 0 errors.
-2. **Production Bundle Compilation**: `npm run build` compiled all routes statically in 1.6s with 0 errors.
-3. **Local Dev Server**: Tested via Node fetch; returns `STATUS: 200` for `/` and `/bhanushairacademy`.
-4. **Git Repository Status**: All changes cleanly committed and synchronized on GitHub `origin/main` (latest commit `18602de`).
+2. **Production Bundle Compilation**: `npm run build` compiled all routes statically in 2.6s with 0 errors.
+3. **Local Dev Server**: Tested and responding with HTTP 200 on `http://localhost:3000/`.
+4. **Git Repository Status**: Branch `design/uiux-pro-max-pass` updated cleanly with commit `ef622d1`.
+
