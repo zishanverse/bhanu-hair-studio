@@ -4,6 +4,7 @@ export interface ServiceItem {
   description: string;
   tag?: string;
   duration?: string;
+  priceFrom?: string;
 }
 
 export interface ServiceCategory {
@@ -45,6 +46,7 @@ export interface SalonConfiguration {
   identity: {
     brandName: string;
     brandSub: string;
+    brandFullName: string;
     branch: string;
     establishedYear: number;
     city: string;
@@ -212,8 +214,9 @@ export interface AcademyConfig {
 export const SALON_CONFIG: SalonConfiguration = {
   identity: {
     brandName: "BHANU'S",
-    brandSub: "THE HAIR STUDIO PALSIKAR",
-    branch: "Palsikar Colony, Indore",
+    brandSub: "THE HAIR STUDIO",
+    brandFullName: "Bhanu's The Hair Studio",
+    branch: "Palsikar Colony · Saket Nagar · Vijay Nagar, Indore",
     establishedYear: 2018,
     city: "Indore",
     state: "Madhya Pradesh",
@@ -222,14 +225,14 @@ export const SALON_CONFIG: SalonConfiguration = {
     coordinates: {
       lat: "22.7058° N",
       lng: "75.8567° E",
-      display: "22.7058° N, 75.8567° E — PALSIKAR COLONY, INDORE",
+      display: "22.7058° N, 75.8567° E — INDORE, INDIA",
     },
   },
   contact: {
     phone: "+919876543210",
     displayPhone: "+91 98765 43210",
     whatsappNumber: "919876543210",
-    whatsappPrefill: "Hello Bhanu's The Hair Studio Palsikar, I would like to schedule an appointment consultation.",
+    whatsappPrefill: "Hello Bhanu's The Hair Studio, I would like to schedule an appointment consultation.",
     email: "atelier@bhanuhairstudio.com",
     address: {
       line1: "Shop No.4, Sewak Avenue, 7, Manik Bagh Rd",
@@ -297,6 +300,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Haircut",
             description: "Signature structural wash, scissor balance, perimeter detailing, and directional finish.",
             duration: "40 min",
+            priceFrom: "₹500",
             tag: "Core",
           },
           {
@@ -304,6 +308,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Beard Cutting & Trimming",
             description: "Sculpted beard shaping, line-up razor edging, hot herbal towel press, and nourishing beard oil ritual.",
             duration: "30 min",
+            priceFrom: "₹350",
             tag: "Men's Salon",
           },
           {
@@ -311,6 +316,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Blow dry & Hairstyling",
             description: "Couture blow dry, ceramic tong waves, thermal volume contouring, and weightless silk mist.",
             duration: "45 min",
+            priceFrom: "₹600",
             tag: "Styling",
           },
           {
@@ -318,6 +324,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Hair Studio Signature Session",
             description: "Complete bespoke makeover combining master cut, scalp cleanse, and customized day-to-evening style.",
             duration: "60 min",
+            priceFrom: "₹1,200",
             tag: "Signature",
           },
         ],
@@ -337,6 +344,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Keratin Treatment",
             description: "Deep nano-keratin protein infusion eliminating frizz and infusing brilliant gloss for up to 4 months.",
             duration: "120 min",
+            priceFrom: "₹3,500",
             tag: "Bestseller",
           },
           {
@@ -344,6 +352,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Hair Rebonding & Hair Smoothing",
             description: "Permanent structural thermal alignment delivering mirror-straight, fluid silk texture and softness.",
             duration: "150 min",
+            priceFrom: "₹4,500",
             tag: "Transformative",
           },
           {
@@ -351,6 +360,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Texture Services",
             description: "Bespoke hair texture modification, volume smoothing, relaxers, and natural curl contouring.",
             duration: "90 min",
+            priceFrom: "₹2,500",
             tag: "Custom",
           },
           {
@@ -358,6 +368,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Hair Treatments & Herbal Treat",
             description: "Organic botanical scalp and hair treatments infused with ayurvedic herbs to strengthen follicles.",
             duration: "60 min",
+            priceFrom: "₹1,200",
             tag: "Holistic",
           },
         ],
@@ -377,6 +388,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Hair Colouring (Global & Highlights)",
             description: "Custom formulated rich ammonia-free tones, dimensional baby-lights, and seamless gray coverage.",
             duration: "90 – 150 min",
+            priceFrom: "₹2,000",
             tag: "Couture",
           },
           {
@@ -384,6 +396,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Balayage & Ombré Artistry",
             description: "Freehand hand-painted gradient transitions from deep roots to luminous sunkissed champagne tips.",
             duration: "120 min",
+            priceFrom: "₹4,000",
             tag: "Signature",
           },
         ],
@@ -403,6 +416,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Bridal Services & Make-up",
             description: "High-definition bridal makeover, bespoke hair ornamentation, draping, and waterproof camera-ready glow.",
             duration: "180 min",
+            priceFrom: "₹8,000",
             tag: "Bridal",
           },
           {
@@ -410,6 +424,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Make-up & Make-up Services",
             description: "Glamour, reception, cocktail, and editorial party makeup tailored to your outfit and undertones.",
             duration: "75 min",
+            priceFrom: "₹2,500",
             tag: "Glamour",
           },
           {
@@ -417,6 +432,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Eyelashes & Eyebrow Beautification",
             description: "Precision eyebrow threading, mapping, tinting, micro-sculpting, and classic/volume eyelash extensions.",
             duration: "45 min",
+            priceFrom: "₹500",
             tag: "Aesthetics",
           },
           {
@@ -424,6 +440,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Nail Art & Extensions",
             description: "Gel extensions, French tips, chrome mirror finishes, and hand-painted miniature luxury nail art.",
             duration: "60 min",
+            priceFrom: "₹1,200",
             tag: "Nails",
           },
         ],
@@ -443,6 +460,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Clean Up",
             description: "Aqueous exfoliation, manual blackhead vacuum extraction, pore refining pack, and calming mist.",
             duration: "40 min",
+            priceFrom: "₹800",
             tag: "Essential",
           },
           {
@@ -450,6 +468,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Facials (Radiance & Anti-Oxidant)",
             description: "Multi-stage brightening facial with lymphatic drainage, collagen booster, and cold quartz seal.",
             duration: "60 min",
+            priceFrom: "₹1,500",
             tag: "Radiance",
           },
           {
@@ -457,6 +476,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Acne Treatments",
             description: "Targeted salicylic peel, blue light clarification, and sebum-balancing organic tea tree compresses.",
             duration: "75 min",
+            priceFrom: "₹1,800",
             tag: "Purifying",
           },
         ],
@@ -476,6 +496,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Spa Services & Massage",
             description: "Therapeutic hair spa, cranial acupressure, and tension-melting shoulder and neck massage.",
             duration: "60 min",
+            priceFrom: "₹1,500",
             tag: "Sensory",
           },
           {
@@ -483,6 +504,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Pedicure & Hand Ritual",
             description: "Sea salt soak, cuticle therapy, exfoliating scrub, and soothing botanical massage with glossy finish.",
             duration: "50 min",
+            priceFrom: "₹800",
             tag: "Care",
           },
           {
@@ -490,6 +512,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Body Waxing & Waxing Oil Wax",
             description: "Gentle liposoluble waxing and nourishing waxing oil wax formulation for irritation-free silky smooth skin.",
             duration: "45 min",
+            priceFrom: "₹1,000",
             tag: "Smooth",
           },
           {
@@ -497,6 +520,7 @@ export const SALON_CONFIG: SalonConfiguration = {
             name: "Home Services",
             description: "Exclusive bespoke salon services delivered in the convenience and privacy of your residence in Indore.",
             duration: "Custom",
+            priceFrom: "On Request",
             tag: "VIP Service",
           },
         ],

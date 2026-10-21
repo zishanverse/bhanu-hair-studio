@@ -51,8 +51,26 @@ export default {
       fontFamily: {
         display: ["var(--font-cinzel)", "Cinzel", "Georgia", "serif"],
         serif: ["var(--font-cormorant)", "Cormorant Garamond", "Georgia", "serif"],
-        sans: ["var(--font-jakarta)", "Plus Jakarta Sans", "system-ui", "sans-serif"],
-        mono: ["var(--font-space-grotesk)", "Space Grotesk", "ui-monospace", "monospace"],
+        sans: [
+          "var(--font-jakarta)",
+          "Plus Jakarta Sans",
+          "'Noto Sans Devanagari'",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "'Segoe UI'",
+          "Roboto",
+          "sans-serif",
+        ],
+        mono: [
+          "ui-monospace",
+          "SFMono-Regular",
+          "Menlo",
+          "Monaco",
+          "Consolas",
+          "'Liberation Mono'",
+          "'Courier New'",
+          "monospace",
+        ],
       },
       letterSpacing: {
         tightest: "-0.04em",

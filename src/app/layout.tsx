@@ -1,36 +1,35 @@
 import type { Metadata, Viewport } from "next";
-import { Cinzel, Cormorant_Garamond, Plus_Jakarta_Sans, Space_Grotesk } from "next/font/google";
+import { Cinzel, Cormorant_Garamond, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { SmoothScrollProvider } from "@/lib/SmoothScrollProvider";
 import { SALON_CONFIG } from "@/config/salon.config";
 
+// Display Serif - Preloaded for Above-The-Fold Regal Presence
 const cinzel = Cinzel({
   subsets: ["latin"],
   variable: "--font-cinzel",
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["600", "700"],
   display: "swap",
+  preload: true,
 });
 
+// Editorial Serif - Lazy-loaded for subheadings & pull quotes
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   variable: "--font-cormorant",
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "600"],
   style: ["normal", "italic"],
   display: "swap",
+  preload: false,
 });
 
+// Clean Modern Body Sans - Lazy-loaded for optimal initial payload
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-jakarta",
   weight: ["300", "400", "500", "600", "700"],
   display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -159,41 +158,17 @@ export default function RootLayout({
     url: "https://bhanuhairstudio.com",
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: "Luxury Salon Services",
-      itemListElement: [
-        {
+      name: "Bhanu's The Hair Studio Services Catalog",
+      itemListElement: SALON_CONFIG.servicesCatalog.categories.flatMap((cat) =>
+        cat.services.map((svc) => ({
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
-            name: "Precision Japanese Shears Haircut",
-            description: "Custom anatomical wash, precision cut, and blow dry finish.",
+            name: svc.name,
+            description: svc.description,
           },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Keratin Treatment & Hair Smoothing",
-            description: "Deep nano-keratin protein infusion eliminating frizz with high-gloss mirror finish.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "French Balayage & Hair Colouring",
-            description: "Hand-painted dimensional balayage and ammonia-free global colouring.",
-          },
-        },
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: "Restorative Head Spa & Facials",
-            description: "Scalp camera diagnostics, ultrasonic mist therapy, and purifying facial resets.",
-          },
-        },
-      ],
+        }))
+      ),
     },
     department: SALON_CONFIG.outlets.map((outlet) => ({
       "@type": "HairSalon",
@@ -207,7 +182,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cinzel.variable} ${cormorant.variable} ${jakarta.variable} ${spaceGrotesk.variable}`}
+      className={`${cinzel.variable} ${cormorant.variable} ${jakarta.variable}`}
     >
       <head>
         <script
