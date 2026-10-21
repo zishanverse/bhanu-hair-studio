@@ -103,17 +103,17 @@ export function MasterShears() {
     return { fingerGeo: geo1, thumbGeo: geo2 };
   }, [extrudeSettings]);
 
-  // 3. Materials
+  // 3. Materials - Honed Japanese Hitachi 440C Mirror Polish
   const steelMat = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
-        color: new THREE.Color("#F4F4F6"),
+        color: new THREE.Color("#F8F9FA"),
         metalness: 0.99,
-        roughness: 0.14,
-        clearcoat: 0.7,
-        clearcoatRoughness: 0.08,
+        roughness: 0.08,
+        clearcoat: 0.95,
+        clearcoatRoughness: 0.04,
         reflectivity: 1.0,
-        envMapIntensity: 1.6,
+        envMapIntensity: 2.2,
       }),
     []
   );

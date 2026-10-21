@@ -1,241 +1,261 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { SALON_CONFIG } from "@/config/salon.config";
 import { stageState } from "@/lib/stageState";
-import { Check, ChevronRight, Scissors, Sparkles } from "lucide-react";
+import { Check, Scissors, Sparkles, ArrowDown } from "lucide-react";
 
 export function SignatureExperience() {
-  const { signatureExperience } = SALON_CONFIG;
+  const { signatureExperience, contact } = SALON_CONFIG;
   const [activeChapterIndex, setActiveChapterIndex] = useState(0);
   const [snipCount, setSnipCount] = useState(0);
   const [snipFlashed, setSnipFlashed] = useState(false);
+  const [isReducedMotion, setIsReducedMotion] = useState(false);
 
   const sectionRef = useRef<HTMLElement>(null);
-  const laserBeamRef = useRef<HTMLDivElement>(null);
-  const cardsGridRef = useRef<HTMLDivElement>(null);
+  const pinWrapperRef = useRef<HTMLDivElement>(null);
+  const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
 
   const activeChapter = signatureExperience.chapters[activeChapterIndex];
 
-  const handleTriggerSnip = () => {
+  const handleTriggerSnip = useCallback(() => {
     stageState.snip();
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      try {
+        navigator.vibrate(20);
+      } catch {}
+    }
     setSnipCount((prev) => prev + 1);
     setSnipFlashed(true);
-    setTimeout(() => setSnipFlashed(false), 450);
-  };
+    setTimeout(() => setSnipFlashed(false), 350);
+  }, []);
 
+  // Check for reduced motion preference
   useEffect(() => {
-    if (typeof window === "undefined" || !sectionRef.current) return;
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setIsReducedMotion(mq.matches);
+
+    const listener = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
+    mq.addEventListener("change", listener);
+    return () => mq.removeEventListener("change", listener);
+  }, []);
+
+  // Scroll-Driven Pinned Chapter Timeline
+  useEffect(() => {
+    if (typeof window === "undefined" || !sectionRef.current || !pinWrapperRef.current) return;
+    if (isReducedMotion) {
+      stageState.explode = 0;
+      return;
+    }
 
     const mm = gsap.matchMedia();
 
+    // Desktop & Tablet (>= 768px): True Pinned Scroll Progression
     mm.add("(min-width: 768px)", () => {
-      // Staggered reveal for chapter container
-      gsap.fromTo(
-        ".chapter-reveal-item",
-        { opacity: 0, y: 35 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          stagger: 0.15,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 75%",
-          },
-        }
-      );
+      const pinTrigger = ScrollTrigger.create({
+        trigger: sectionRef.current,
+        pin: pinWrapperRef.current,
+        start: "top top",
+        end: "+=220%",
+        scrub: 0.8,
+        onUpdate: (self) => {
+          const p = self.progress;
 
-      // Scanning Laser Beam Animation across Biometric Anatomy Grid
-      if (laserBeamRef.current && cardsGridRef.current) {
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: cardsGridRef.current,
-            start: "top 80%",
-            end: "bottom 60%",
-            scrub: 1.2,
-          },
-        });
+          // Map scroll scrub directly to stageState 3D explode and rotation
+          stageState.explode = Math.min(1, Math.max(0, p * 1.15));
+          stageState.shears.ry = 0.2 + p * 1.8;
+          stageState.shears.rx = 0.15 + Math.sin(p * Math.PI) * 0.12;
 
-        tl.fromTo(
-          laserBeamRef.current,
-          { scaleX: 0, opacity: 0, transformOrigin: "left center" },
-          { scaleX: 1, opacity: 1, duration: 1, ease: "power2.inOut" }
-        );
+          // Chapter resolution
+          if (p < 0.35) {
+            setActiveChapterIndex(0);
+          } else if (p < 0.7) {
+            setActiveChapterIndex(1);
+          } else {
+            setActiveChapterIndex(2);
+          }
+        },
+      });
 
-        const zoneCards = cardsGridRef.current.querySelectorAll(".biometric-zone-card");
-        tl.fromTo(
-          zoneCards,
-          { opacity: 0.35, y: 20 },
-          { opacity: 1, y: 0, stagger: 0.2, ease: "power2.out" },
-          0.2
-        );
-      }
+      scrollTriggerRef.current = pinTrigger;
     });
 
+    // Mobile (< 768px): Lighter scrub without sticky pin lock
     mm.add("(max-width: 767px)", () => {
-      gsap.fromTo(
-        ".chapter-reveal-item",
-        { opacity: 0, y: 22 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.75,
-          stagger: 0.12,
-          ease: "luxe",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-          },
-        }
-      );
+      const mobileTrigger = ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: "top 70%",
+        end: "bottom 30%",
+        scrub: 1.0,
+        onUpdate: (self) => {
+          const p = self.progress;
+          stageState.explode = p * 0.8;
+          if (p < 0.35) setActiveChapterIndex(0);
+          else if (p < 0.7) setActiveChapterIndex(1);
+          else setActiveChapterIndex(2);
+        },
+      });
+
+      scrollTriggerRef.current = mobileTrigger;
     });
 
     return () => mm.revert();
-  }, []);
+  }, [isReducedMotion]);
+
+  // Secondary Tab Click Navigation: Smoothly scrolls to target chapter in pinned timeline
+  const handleTabClick = (idx: number) => {
+    setActiveChapterIndex(idx);
+    handleTriggerSnip();
+
+    if (scrollTriggerRef.current && !isReducedMotion) {
+      const st = scrollTriggerRef.current;
+      const targetP = idx === 0 ? 0.05 : idx === 1 ? 0.5 : 0.88;
+      const targetScroll = st.start + (st.end - st.start) * targetP;
+      window.scrollTo({ top: targetScroll, behavior: "smooth" });
+    }
+  };
 
   return (
     <section
       ref={sectionRef}
       id="experience"
       data-stage="experience"
-      className="relative z-10 w-full bg-obsidian-950/40 text-ivory-200 py-20 sm:py-28 md:py-36 px-4 sm:px-8 md:px-12 lg:px-20 border-t border-champagne-500/15 overflow-hidden"
+      aria-label="The Signature 3D Experience"
+      className="relative z-10 w-full bg-obsidian-950/50 text-ivory-200 border-t border-champagne-500/15"
     >
-      {/* Background ambient gold gradient glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-champagne-500/5 blur-[160px] pointer-events-none" />
+      {/* Pinned Stage Container */}
+      <div
+        ref={pinWrapperRef}
+        className="w-full min-h-[100dvh] flex flex-col justify-center py-16 sm:py-24 md:py-28 px-4 sm:px-6 md:px-12 lg:px-20 overflow-hidden relative"
+      >
+        {/* Ambient Gold Radial Flare */}
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-champagne-500/5 blur-[140px] pointer-events-none rounded-full"
+          aria-hidden="true"
+        />
 
-      <div className="max-w-7xl mx-auto space-y-12 sm:space-y-16 relative z-10">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8">
-          <div className="space-y-3 sm:space-y-4 max-w-2xl">
-            <div className="flex items-center gap-3">
-              <span className="w-6 sm:w-8 h-[1px] bg-champagne-500/80 inline-block" />
-              <span className="text-[10px] sm:text-xs uppercase tracking-ultra text-champagne-400 font-medium">
-                {signatureExperience.sectionNum} / {signatureExperience.sectionLabel}
-              </span>
-            </div>
-            <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-ivory-50 tracking-tight leading-[1.05] sm:leading-[0.96]">
-              {signatureExperience.headingLine1} <br />
-              <span className="italic font-normal text-champagne-300 font-serif">
-                {signatureExperience.headingLine2}
-              </span>
-            </h2>
-          </div>
-
-          {/* Chapter Selector Tabs / Progress Buttons */}
-          <div className="flex items-center gap-2 sm:gap-3 bg-surface p-1.5 rounded-full border border-champagne-500/20 max-w-full overflow-x-auto no-scrollbar">
-            {signatureExperience.chapters.map((ch, idx) => (
-              <button
-                key={ch.id}
-                type="button"
-                data-cursor="Select Ritual"
-                onClick={() => {
-                  setActiveChapterIndex(idx);
-                  handleTriggerSnip();
-                }}
-                className={`relative px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest font-medium transition-all duration-300 whitespace-nowrap cursor-pointer ${activeChapterIndex === idx
-                    ? "text-obsidian-950 bg-champagne-400 shadow-[0_0_20px_rgba(197,164,119,0.4)]"
-                    : "text-muted hover:text-ivory-100"
-                  }`}
-              >
-                <span>{ch.num} / {ch.title}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Cinematic Chapter Showcase Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-          {/* Left Column: Chapter Editorial Narrative */}
-          <div className="chapter-reveal-item lg:col-span-5 rounded-3xl glass-card border border-champagne-500/15 p-6 sm:p-8 md:p-12 flex flex-col justify-between space-y-6 sm:space-y-8">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs tracking-widest text-champagne-400 font-semibold">
-                  CHAPTER {activeChapter.num}
-                </span>
-                <span className="text-[10px] tracking-widest uppercase px-3 py-1 rounded-full border border-champagne-500/25 text-champagne-300 font-mono">
-                  ACTIVE ATELIER RITUAL
+        <div className="max-w-7xl mx-auto w-full space-y-8 sm:space-y-12 relative z-10">
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-champagne-500/15">
+            <div className="space-y-3 max-w-2xl">
+              <div className="flex items-center gap-3">
+                <span className="w-8 h-[1px] bg-champagne-500 inline-block" />
+                <span className="text-[11px] uppercase tracking-ultra text-champagne-400 font-sans font-medium">
+                  {signatureExperience.sectionNum} / {signatureExperience.sectionLabel}
                 </span>
               </div>
-
-              <h3 className="font-serif text-3xl md:text-4xl text-ivory-50 leading-tight">
-                {activeChapter.title}
-              </h3>
-
-              <p className="text-sm text-champagne-300/90 font-light tracking-wide">
-                {activeChapter.subtitle}
-              </p>
-
-              <p className="text-sm text-muted font-light leading-relaxed">
-                {activeChapter.description}
-              </p>
-
-              {/* Ritual Discipline Checklist */}
-              <div className="pt-4 space-y-3 border-t border-champagne-500/15">
-                {activeChapter.keyPoints.map((point, i) => (
-                  <div key={i} className="flex items-start gap-3 text-xs text-ivory-200/90 font-light">
-                    <div className="w-4 h-4 rounded-full border border-champagne-400/50 flex items-center justify-center shrink-0 mt-0.5 text-champagne-300">
-                      <Check className="w-2.5 h-2.5" />
-                    </div>
-                    <span>{point}</span>
-                  </div>
-                ))}
-              </div>
+              <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl font-light text-ivory-50 tracking-tight leading-[1.0]">
+                {signatureExperience.headingLine1} <br />
+                <span className="italic font-normal text-champagne-300 font-serif">
+                  {signatureExperience.headingLine2}
+                </span>
+              </h2>
             </div>
 
-            {/* Bottom Actions */}
-            <div className="pt-6 border-t border-champagne-500/15 flex items-center justify-between">
-              <div className="text-[11px] uppercase tracking-widest text-muted">
-                0{activeChapterIndex + 1} OF 0{signatureExperience.chapters.length} CHAPTERS
-              </div>
-              <button
-                type="button"
-                data-cursor="Next Chapter"
-                onClick={() => {
-                  setActiveChapterIndex((prev) =>
-                    prev + 1 < signatureExperience.chapters.length ? prev + 1 : 0
-                  );
-                  handleTriggerSnip();
-                }}
-                className="group flex items-center gap-2 text-xs uppercase tracking-widest text-champagne-400 hover:text-ivory-50 transition-colors cursor-pointer"
-              >
-                <span>Next Chapter</span>
-                <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
-              </button>
+            {/* Chapter Indicator Tabs (Secondary Nav) */}
+            <div className="flex items-center gap-2 p-1.5 rounded-full bg-surface/80 border border-champagne-500/20 max-w-full overflow-x-auto no-scrollbar">
+              {signatureExperience.chapters.map((ch, idx) => {
+                const isActive = activeChapterIndex === idx;
+                return (
+                  <button
+                    key={ch.id}
+                    type="button"
+                    onClick={() => handleTabClick(idx)}
+                    className={`relative px-4 py-2 rounded-full text-xs uppercase tracking-wider font-medium transition-all duration-300 whitespace-nowrap cursor-pointer min-h-[44px] ${
+                      isActive
+                        ? "text-obsidian-950 bg-champagne-400 font-bold shadow-[0_0_20px_rgba(200,162,82,0.4)]"
+                        : "text-muted hover:text-ivory-100"
+                    }`}
+                  >
+                    <span>{ch.num} · {ch.title}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Center/Right Column: 3D Inspection Portal & Cinematic Visual */}
-          <div className="chapter-reveal-item lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {/* Interactive 3D Japanese Barber Shears Inspection Card */}
-            <div
-              className={`rounded-3xl glass-card border p-6 flex flex-col justify-between relative overflow-hidden min-h-[420px] bg-gradient-to-b from-surface/60 via-obsidian-950/80 to-obsidian-950 transition-all duration-300 ${snipFlashed
-                  ? "border-champagne-300 shadow-[0_0_35px_rgba(200,162,82,0.4)]"
-                  : "border-champagne-500/20"
-                }`}
-            >
-              <div className="flex items-center justify-between z-10">
-                <div className="space-y-0.5">
-                  <span className="text-[10px] tracking-widest uppercase text-champagne-300 font-medium block">
-                    MASTER METALLURGY
+          {/* Interactive Chapter & 3D Shears Exploded Anatomy Portal */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            {/* Left Column: Chapter Editorial Narrative */}
+            <div className="lg:col-span-5 rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 md:p-10 flex flex-col justify-between space-y-6 shadow-xl">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs tracking-widest text-champagne-400 font-semibold">
+                    CHAPTER {activeChapter.num} / 03
                   </span>
-                  <span className="text-[10px] text-muted tracking-wider uppercase font-sans">
-                    Hitachi 440C · Honed Hamaguri Edge
+                  <span className="text-[10px] tracking-widest uppercase px-3 py-1 rounded-full border border-champagne-500/25 text-champagne-300 font-sans">
+                    SCROLL DRIVEN 3D PIN
                   </span>
                 </div>
 
-                {/* Snip Action Button */}
+                <h3 className="font-serif text-3xl sm:text-4xl text-ivory-50 leading-tight">
+                  {activeChapter.title}
+                </h3>
+
+                <p className="text-xs sm:text-sm text-champagne-300 font-light tracking-wide">
+                  {activeChapter.subtitle}
+                </p>
+
+                <p className="text-xs sm:text-sm text-muted font-light leading-relaxed">
+                  {activeChapter.description}
+                </p>
+
+                {/* Ritual Discipline Key Points */}
+                <div className="pt-4 space-y-2.5 border-t border-champagne-500/15">
+                  {activeChapter.keyPoints.map((point, i) => (
+                    <div key={i} className="flex items-start gap-3 text-xs text-ivory-200/90 font-light">
+                      <div className="w-4 h-4 rounded-full border border-champagne-400/50 flex items-center justify-center shrink-0 mt-0.5 text-champagne-300">
+                        <Check className="w-2.5 h-2.5" />
+                      </div>
+                      <span>{point}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom Scroll Prompt & Reserve CTA */}
+              <div className="pt-5 border-t border-champagne-500/15 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-1.5 text-[11px] text-muted font-sans">
+                  <span>Scroll to advance chapters</span>
+                  <ArrowDown className="w-3.5 h-3.5 text-champagne-400 animate-bounce" />
+                </div>
+
+                <a
+                  href={`https://wa.me/${contact.whatsappNumber}?text=${encodeURIComponent(
+                    `Hello Bhanu's The Hair Studio, I would like to reserve the Signature ${activeChapter.title} Experience.`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs uppercase tracking-wider font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-all min-h-[44px]"
+                >
+                  <span>Reserve</span>
+                  <Scissors className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </div>
+
+            {/* Right Column: 3D Exploded Shears Inspection Window with Active Annotations */}
+            <div className="lg:col-span-7 rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden min-h-[440px] bg-gradient-to-b from-surface/70 via-obsidian-950/80 to-obsidian-950 shadow-2xl">
+              {/* Header: Metallurgy Info + Interactive Snip Button */}
+              <div className="flex items-center justify-between z-10">
+                <div className="space-y-0.5">
+                  <span className="text-[10px] tracking-widest uppercase text-champagne-300 font-semibold block">
+                    MASTER METALLURGY
+                  </span>
+                  <span className="text-[10px] text-muted tracking-wider uppercase font-sans">
+                    Hitachi 440C · Honed Convex Hamaguri Edge
+                  </span>
+                </div>
+
                 <button
                   type="button"
-                  data-cursor="Snip Blades"
                   onClick={handleTriggerSnip}
-                  className="group relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[10px] uppercase tracking-wider font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 active:scale-95 transition-all shadow-md cursor-pointer"
-                  aria-label="Trigger mechanical snip"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[10px] uppercase tracking-wider font-bold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 active:scale-95 transition-all shadow-md min-h-[44px] cursor-pointer"
+                  aria-label="Snip 3D Japanese Shears"
                 >
-                  <Scissors className="w-3 h-3 text-obsidian-950" />
+                  <Scissors className="w-3.5 h-3.5" />
                   <span>Snip Shears</span>
                   {snipCount > 0 && (
                     <span className="ml-1 px-1.5 py-0.2 rounded-full bg-obsidian-950 text-champagne-300 text-[9px] font-mono">
@@ -245,169 +265,52 @@ export function SignatureExperience() {
                 </button>
               </div>
 
-              {/* Exploded View Anatomy Annotation Overlays */}
+              {/* Exploded View Anatomy Annotation Overlays (Fading dynamically with active chapter) */}
               <div
                 onClick={handleTriggerSnip}
-                data-cursor="Click / Snip"
-                className="absolute inset-0 flex flex-col items-center justify-center z-10 cursor-pointer p-6"
+                className="relative my-auto w-full h-[260px] flex items-center justify-center cursor-pointer pointer-events-auto"
+                title="Click to actuate Japanese steel shears"
               >
-                {/* Floating Callout Labels (Hairline pointers) */}
-                <div className="w-full h-full relative flex items-center justify-center pointer-events-none">
-                  {/* Callout 1: Hamaguri Blade */}
-                  <div className="absolute top-14 left-4 flex items-center gap-2 bg-obsidian-950/80 border border-champagne-500/30 px-2.5 py-1 rounded-full text-[9px] font-mono text-champagne-300 backdrop-blur-md">
-                    <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-ping" />
-                    <span>Convex Clamshell Blade</span>
-                  </div>
-
-                  {/* Callout 2: Gold Tension Screw */}
-                  <div className="absolute top-1/2 right-4 -translate-y-1/2 flex items-center gap-2 bg-obsidian-950/80 border border-champagne-500/30 px-2.5 py-1 rounded-full text-[9px] font-mono text-champagne-300 backdrop-blur-md">
-                    <span className="w-1.5 h-1.5 rounded-full bg-champagne-400" />
-                    <span>Micro-Click Tension Dial</span>
-                  </div>
-
-                  {/* Callout 3: Ergonomic Tang */}
-                  <div className="absolute bottom-16 left-6 flex items-center gap-2 bg-obsidian-950/80 border border-champagne-500/30 px-2.5 py-1 rounded-full text-[9px] font-mono text-champagne-300 backdrop-blur-md">
-                    <span className="w-1.5 h-1.5 rounded-full bg-champagne-400" />
-                    <span>Anatomical Pinky Tang</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom Interactive Dial & Feedback */}
-              <div className="relative z-20 pt-4 flex items-center justify-between text-[10px] text-muted tracking-widest uppercase border-t border-champagne-500/15">
-                <span className="text-champagne-300">Tap / Click anywhere to snip</span>
-                <span className="text-champagne-400 font-mono text-[9px]">
-                  Real-time 3D Physics
-                </span>
-              </div>
-            </div>
-
-            {/* Chapter Photographic Visual */}
-            <div
-              data-cursor="Ritual"
-              className="rounded-3xl overflow-hidden border border-champagne-500/20 relative aspect-square sm:aspect-auto min-h-[380px] bg-obsidian-900 group"
-            >
-              <Image
-                src={activeChapter.image}
-                alt={activeChapter.title}
-                fill
-                sizes="(max-width: 1024px) 100vw, 35vw"
-                className="object-cover object-center filter brightness-[0.85] contrast-[1.08] transition-transform duration-1000 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/85 via-transparent to-transparent pointer-events-none" />
-
-              <div className="absolute bottom-6 left-6 right-6 p-4 rounded-xl glass-panel border border-champagne-500/25">
-                <div className="text-[10px] tracking-widest uppercase text-champagne-400 font-mono">
-                  ATELIER RITUAL
-                </div>
-                <div className="text-sm font-serif text-ivory-100">
-                  {activeChapter.subtitle}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Anatomical Hair Architecture & Laser Mapping Console */}
-        <div className="rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 md:p-10 relative overflow-hidden space-y-8 bg-gradient-to-b from-surface/40 via-obsidian-950/60 to-obsidian-950">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-champagne-500/15 pb-6">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-champagne-400 animate-pulse" />
-                <span className="text-[10px] tracking-ultra uppercase text-champagne-400 font-mono">
-                  BIOMETRIC ANATOMY & SECTIONING
-                </span>
-              </div>
-              <h4 className="font-serif text-2xl sm:text-3xl text-ivory-50">
-                Architectural Head Mapping & Shear Geometry
-              </h4>
-            </div>
-            <p className="text-xs text-muted max-w-md font-light leading-relaxed">
-              Every cut at Bhanu's is calibrated against cranial topography, bone structure, and natural whorl directional growth using custom Japanese metallurgy.
-            </p>
-          </div>
-
-          {/* Active Scanning Laser Beam */}
-          <div className="relative pt-2">
-            <div
-              ref={laserBeamRef}
-              className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-champagne-300 to-transparent shadow-[0_0_20px_rgba(200,162,82,0.9)] z-20 pointer-events-none will-change-transform"
-            />
-
-            {/* Interactive Laser Hotspot Grid */}
-            <div ref={cardsGridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {[
-                {
-                  zone: "01 / VERTEX & CROWN",
-                  title: "Directional Growth Flow",
-                  spec: "Weight Dispersal & Volume Lift",
-                  technique: "Convex Slide Cutting · 45°",
-                  steel: "Hitachi 440C Japanese Steel",
-                  elevation: "Zero Drag, Natural Fall",
-                },
-                {
-                  zone: "02 / TEMPLE & PARIETAL",
-                  title: "Biometric Face Framing",
-                  spec: "Zygomatic Bone Contour Alignment",
-                  technique: "Point Slicing & Channeling",
-                  steel: "Hand-Honed Convex Edge",
-                  elevation: "Adaptive 15° Elevation",
-                },
-                {
-                  zone: "03 / OCCIPITAL & NAPE",
-                  title: "Structural Weight Line",
-                  spec: "Cervical Spine Ergonomics",
-                  technique: "Scissor-Over-Comb Tapering",
-                  steel: "Micro-Serrated Shear Teeth",
-                  elevation: "Graduated Perimeter Tension",
-                },
-                {
-                  zone: "04 / CHEEKBONE & JAW",
-                  title: "Facial Proportion Anchor",
-                  spec: "Symmetry & Jawline Sculpting",
-                  technique: "Dry-Sculpting & Texturizing",
-                  steel: "Cryogenic Hardened Cobalt",
-                  elevation: "Bespoke Density Calibration",
-                },
-              ].map((hotspot, idx) => (
+                {/* Chapter 0 Annotation: Hamaguri Blade */}
                 <div
-                  key={idx}
-                  data-cursor="Map Zone"
-                  className="biometric-zone-card group relative rounded-2xl p-5 border border-champagne-500/15 bg-surface/30 hover:bg-surface/70 hover:border-champagne-400/50 transition-all duration-500 cursor-pointer flex flex-col justify-between space-y-4 will-change-transform"
+                  className={`absolute top-6 left-4 transition-all duration-500 flex items-center gap-2 bg-obsidian-950/85 border border-champagne-500/40 px-3 py-1.5 rounded-full text-[10px] font-sans text-champagne-300 backdrop-blur-md shadow-lg ${
+                    activeChapterIndex === 0 ? "opacity-100 scale-100" : "opacity-35 scale-95"
+                  }`}
                 >
-                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-champagne-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[9px] tracking-widest text-champagne-400 uppercase font-semibold">
-                        {hotspot.zone}
-                      </span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-champagne-400/40 group-hover:bg-champagne-400 group-hover:scale-125 transition-all" />
-                    </div>
-                    <h5 className="font-serif text-lg text-ivory-100 group-hover:text-champagne-300 transition-colors">
-                      {hotspot.title}
-                    </h5>
-                    <p className="text-[11px] text-muted font-light leading-relaxed">
-                      {hotspot.spec}
-                    </p>
-                  </div>
-
-                  <div className="pt-3 border-t border-champagne-500/10 space-y-1 font-mono text-[9px]">
-                    <div className="flex items-center justify-between text-ivory-200/80">
-                      <span className="text-muted">Protocol:</span>
-                      <span className="text-champagne-300 font-medium">{hotspot.technique}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-ivory-200/80">
-                      <span className="text-muted">Tooling:</span>
-                      <span>{hotspot.steel}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-ivory-200/80">
-                      <span className="text-muted">Elevation:</span>
-                      <span>{hotspot.elevation}</span>
-                    </div>
-                  </div>
+                  <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-ping" />
+                  <span>01. Convex Hamaguri Blade</span>
                 </div>
-              ))}
+
+                {/* Chapter 1 Annotation: Pivot Bearing */}
+                <div
+                  className={`absolute top-1/2 right-4 -translate-y-1/2 transition-all duration-500 flex items-center gap-2 bg-obsidian-950/85 border border-champagne-500/40 px-3 py-1.5 rounded-full text-[10px] font-sans text-champagne-300 backdrop-blur-md shadow-lg ${
+                    activeChapterIndex === 1 ? "opacity-100 scale-100 ring-2 ring-champagne-400/40" : "opacity-35 scale-95"
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>02. Micro-Ball Bearing Pivot ({Math.round(stageState.explode * 100)}% Explode)</span>
+                </div>
+
+                {/* Chapter 2 Annotation: Crane Offset Handle */}
+                <div
+                  className={`absolute bottom-6 left-6 transition-all duration-500 flex items-center gap-2 bg-obsidian-950/85 border border-champagne-500/40 px-3 py-1.5 rounded-full text-[10px] font-sans text-champagne-300 backdrop-blur-md shadow-lg ${
+                    activeChapterIndex === 2 ? "opacity-100 scale-100" : "opacity-35 scale-95"
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-champagne-400" />
+                  <span>03. Anatomical Crane Offset Shank</span>
+                </div>
+              </div>
+
+              {/* Bottom Anatomy Metadata Strip */}
+              <div className="pt-4 border-t border-champagne-500/15 flex flex-wrap items-center justify-between text-[11px] text-muted gap-2 z-10">
+                <span className="font-sans text-champagne-300">
+                  Precision calibrated to 0.01mm tolerance
+                </span>
+                <span className="font-mono text-champagne-400">
+                  Exploded State: {Math.round(stageState.explode * 100)}%
+                </span>
+              </div>
             </div>
           </div>
         </div>

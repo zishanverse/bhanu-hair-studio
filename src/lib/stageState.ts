@@ -21,6 +21,9 @@ export interface StageState {
     opacity: number;
   };
 
+  // Direct accessor for exploded shears view
+  explode: number;
+
   // Camera
   camera: {
     y: number;
@@ -98,6 +101,13 @@ export const stageState: StageState = {
   isFrameloopActive: true,
   snipCount: 0,
   lastSnipTime: 0,
+
+  get explode() {
+    return this.shears.explode;
+  },
+  set explode(val: number) {
+    this.shears.explode = val;
+  },
 
   snip() {
     this.snipCount++;
