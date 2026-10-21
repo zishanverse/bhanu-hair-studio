@@ -136,11 +136,10 @@ export function SignatureExperience() {
                   setActiveChapterIndex(idx);
                   handleTriggerSnip();
                 }}
-                className={`relative px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest font-medium transition-all duration-300 whitespace-nowrap cursor-pointer ${
-                  activeChapterIndex === idx
+                className={`relative px-3.5 sm:px-5 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-widest font-medium transition-all duration-300 whitespace-nowrap cursor-pointer ${activeChapterIndex === idx
                     ? "text-obsidian-950 bg-champagne-400 shadow-[0_0_20px_rgba(197,164,119,0.4)]"
                     : "text-muted hover:text-ivory-100"
-                }`}
+                  }`}
               >
                 <span>{ch.num} / {ch.title}</span>
               </button>
@@ -213,11 +212,10 @@ export function SignatureExperience() {
           <div className="chapter-reveal-item lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-8">
             {/* Interactive 3D Japanese Barber Shears Inspection Card */}
             <div
-              className={`rounded-3xl glass-card border p-6 flex flex-col justify-between relative overflow-hidden min-h-[420px] bg-gradient-to-b from-surface/60 via-obsidian-950/80 to-obsidian-950 transition-all duration-300 ${
-                snipFlashed
+              className={`rounded-3xl glass-card border p-6 flex flex-col justify-between relative overflow-hidden min-h-[420px] bg-gradient-to-b from-surface/60 via-obsidian-950/80 to-obsidian-950 transition-all duration-300 ${snipFlashed
                   ? "border-champagne-300 shadow-[0_0_35px_rgba(200,162,82,0.4)]"
                   : "border-champagne-500/20"
-              }`}
+                }`}
             >
               <div className="flex items-center justify-between z-10">
                 <div className="space-y-0.5">
