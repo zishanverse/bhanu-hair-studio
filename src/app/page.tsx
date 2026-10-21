@@ -9,10 +9,12 @@ import { SignatureExperience } from "@/components/SignatureExperience";
 import { GallerySection } from "@/components/GallerySection";
 import { SkincareSection } from "@/components/SkincareSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
+import { OutletsSection } from "@/components/OutletsSection";
 import { BookingSection } from "@/components/BookingSection";
 import { Footer } from "@/components/Footer";
 import { LuxuryCursor } from "@/components/LuxuryCursor";
 import { FloatingConcierge } from "@/components/FloatingConcierge";
+import { MobileBottomBar } from "@/components/MobileBottomBar";
 
 import { Preloader } from "@/components/Preloader";
 import { StageWrapper } from "@/components/stage/StageWrapper";
@@ -26,8 +28,11 @@ export default function Home() {
       {/* 0. Bespoke Luxury Magnetic Cursor (Desktop) */}
       <LuxuryCursor />
 
-      {/* Floating Concierge Direct WhatsApp Access */}
+      {/* Floating Concierge Direct WhatsApp Access (Desktop) */}
       <FloatingConcierge />
+
+      {/* Persistent Mobile Bottom Action Bar (Call · WhatsApp · Book) */}
+      <MobileBottomBar />
 
       {/* 1. Fixed Luxury Transparent / Glass Navigation */}
       <Navbar />
@@ -62,10 +67,13 @@ export default function Home() {
       {/* 11. Section 6 — Testimonials (Editorial serif quotation carousel) */}
       <TestimonialsSection />
 
-      {/* 12. Section 7 — Booking Experience (Ribbon cutting finale & appointment form) */}
+      {/* 12. Section 7 — Dedicated Outlets Block (Our 3 Indore Studios: Palsikar Colony, Saket Nagar, Vijay Nagar) */}
+      <OutletsSection />
+
+      {/* 13. Section 8 — Booking Experience (Ribbon cutting finale & appointment form) */}
       <BookingSection />
 
-      {/* 13. Editorial Footer (Curtain reveal, studio hours, and back-to-top snip glyph) */}
+      {/* 14. Editorial Footer (Curtain reveal, studio hours, and back-to-top snip glyph) */}
       <Footer />
     </main>
   );

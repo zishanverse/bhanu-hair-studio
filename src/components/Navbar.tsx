@@ -41,7 +41,7 @@ export function Navbar() {
 
   // Active section tracking via IntersectionObserver
   useEffect(() => {
-    const sections = ["studio", "services", "experience", "gallery", "skincare", "testimonials", "book"];
+    const sections = ["studio", "services", "experience", "gallery", "skincare", "studios", "testimonials", "book"];
     const observers: IntersectionObserver[] = [];
 
     sections.forEach((id) => {
@@ -166,11 +166,11 @@ export function Navbar() {
             >
               {[
                 { href: "/#studio", id: "studio", label: "Studio" },
-                { href: "/#services", id: "services", label: "Rituals" },
+                { href: "/#services", id: "services", label: "Services" },
+                { href: "/#studios", id: "studios", label: "Studios" },
+                { href: "/#gallery", id: "gallery", label: "Gallery" },
+                { href: "/#skincare", id: "skincare", label: "Skincare" },
                 { href: "/bhanushairacademy", id: "academy", label: "Academy", isAcademy: true },
-                { href: "/#gallery", id: "gallery", label: "Looks" },
-                { href: "/#skincare", id: "skincare", label: "Beyond Hair" },
-                { href: "/#testimonials", id: "testimonials", label: "Stories" },
               ].map((item) => {
                 const isActive = activeSection === item.id;
                 return (
@@ -264,11 +264,12 @@ export function Navbar() {
               </a>
               {[
                 { href: "/#studio", label: "01. The Studio" },
-                { href: "/#services", label: "02. Rituals & Directory" },
-                { href: "/#experience", label: "03. Japanese Scissors Ritual" },
-                { href: "/#gallery", label: "04. Look Archive" },
-                { href: "/#skincare", label: "05. Beyond Hair (Skincare)" },
-                { href: "/#testimonials", label: "06. Client Stories" },
+                { href: "/#services", label: "02. Services & Pricing" },
+                { href: "/#studios", label: "03. Our 3 Indore Studios" },
+                { href: "/#experience", label: "04. Japanese Shears Experience" },
+                { href: "/#gallery", label: "05. Look Gallery" },
+                { href: "/#skincare", label: "06. Beyond Hair (Skincare)" },
+                { href: "/#testimonials", label: "07. Client Reviews" },
               ].map((link, i) => (
                 <a
                   key={i}

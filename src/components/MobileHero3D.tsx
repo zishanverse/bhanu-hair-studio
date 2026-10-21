@@ -105,8 +105,13 @@ export function MobileHero3D() {
 
   const triggerMobileSnip = () => {
     stageState.snip();
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      try {
+        navigator.vibrate(15);
+      } catch {}
+    }
     setSnipFlashed(true);
-    setTimeout(() => setSnipFlashed(false), 350);
+    setTimeout(() => setSnipFlashed(false), 300);
   };
 
   const handlePillClick = (idx: number) => {
@@ -197,41 +202,41 @@ export function MobileHero3D() {
           </span>
         </h1>
 
-        {/* Tap to Snip Shears Prompt with Shimmer Feedback */}
+        {/* Subtle Shears Touch Affordance (No Gimmicky Developer Badge) */}
         <div className="mobile-hero-anim inline-flex items-center justify-center">
           <div
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border backdrop-blur-md text-[9px] font-mono transition-all duration-300 shadow-md ${
+            className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border backdrop-blur-md text-[10px] font-sans transition-all duration-300 shadow-md ${
               snipFlashed
                 ? "bg-champagne-400 text-obsidian-950 border-champagne-200 shadow-[0_0_20px_rgba(200,162,82,0.8)] scale-105"
-                : "bg-obsidian-950/80 border-champagne-500/35 text-champagne-300"
+                : "bg-obsidian-950/75 border-champagne-500/30 text-champagne-300"
             }`}
           >
             <Scissors
-              className={`w-3 h-3 text-champagne-400 transition-transform duration-300 ${
+              className={`w-3.5 h-3.5 text-champagne-400 transition-transform duration-300 ${
                 snipFlashed ? "rotate-45 scale-125 text-obsidian-950" : ""
               }`}
             />
-            <span>{snipFlashed ? "Snip! 3D Shears Actuated" : "Tap anywhere to snip 3D shears"}</span>
+            <span className="tracking-wider uppercase text-[9px] font-medium">Interactive Japanese Shears</span>
           </div>
         </div>
 
         {/* Dynamic Pillar Description */}
-        <div className="mobile-hero-anim min-h-[46px] flex flex-col items-center justify-center">
+        <div className="mobile-hero-anim min-h-[44px] flex flex-col items-center justify-center">
           <p className="text-[11px] uppercase tracking-[0.14em] text-ivory-100 font-light max-w-[290px] mx-auto leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
             {current.desc}
           </p>
         </div>
 
-        {/* Trust Badges Strip */}
+        {/* Trust Badges Strip (Config-Aligned) */}
         <div className="flex items-center justify-center gap-3 pt-1">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full glass-panel border border-champagne-500/20 backdrop-blur-md text-[10px]">
-            <Star className="w-3 h-3 text-champagne-400 fill-champagne-400" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-panel border border-champagne-500/25 backdrop-blur-md text-[10px]">
+            <Star className="w-3.5 h-3.5 text-champagne-400 fill-champagne-400" />
             <span className="font-semibold text-ivory-50">4.9★</span>
-            <span className="text-muted">(500+ Verified)</span>
+            <span className="text-muted">(500+ Clients)</span>
           </div>
-          <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full glass-panel border border-champagne-500/20 backdrop-blur-md text-[10px]">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full glass-panel border border-champagne-500/25 backdrop-blur-md text-[10px]">
             <span className="text-champagne-300 font-medium">3 Studios</span>
-            <span className="text-muted"> in Indore</span>
+            <span className="text-muted">in Indore</span>
           </div>
         </div>
       </div>
