@@ -64,10 +64,10 @@ export function MobileBottomBar() {
             href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-xl bg-obsidian-900/90 border border-emerald-500/30 text-emerald-300 active:bg-emerald-500/10 active:scale-95 transition-all min-h-[46px]"
+            className="flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-xl bg-obsidian-900/90 border border-champagne-500/20 text-ivory-200 active:bg-champagne-500/10 active:scale-95 transition-all min-h-[46px]"
             aria-label="Chat on WhatsApp with salon concierge"
           >
-            <MessageCircle className="w-4 h-4 text-emerald-400" />
+            <MessageCircle className="w-4 h-4 text-champagne-400" />
             <span className="text-[10px] uppercase tracking-wider font-medium font-sans">WhatsApp</span>
           </a>
 

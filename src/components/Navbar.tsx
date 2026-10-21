@@ -130,27 +130,9 @@ export function Navbar() {
               </div>
 
               <div className="flex flex-col">
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <span className="font-display text-xs xs:text-sm sm:text-base md:text-lg tracking-[0.16em] uppercase font-normal text-ivory-50 group-hover:text-champagne-300 transition-colors whitespace-nowrap">
-                    {identity.brandName}
-                  </span>
-                  {/* Micro Live Dot */}
-                  <span
-                    title={isOpenNow ? "Open Today · Closes 10:00 PM" : "Opens at 10:00 AM"}
-                    className="inline-flex items-center gap-1"
-                  >
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full ${
-                        isOpenNow
-                          ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse"
-                          : "bg-amber-400"
-                      }`}
-                    />
-                    <span className="hidden xl:inline text-[9px] font-mono tracking-wider text-champagne-400">
-                      {isOpenNow ? "OPEN" : "10AM"}
-                    </span>
-                  </span>
-                </div>
+                <span className="font-display text-xs xs:text-sm sm:text-base md:text-lg tracking-[0.16em] uppercase font-normal text-ivory-50 group-hover:text-champagne-300 transition-colors whitespace-nowrap">
+                  {identity.brandName}
+                </span>
                 <span className="text-[8px] sm:text-[9px] tracking-[0.22em] uppercase text-champagne-400 -mt-0.5 font-sans font-medium">
                   STUDIO & ACADEMY · INDORE
                 </span>
@@ -182,9 +164,6 @@ export function Navbar() {
                       isActive ? "text-champagne-300 font-medium" : "text-ivory-200/80 hover:text-champagne-300"
                     }`}
                   >
-                    {item.isAcademy && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
-                    )}
                     <span>{item.label}</span>
                     <span
                       className={`absolute bottom-0 left-1/2 h-[1px] bg-champagne-400 -translate-x-1/2 transition-all duration-300 ${
@@ -256,10 +235,7 @@ export function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="mobile-drawer-link group text-sm uppercase tracking-[0.22em] text-champagne-300 font-medium py-3 flex items-center justify-between border-b border-champagne-500/20"
               >
-                <span className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
-                  Bhanu&apos;s Hair Academy (Courses)
-                </span>
+                <span>Bhanu&apos;s Hair Academy</span>
                 <ArrowUpRight className="w-4 h-4 text-champagne-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
               </a>
               {[

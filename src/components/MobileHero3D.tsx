@@ -171,7 +171,6 @@ export function MobileHero3D() {
       {/* 2. TOP HEADER STATUS */}
       <div className="relative z-10 pt-2 text-center space-y-2">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full glass-panel border border-champagne-500/35 backdrop-blur-2xl shadow-[0_4px_25px_rgba(0,0,0,0.8)]">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)] animate-pulse shrink-0" />
           <span className="text-[9px] uppercase tracking-[0.24em] text-champagne-300 font-mono font-medium">
             HAUTE COIFFURE ATELIER · INDORE
           </span>

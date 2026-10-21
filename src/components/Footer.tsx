@@ -110,8 +110,7 @@ export function Footer() {
               </span>
               <ul className="space-y-2 text-muted font-light">
                 <li>
-                  <a href="/bhanushairacademy" className="text-champagne-300 font-medium hover:text-white transition-colors flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-pulse" />
+                  <a href="/bhanushairacademy" className="text-champagne-300 font-medium hover:text-white transition-colors">
                     Hair Academy
                   </a>
                 </li>

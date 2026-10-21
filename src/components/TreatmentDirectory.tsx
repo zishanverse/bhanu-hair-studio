@@ -494,10 +494,10 @@ export function TreatmentDirectory() {
 
         {/* Directory Footer Guarantee */}
         <div className="p-5 sm:p-6 rounded-2xl bg-surface/50 border border-champagne-500/20 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted font-light shadow-md">
-          <div className="flex items-center gap-3">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+          <div className="flex items-center gap-2.5">
+            <span className="text-champagne-400 font-serif text-sm">✦</span>
             <span>
-              All services performed by senior licensed artists across our 3 Indore locations (Palsikar Colony · Saket Nagar · Vijay Nagar).
+              All services performed by senior licensed stylists across our 3 Indore locations (Palsikar Colony · Saket Nagar · Vijay Nagar).
             </span>
           </div>
 

@@ -115,7 +115,7 @@ export function AcademyClientPage() {
         <div className="space-y-5 sm:space-y-6 max-w-4xl">
           {/* Eyebrow Pill */}
           <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full glass-panel border border-champagne-500/30 backdrop-blur-xl max-w-full">
-            <span className="w-2 h-2 rounded-full bg-champagne-400 animate-pulse shrink-0" />
+            <span className="w-1.5 h-1.5 rounded-full bg-champagne-400/80 shrink-0" />
             <span className="text-[9px] sm:text-[11px] uppercase tracking-widest text-champagne-300 font-mono font-medium truncate sm:whitespace-normal">
               PROFESSIONAL SALON TRAINING ACADEMY · INDORE
             </span>
@@ -156,7 +156,7 @@ export function AcademyClientPage() {
               rel="noopener noreferrer"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-xs uppercase tracking-widest font-medium text-ivory-50 border border-champagne-500/35 glass-card hover:border-champagne-300 hover:bg-champagne-500/10 transition-all cursor-pointer min-h-[44px]"
             >
-              <MessageCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+              <MessageCircle className="w-4 h-4 text-champagne-400 shrink-0" />
               <span>WhatsApp Admission Desk</span>
             </a>
 
@@ -558,7 +558,7 @@ export function AcademyClientPage() {
                 <span className="text-[9px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-full glass-panel border border-champagne-500/20 text-champagne-300">
                   {outlet.area}
                 </span>
-                <span className="text-[10px] font-mono text-emerald-400">
+                <span className="text-[10px] font-sans uppercase tracking-wider text-champagne-300/90 font-medium">
                   Active Salon & Lab
                 </span>
               </div>
@@ -606,7 +606,7 @@ export function AcademyClientPage() {
         >
           {formSubmitted ? (
             <div className="py-10 text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 mx-auto">
+              <div className="w-12 h-12 rounded-full bg-champagne-500/20 border border-champagne-500/40 flex items-center justify-center text-champagne-300 mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <h3 className="font-serif text-2xl text-ivory-50">

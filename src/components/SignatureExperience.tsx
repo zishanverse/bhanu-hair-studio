@@ -186,7 +186,7 @@ export function SignatureExperience() {
                     CHAPTER {activeChapter.num} / 03
                   </span>
                   <span className="text-[10px] tracking-widest uppercase px-3 py-1 rounded-full border border-[#C8A252]/40 text-[#7A5B20] font-sans font-semibold bg-white/70 shadow-sm">
-                    SCROLL DRIVEN 3D PIN
+                    MASTER ATELIER RITUAL
                   </span>
                 </div>
 
@@ -219,7 +219,7 @@ export function SignatureExperience() {
               <div className="pt-5 border-t border-[#C8A252]/25 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-1.5 text-[11px] text-[#5C5547] font-sans font-medium">
                   <span>Scroll to advance chapters</span>
-                  <ArrowDown className="w-3.5 h-3.5 text-[#7A5B20] animate-bounce" />
+                  <ArrowDown className="w-3.5 h-3.5 text-[#7A5B20]" />
                 </div>
 
                 <a
@@ -283,7 +283,7 @@ export function SignatureExperience() {
                     activeChapterIndex === 0 ? "opacity-100 scale-100 ring-2 ring-[#C8A252]/40" : "opacity-35 scale-95"
                   }`}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#7A5B20] animate-ping" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#7A5B20]" />
                   <span>01. Convex Hamaguri Blade</span>
                 </div>
 
@@ -293,8 +293,8 @@ export function SignatureExperience() {
                     activeChapterIndex === 1 ? "opacity-100 scale-100 ring-2 ring-[#C8A252]/50" : "opacity-35 scale-95"
                   }`}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
-                  <span>02. Micro-Ball Bearing Pivot ({Math.round(stageState.explode * 100)}% Explode)</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#7A5B20]" />
+                  <span>02. Micro-Ball Bearing Pivot Assembly</span>
                 </div>
 
                 {/* Chapter 2 Annotation: Crane Offset Handle */}
@@ -314,7 +314,7 @@ export function SignatureExperience() {
                   Precision calibrated to 0.01mm tolerance
                 </span>
                 <span className="font-mono text-[#110F0C] font-semibold">
-                  Exploded State: {Math.round(stageState.explode * 100)}%
+                  Artisan Hand-Balanced
                 </span>
               </div>
             </div>

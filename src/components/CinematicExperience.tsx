@@ -161,7 +161,7 @@ export function CinematicExperience() {
               data-cursor="WhatsApp"
               className="inline-flex items-center gap-2.5 px-7 py-4 rounded-full text-xs uppercase tracking-widest font-medium text-ivory-50 border border-champagne-500/35 glass-card hover:border-champagne-300 hover:bg-champagne-500/10 transition-all cursor-pointer"
             >
-              <MessageCircle className="w-4 h-4 text-emerald-400" />
+              <MessageCircle className="w-4 h-4 text-champagne-400" />
               <span>WhatsApp Inquiry</span>
             </a>
 

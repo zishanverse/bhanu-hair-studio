@@ -223,7 +223,7 @@ export function GallerySection() {
         <div className="space-y-5">
           <div className="flex items-center justify-between text-xs text-muted">
             <div className="flex items-center gap-2 font-sans uppercase tracking-widest text-[11px] text-champagne-400">
-              <ArrowRight className="w-3.5 h-3.5 animate-pulse" />
+              <ArrowRight className="w-3.5 h-3.5" />
               <span>SWIPE OR DRAG TO EXPLORE · {filteredItems.length} CURATED ATELIER LOOKS</span>
             </div>
           </div>

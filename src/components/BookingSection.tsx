@@ -169,8 +169,8 @@ export function BookingSection() {
                 <span className="leading-relaxed">{activeOutlet.address}</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Clock className="w-4 h-4 text-emerald-700 shrink-0" />
-                <span className="text-emerald-800 font-semibold">{activeOutlet.hours}</span>
+                <Clock className="w-4 h-4 text-[#7A5B20] shrink-0" />
+                <span className="text-[#181613] font-medium">{activeOutlet.hours}</span>
               </div>
             </div>
 
@@ -214,7 +214,7 @@ export function BookingSection() {
             {isDispatched ? (
               /* Honest Dispatched Feedback Screen */
               <div className="p-6 sm:p-8 rounded-2xl bg-white/90 border border-[#C8A252]/50 text-center space-y-4 animate-in fade-in shadow-md">
-                <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-700 mx-auto">
+                <div className="w-12 h-12 rounded-full bg-[#C8A252]/20 border border-[#C8A252]/40 flex items-center justify-center text-[#7A5B20] mx-auto">
                   <MessageCircle className="w-6 h-6" />
                 </div>
 

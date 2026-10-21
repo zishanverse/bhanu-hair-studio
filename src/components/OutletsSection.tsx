@@ -86,8 +86,8 @@ export function OutletsSection() {
 
                     {/* Hours */}
                     <div className="flex items-center gap-2.5">
-                      <Clock className="w-4 h-4 text-emerald-700 shrink-0" />
-                      <span className="text-emerald-800 font-semibold">{outlet.hours}</span>
+                      <Clock className="w-4 h-4 text-[#7A5B20] shrink-0" />
+                      <span className="text-[#181613] font-medium">{outlet.hours}</span>
                     </div>
 
                     {/* Phone */}

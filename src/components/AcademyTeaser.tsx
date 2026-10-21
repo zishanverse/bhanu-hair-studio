@@ -50,7 +50,7 @@ export function AcademyTeaser() {
                   "100% Placement Support Across Indore Studios",
                 ].map((feat, i) => (
                   <div key={i} className="flex items-center gap-2.5 text-xs text-ivory-100 font-light">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-[#7A5B20] shrink-0" />
                     <span>{feat}</span>
                   </div>
                 ))}
