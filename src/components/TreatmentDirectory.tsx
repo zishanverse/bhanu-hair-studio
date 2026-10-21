@@ -346,11 +346,11 @@ export function TreatmentDirectory() {
                   {filteredServices.map((service, idx) => (
                     <div
                       key={service.id}
-                      className="treatment-card-anim shrink-0 w-[82vw] sm:w-[340px] md:w-[380px] lg:w-[400px] snap-start rounded-2xl glass-card border border-champagne-500/20 hover:border-champagne-400/60 p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_16px_40px_rgba(200,162,82,0.18)] group relative overflow-hidden bg-gradient-to-br from-surface/90 via-obsidian-900/90 to-obsidian-950"
+                      className="treatment-card-anim shrink-0 w-[82vw] sm:w-[340px] md:w-[380px] lg:w-[400px] snap-start rounded-2xl border border-[#C8A252]/40 hover:border-[#C8A252] p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_22px_50px_rgba(200,162,82,0.22)] group relative overflow-hidden bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#ECE4D6] text-[#161410] shadow-[0_16px_40px_rgba(0,0,0,0.6)]"
                     >
-                      {/* Ambient Accent Flare on hover */}
+                      {/* Ambient Pearl/Gold Accent Flare on hover */}
                       <div
-                        className="absolute -top-12 -right-12 w-32 h-32 bg-champagne-500/10 rounded-full blur-2xl group-hover:bg-champagne-400/20 transition-all pointer-events-none"
+                        className="absolute -top-12 -right-12 w-32 h-32 bg-[#C8A252]/15 rounded-full blur-2xl group-hover:bg-[#C8A252]/30 transition-all pointer-events-none"
                         aria-hidden="true"
                       />
 
@@ -358,40 +358,40 @@ export function TreatmentDirectory() {
                         {/* Top Meta Line: Number + Tag + Duration */}
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-mono text-champagne-400 uppercase tracking-widest font-semibold">
+                            <span className="text-[10px] font-mono text-[#7A5B20] uppercase tracking-widest font-bold">
                               {service.categoryNum || String(idx + 1).padStart(2, "0")}
                             </span>
-                            <span className="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-champagne-500/15 text-champagne-300 border border-champagne-500/30 font-medium">
+                            <span className="text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#C8A252]/15 text-[#7A5B20] border border-[#C8A252]/35 font-semibold">
                               {service.tag || service.categoryTitle}
                             </span>
                           </div>
 
                           {service.duration && (
-                            <div className="inline-flex items-center gap-1 text-[11px] font-mono text-muted tabular-nums">
-                              <Clock className="w-3.5 h-3.5 text-champagne-400" />
+                            <div className="inline-flex items-center gap-1 text-[11px] font-mono text-[#5C5547] tabular-nums font-medium">
+                              <Clock className="w-3.5 h-3.5 text-[#7A5B20]" />
                               <span>{service.duration}</span>
                             </div>
                           )}
                         </div>
 
                         {/* Title */}
-                        <h3 className="font-serif text-2xl sm:text-3xl text-ivory-50 group-hover:text-champagne-300 transition-colors leading-tight">
+                        <h3 className="font-serif text-2xl sm:text-3xl text-[#110F0C] group-hover:text-[#7A5B20] transition-colors leading-tight font-medium">
                           {service.name}
                         </h3>
 
                         {/* Description */}
-                        <p className="text-xs sm:text-sm text-muted font-light leading-relaxed line-clamp-3">
+                        <p className="text-xs sm:text-sm text-[#3E3A32] font-normal leading-relaxed line-clamp-3">
                           {service.description}
                         </p>
                       </div>
 
                       {/* Bottom Footer Line: Starting Price & WhatsApp Reserve Action */}
-                      <div className="pt-6 mt-6 border-t border-champagne-500/15 flex items-center justify-between gap-4 relative z-10">
+                      <div className="pt-5 mt-5 border-t border-[#C8A252]/25 flex items-center justify-between gap-4 relative z-10">
                         <div>
-                          <span className="text-[9px] uppercase tracking-wider text-muted font-sans block">
+                          <span className="text-[9px] uppercase tracking-wider text-[#6B6354] font-sans block font-medium">
                             Starting from
                           </span>
-                          <span className="text-lg font-semibold text-champagne-300 font-mono tracking-tight">
+                          <span className="text-lg font-bold text-[#7A5B20] font-mono tracking-tight">
                             {service.priceFrom || "On Request"}
                           </span>
                         </div>
@@ -402,10 +402,10 @@ export function TreatmentDirectory() {
                           )}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs uppercase tracking-wider font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 via-champagne-300 to-champagne-400 hover:shadow-[0_0_18px_rgba(200,162,82,0.5)] transition-all min-h-[44px] cursor-pointer active:scale-95"
+                          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full text-xs uppercase tracking-wider font-semibold text-white bg-[#181613] hover:bg-[#7A5B20] transition-all min-h-[44px] cursor-pointer shadow-md active:scale-95"
                         >
                           <span>Reserve</span>
-                          <ArrowUpRight className="w-4 h-4" />
+                          <ArrowUpRight className="w-4 h-4 text-champagne-300" />
                         </a>
                       </div>
                     </div>
@@ -446,32 +446,32 @@ export function TreatmentDirectory() {
               {filteredServices.map((service) => (
                 <div
                   key={service.id}
-                  className="treatment-card-anim p-4 sm:p-5 rounded-2xl glass-card border border-champagne-500/15 hover:border-champagne-400/40 flex items-center justify-between gap-4 transition-all group"
+                  className="treatment-card-anim p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#ECE4D6] border border-[#C8A252]/35 hover:border-[#C8A252] flex items-center justify-between gap-4 transition-all group shadow-md hover:shadow-[0_8px_25px_rgba(200,162,82,0.18)]"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-champagne-500/15 text-champagne-400 font-mono">
+                      <span className="text-[9px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#C8A252]/15 text-[#7A5B20] border border-[#C8A252]/30 font-semibold font-mono">
                         {service.categoryTitle}
                       </span>
                       {service.duration && (
-                        <span className="text-[10px] font-mono text-muted flex items-center gap-1">
-                          <Clock className="w-3 h-3 text-champagne-400" />
+                        <span className="text-[10px] font-mono text-[#5C5547] flex items-center gap-1 font-medium">
+                          <Clock className="w-3 h-3 text-[#7A5B20]" />
                           {service.duration}
                         </span>
                       )}
                     </div>
 
-                    <h4 className="font-serif text-lg text-ivory-50 group-hover:text-champagne-300 transition-colors">
+                    <h4 className="font-serif text-lg text-[#110F0C] group-hover:text-[#7A5B20] transition-colors font-medium">
                       {service.name}
                     </h4>
 
-                    <p className="text-xs text-muted font-light line-clamp-1">
+                    <p className="text-xs text-[#3E3A32] font-normal line-clamp-1">
                       {service.description}
                     </p>
                   </div>
 
                   <div className="text-right shrink-0 space-y-1.5">
-                    <span className="text-base font-semibold text-champagne-300 font-mono block">
+                    <span className="text-base font-bold text-[#7A5B20] font-mono block">
                       {service.priceFrom || "On Request"}
                     </span>
                     <a
@@ -480,10 +480,10 @@ export function TreatmentDirectory() {
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wider text-champagne-400 hover:text-white font-medium"
+                      className="inline-flex items-center gap-1 text-[11px] uppercase tracking-wider text-[#181613] hover:text-[#7A5B20] font-semibold bg-white/80 border border-[#C8A252]/40 px-2.5 py-1 rounded-full shadow-sm"
                     >
                       <span>Book</span>
-                      <ArrowUpRight className="w-3 h-3" />
+                      <ArrowUpRight className="w-3 h-3 text-[#7A5B20]" />
                     </a>
                   </div>
                 </div>

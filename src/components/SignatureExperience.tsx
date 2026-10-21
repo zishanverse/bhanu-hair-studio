@@ -179,34 +179,34 @@ export function SignatureExperience() {
           {/* Interactive Chapter & 3D Shears Exploded Anatomy Portal */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             {/* Left Column: Chapter Editorial Narrative */}
-            <div className="lg:col-span-5 rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 md:p-10 flex flex-col justify-between space-y-6 shadow-xl">
+            <div className="lg:col-span-5 rounded-3xl bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#ECE4D6] border border-[#C8A252]/40 p-6 sm:p-8 md:p-10 flex flex-col justify-between space-y-6 shadow-[0_24px_60px_rgba(0,0,0,0.7)] text-[#161410]">
               <div className="space-y-5">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs tracking-widest text-champagne-400 font-semibold">
+                  <span className="font-mono text-xs tracking-widest text-[#7A5B20] font-bold">
                     CHAPTER {activeChapter.num} / 03
                   </span>
-                  <span className="text-[10px] tracking-widest uppercase px-3 py-1 rounded-full border border-champagne-500/25 text-champagne-300 font-sans">
+                  <span className="text-[10px] tracking-widest uppercase px-3 py-1 rounded-full border border-[#C8A252]/40 text-[#7A5B20] font-sans font-semibold bg-white/70 shadow-sm">
                     SCROLL DRIVEN 3D PIN
                   </span>
                 </div>
 
-                <h3 className="font-serif text-3xl sm:text-4xl text-ivory-50 leading-tight">
+                <h3 className="font-serif text-3xl sm:text-4xl text-[#110F0C] leading-tight font-medium">
                   {activeChapter.title}
                 </h3>
 
-                <p className="text-xs sm:text-sm text-champagne-300 font-light tracking-wide">
+                <p className="text-xs sm:text-sm text-[#7A5B20] font-medium tracking-wide">
                   {activeChapter.subtitle}
                 </p>
 
-                <p className="text-xs sm:text-sm text-muted font-light leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#3E3A32] font-normal leading-relaxed">
                   {activeChapter.description}
                 </p>
 
                 {/* Ritual Discipline Key Points */}
-                <div className="pt-4 space-y-2.5 border-t border-champagne-500/15">
+                <div className="pt-4 space-y-2.5 border-t border-[#C8A252]/25">
                   {activeChapter.keyPoints.map((point, i) => (
-                    <div key={i} className="flex items-start gap-3 text-xs text-ivory-200/90 font-light">
-                      <div className="w-4 h-4 rounded-full border border-champagne-400/50 flex items-center justify-center shrink-0 mt-0.5 text-champagne-300">
+                    <div key={i} className="flex items-start gap-3 text-xs text-[#2E2A24] font-normal">
+                      <div className="w-4 h-4 rounded-full border border-[#C8A252]/50 bg-white/80 flex items-center justify-center shrink-0 mt-0.5 text-[#7A5B20]">
                         <Check className="w-2.5 h-2.5" />
                       </div>
                       <span>{point}</span>
@@ -216,10 +216,10 @@ export function SignatureExperience() {
               </div>
 
               {/* Bottom Scroll Prompt & Reserve CTA */}
-              <div className="pt-5 border-t border-champagne-500/15 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-1.5 text-[11px] text-muted font-sans">
+              <div className="pt-5 border-t border-[#C8A252]/25 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-1.5 text-[11px] text-[#5C5547] font-sans font-medium">
                   <span>Scroll to advance chapters</span>
-                  <ArrowDown className="w-3.5 h-3.5 text-champagne-400 animate-bounce" />
+                  <ArrowDown className="w-3.5 h-3.5 text-[#7A5B20] animate-bounce" />
                 </div>
 
                 <a
@@ -228,23 +228,29 @@ export function SignatureExperience() {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs uppercase tracking-wider font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-all min-h-[44px]"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs uppercase tracking-wider font-semibold text-white bg-[#181613] hover:bg-[#7A5B20] transition-all min-h-[44px] shadow-md active:scale-95"
                 >
                   <span>Reserve</span>
-                  <Scissors className="w-3.5 h-3.5" />
+                  <Scissors className="w-3.5 h-3.5 text-champagne-300" />
                 </a>
               </div>
             </div>
 
             {/* Right Column: 3D Exploded Shears Inspection Window with Active Annotations */}
-            <div className="lg:col-span-7 rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden min-h-[440px] bg-gradient-to-b from-surface/70 via-obsidian-950/80 to-obsidian-950 shadow-2xl">
+            <div className="lg:col-span-7 rounded-3xl bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#ECE4D6] border border-[#C8A252]/40 p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden min-h-[440px] shadow-[0_24px_60px_rgba(0,0,0,0.7)] text-[#161410]">
+              {/* Subtle Ambient Pearl/Gold Glow */}
+              <div
+                className="absolute top-0 right-0 w-64 h-64 bg-[#C8A252]/15 blur-3xl pointer-events-none rounded-full"
+                aria-hidden="true"
+              />
+
               {/* Header: Metallurgy Info + Interactive Snip Button */}
               <div className="flex items-center justify-between z-10">
                 <div className="space-y-0.5">
-                  <span className="text-[10px] tracking-widest uppercase text-champagne-300 font-semibold block">
+                  <span className="text-[10px] tracking-widest uppercase text-[#7A5B20] font-bold block">
                     MASTER METALLURGY
                   </span>
-                  <span className="text-[10px] text-muted tracking-wider uppercase font-sans">
+                  <span className="text-[10px] text-[#5C5547] tracking-wider uppercase font-sans font-medium">
                     Hitachi 440C · Honed Convex Hamaguri Edge
                   </span>
                 </div>
@@ -252,13 +258,13 @@ export function SignatureExperience() {
                 <button
                   type="button"
                   onClick={handleTriggerSnip}
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[10px] uppercase tracking-wider font-bold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 active:scale-95 transition-all shadow-md min-h-[44px] cursor-pointer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-[10px] uppercase tracking-wider font-bold text-white bg-[#181613] hover:bg-[#7A5B20] active:scale-95 transition-all shadow-md min-h-[44px] cursor-pointer"
                   aria-label="Snip 3D Japanese Shears"
                 >
-                  <Scissors className="w-3.5 h-3.5" />
+                  <Scissors className="w-3.5 h-3.5 text-champagne-300" />
                   <span>Snip Shears</span>
                   {snipCount > 0 && (
-                    <span className="ml-1 px-1.5 py-0.2 rounded-full bg-obsidian-950 text-champagne-300 text-[9px] font-mono">
+                    <span className="ml-1 px-1.5 py-0.2 rounded-full bg-[#7A5B20] text-white text-[9px] font-mono">
                       {snipCount}
                     </span>
                   )}
@@ -273,41 +279,41 @@ export function SignatureExperience() {
               >
                 {/* Chapter 0 Annotation: Hamaguri Blade */}
                 <div
-                  className={`absolute top-6 left-4 transition-all duration-500 flex items-center gap-2 bg-obsidian-950/85 border border-champagne-500/40 px-3 py-1.5 rounded-full text-[10px] font-sans text-champagne-300 backdrop-blur-md shadow-lg ${
-                    activeChapterIndex === 0 ? "opacity-100 scale-100" : "opacity-35 scale-95"
+                  className={`absolute top-6 left-4 transition-all duration-500 flex items-center gap-2 bg-white/95 border border-[#C8A252]/60 px-3.5 py-1.5 rounded-full text-[10px] font-sans text-[#181613] font-semibold backdrop-blur-md shadow-[0_6px_20px_rgba(0,0,0,0.12)] ${
+                    activeChapterIndex === 0 ? "opacity-100 scale-100 ring-2 ring-[#C8A252]/40" : "opacity-35 scale-95"
                   }`}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-champagne-400 animate-ping" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#7A5B20] animate-ping" />
                   <span>01. Convex Hamaguri Blade</span>
                 </div>
 
                 {/* Chapter 1 Annotation: Pivot Bearing */}
                 <div
-                  className={`absolute top-1/2 right-4 -translate-y-1/2 transition-all duration-500 flex items-center gap-2 bg-obsidian-950/85 border border-champagne-500/40 px-3 py-1.5 rounded-full text-[10px] font-sans text-champagne-300 backdrop-blur-md shadow-lg ${
-                    activeChapterIndex === 1 ? "opacity-100 scale-100 ring-2 ring-champagne-400/40" : "opacity-35 scale-95"
+                  className={`absolute top-1/2 right-4 -translate-y-1/2 transition-all duration-500 flex items-center gap-2 bg-white/95 border border-[#C8A252]/60 px-3.5 py-1.5 rounded-full text-[10px] font-sans text-[#181613] font-semibold backdrop-blur-md shadow-[0_6px_20px_rgba(0,0,0,0.12)] ${
+                    activeChapterIndex === 1 ? "opacity-100 scale-100 ring-2 ring-[#C8A252]/50" : "opacity-35 scale-95"
                   }`}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse" />
                   <span>02. Micro-Ball Bearing Pivot ({Math.round(stageState.explode * 100)}% Explode)</span>
                 </div>
 
                 {/* Chapter 2 Annotation: Crane Offset Handle */}
                 <div
-                  className={`absolute bottom-6 left-6 transition-all duration-500 flex items-center gap-2 bg-obsidian-950/85 border border-champagne-500/40 px-3 py-1.5 rounded-full text-[10px] font-sans text-champagne-300 backdrop-blur-md shadow-lg ${
-                    activeChapterIndex === 2 ? "opacity-100 scale-100" : "opacity-35 scale-95"
+                  className={`absolute bottom-6 left-6 transition-all duration-500 flex items-center gap-2 bg-white/95 border border-[#C8A252]/60 px-3.5 py-1.5 rounded-full text-[10px] font-sans text-[#181613] font-semibold backdrop-blur-md shadow-[0_6px_20px_rgba(0,0,0,0.12)] ${
+                    activeChapterIndex === 2 ? "opacity-100 scale-100 ring-2 ring-[#C8A252]/40" : "opacity-35 scale-95"
                   }`}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-champagne-400" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#7A5B20]" />
                   <span>03. Anatomical Crane Offset Shank</span>
                 </div>
               </div>
 
               {/* Bottom Anatomy Metadata Strip */}
-              <div className="pt-4 border-t border-champagne-500/15 flex flex-wrap items-center justify-between text-[11px] text-muted gap-2 z-10">
-                <span className="font-sans text-champagne-300">
+              <div className="pt-4 border-t border-[#C8A252]/25 flex flex-wrap items-center justify-between text-[11px] text-[#5C5547] gap-2 z-10 font-medium">
+                <span className="font-sans text-[#7A5B20]">
                   Precision calibrated to 0.01mm tolerance
                 </span>
-                <span className="font-mono text-champagne-400">
+                <span className="font-mono text-[#110F0C] font-semibold">
                   Exploded State: {Math.round(stageState.explode * 100)}%
                 </span>
               </div>
