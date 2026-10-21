@@ -221,20 +221,18 @@ export function TheStudio() {
                 </div>
               </div>
 
-              {/* Minimalist Tabular Stats */}
+              {/* Minimalist Tabular Stats (Directly from SALON_CONFIG) */}
               <div className="grid grid-cols-3 gap-3 sm:gap-6 pt-4 border-t border-champagne-500/15">
-                <div>
-                  <div className="text-xl sm:text-3xl font-serif text-champagne-300 font-light tabular-nums">10 PM</div>
-                  <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-muted mt-1">Open Daily</div>
-                </div>
-                <div>
-                  <div className="text-xl sm:text-3xl font-serif text-champagne-300 font-light tabular-nums">30+</div>
-                  <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-muted mt-1">Disciplines</div>
-                </div>
-                <div>
-                  <div className="text-xl sm:text-3xl font-serif text-champagne-300 font-light tabular-nums">4.9 ★</div>
-                  <div className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-muted mt-1">500+ Reviews</div>
-                </div>
+                {theStudio.stats.map((stat, idx) => (
+                  <div key={idx}>
+                    <div className="text-xl sm:text-3xl font-serif text-champagne-300 font-light tabular-nums">
+                      {stat.value}
+                    </div>
+                    <div className="text-[9px] sm:text-[10px] font-sans uppercase tracking-wider text-muted mt-1">
+                      {stat.label}
+                    </div>
+                  </div>
+                ))}
               </div>
 
               {/* Minimalist Explore Action */}

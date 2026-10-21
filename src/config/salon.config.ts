@@ -272,9 +272,9 @@ export const SALON_CONFIG: SalonConfiguration = {
     featuredImage: "/images/studio-interior.jpg",
     accentImage: "/images/studio-craft.jpg",
     stats: [
-      { value: "10 PM", label: "Open Daily Until 10:00 PM" },
-      { value: "30+", label: "Unisex Hair & Beauty Disciplines" },
-      { value: "Palsikar", label: "Colony, Manik Bagh Rd, Indore" },
+      { value: "10 PM", label: "Open Daily Until 10 PM" },
+      { value: "30+", label: "Unisex Disciplines" },
+      { value: "3", label: "Indore Studios" },
     ],
   },
   servicesCatalog: {
