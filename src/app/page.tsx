@@ -9,6 +9,7 @@ import { SignatureExperience } from "@/components/SignatureExperience";
 import { GallerySection } from "@/components/GallerySection";
 import { SkincareSection } from "@/components/SkincareSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
+import { AcademyTeaser } from "@/components/AcademyTeaser";
 import { OutletsSection } from "@/components/OutletsSection";
 import { BookingSection } from "@/components/BookingSection";
 import { Footer } from "@/components/Footer";
@@ -63,6 +64,9 @@ export default function Home() {
 
       {/* 10. Section 5 — Skin Care / Beyond Hair (Ivory pavilion expansion & clinical treatments) */}
       <SkincareSection />
+
+      {/* 10b. Academy Teaser — Master the Haute Coiffure Craft (Direct bridge to /bhanushairacademy) */}
+      <AcademyTeaser />
 
       {/* 11. Section 6 — Testimonials (Editorial serif quotation carousel) */}
       <TestimonialsSection />

@@ -141,6 +141,11 @@ export function Footer() {
                   </a>
                 </li>
                 <li>
+                  <a href="/#studios" className="hover:text-champagne-300 transition-colors">
+                    Our Studios
+                  </a>
+                </li>
+                <li>
                   <a href="/#book" className="hover:text-champagne-300 transition-colors">
                     Book Appointment
                   </a>
