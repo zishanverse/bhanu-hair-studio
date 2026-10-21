@@ -336,18 +336,18 @@ export function TheStudio() {
             ].map((std) => (
               <div
                 key={std.num}
-                className="studio-standard-item p-6 rounded-2xl bg-surface/40 border border-champagne-500/15 hover:border-champagne-400/40 transition-all duration-300 space-y-3 backdrop-blur-sm"
+                className="studio-standard-item p-6 rounded-2xl bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#ECE4D6] border border-[#C8A252]/40 hover:border-[#C8A252] transition-all duration-300 space-y-3 shadow-lg hover:shadow-[0_15px_35px_rgba(200,162,82,0.2)] hover:-translate-y-1.5 text-[#161410]"
               >
-                <div className="flex items-center justify-between text-[10px] font-mono text-champagne-400">
+                <div className="flex items-center justify-between text-[10px] font-mono text-[#7A5B20] font-bold">
                   <span>{std.num} / {std.label}</span>
                 </div>
-                <div className="font-serif text-3xl text-champagne-300 font-light">
+                <div className="font-serif text-3xl text-[#7A5B20] font-light">
                   {std.metric}
                 </div>
-                <div className="text-xs uppercase tracking-wider font-medium text-ivory-100 font-sans">
+                <div className="text-xs uppercase tracking-wider font-semibold text-[#110F0C] font-sans">
                   {std.title}
                 </div>
-                <p className="text-xs text-muted font-light leading-relaxed">
+                <p className="text-xs text-[#3E3A32] font-normal leading-relaxed">
                   {std.desc}
                 </p>
               </div>

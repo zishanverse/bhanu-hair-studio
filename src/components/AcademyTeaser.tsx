@@ -76,15 +76,15 @@ export function AcademyTeaser() {
             </div>
 
             {/* Right Column: Visual Feature Box */}
-            <div className="lg:col-span-5 relative rounded-2xl overflow-hidden glass-card border border-champagne-500/25 p-6 space-y-5 bg-obsidian-950/70">
-              <div className="flex items-center justify-between border-b border-champagne-500/20 pb-4">
+            <div className="lg:col-span-5 relative rounded-2xl overflow-hidden bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#ECE4D6] border border-[#C8A252]/40 p-6 space-y-5 text-[#161410] shadow-xl">
+              <div className="flex items-center justify-between border-b border-[#C8A252]/25 pb-4">
                 <div className="flex items-center gap-2">
-                  <Award className="w-4 h-4 text-champagne-400" />
-                  <span className="text-xs uppercase tracking-wider text-ivory-100 font-serif font-medium">
+                  <Award className="w-4 h-4 text-[#7A5B20]" />
+                  <span className="text-xs uppercase tracking-wider text-[#110F0C] font-serif font-semibold">
                     Featured Diplomas
                   </span>
                 </div>
-                <span className="text-[10px] font-mono text-champagne-400 uppercase">
+                <span className="text-[10px] font-mono text-[#7A5B20] uppercase font-bold">
                   Admissions Open
                 </span>
               </div>
@@ -93,17 +93,17 @@ export function AcademyTeaser() {
                 {academy.courses.slice(0, 3).map((course) => (
                   <div
                     key={course.id}
-                    className="p-3.5 rounded-xl bg-surface/80 border border-champagne-500/15 flex items-center justify-between group hover:border-champagne-400/40 transition-colors"
+                    className="p-3.5 rounded-xl bg-white/90 border border-[#C8A252]/35 flex items-center justify-between group hover:border-[#C8A252] transition-colors shadow-sm"
                   >
                     <div>
-                      <h4 className="text-sm font-serif text-ivory-50 group-hover:text-champagne-300 transition-colors">
+                      <h4 className="text-sm font-serif text-[#110F0C] group-hover:text-[#7A5B20] transition-colors font-medium">
                         {course.title}
                       </h4>
-                      <span className="text-[10px] text-muted font-sans mt-0.5 block">
+                      <span className="text-[10px] text-[#5C5547] font-sans mt-0.5 block font-normal">
                         {course.duration} · {course.level}
                       </span>
                     </div>
-                    <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-champagne-500/15 text-champagne-300 border border-champagne-500/20">
+                    <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[#C8A252]/15 text-[#7A5B20] border border-[#C8A252]/30 font-semibold">
                       {course.discipline}
                     </span>
                   </div>
@@ -113,10 +113,10 @@ export function AcademyTeaser() {
               <div className="pt-2 text-center">
                 <Link
                   href="/bhanushairacademy"
-                  className="text-xs uppercase tracking-wider text-champagne-400 hover:text-white transition-colors font-sans inline-flex items-center gap-1"
+                  className="text-xs uppercase tracking-wider text-[#7A5B20] hover:text-[#110F0C] transition-colors font-sans font-semibold inline-flex items-center gap-1"
                 >
                   <span>Read student testimonials & placement records</span>
-                  <ArrowUpRight className="w-3.5 h-3.5" />
+                  <ArrowUpRight className="w-3.5 h-3.5 text-[#7A5B20]" />
                 </Link>
               </div>
             </div>

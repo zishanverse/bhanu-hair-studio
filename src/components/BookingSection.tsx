@@ -114,19 +114,19 @@ export function BookingSection() {
         {/* 2-Column Booking Box: Left Studio Selector, Right Form */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Active Studio Details & Direct Call */}
-          <div className="lg:col-span-5 rounded-3xl glass-card border border-champagne-500/25 p-6 sm:p-8 space-y-6 bg-surface/50">
+          <div className="lg:col-span-5 rounded-3xl bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#ECE4D6] border border-[#C8A252]/40 p-6 sm:p-8 space-y-6 text-[#161410] shadow-[0_20px_50px_rgba(0,0,0,0.65)]">
             <div className="space-y-1">
-              <span className="text-[10px] tracking-widest uppercase text-champagne-400 font-sans">
+              <span className="text-[10px] tracking-widest uppercase text-[#7A5B20] font-bold font-sans">
                 SELECTED STUDIO
               </span>
-              <h3 className="font-serif text-2xl text-ivory-50">
+              <h3 className="font-serif text-2xl text-[#110F0C] font-medium">
                 {activeOutlet.name}
               </h3>
             </div>
 
             {/* Quick Studio Selector Buttons */}
             <div className="space-y-2">
-              <span className="text-[10px] uppercase tracking-wider text-muted font-sans block">
+              <span className="text-[10px] uppercase tracking-wider text-[#6B6354] font-sans font-semibold block">
                 Choose Location:
               </span>
               <div className="grid grid-cols-1 gap-2">
@@ -139,20 +139,20 @@ export function BookingSection() {
                       onClick={() => setSelectedOutletId(outlet.id)}
                       className={`p-3.5 rounded-2xl border text-left transition-all duration-300 flex items-center justify-between cursor-pointer min-h-[44px] ${
                         isSelected
-                          ? "bg-champagne-500/15 border-champagne-400 text-ivory-50 shadow-md"
-                          : "bg-obsidian-950/60 border-champagne-500/15 text-muted hover:text-ivory-100 hover:border-champagne-500/30"
+                          ? "bg-[#C8A252]/25 border-[#C8A252] text-[#110F0C] shadow-sm font-semibold"
+                          : "bg-white/80 border-[#C8A252]/30 text-[#3E3A32] hover:bg-white hover:border-[#C8A252]/60"
                       }`}
                     >
                       <div>
-                        <div className="text-xs font-serif font-medium text-ivory-100">
+                        <div className="text-xs font-serif font-semibold text-[#110F0C]">
                           {outlet.name}
                         </div>
-                        <div className="text-[10px] font-sans text-muted">
+                        <div className="text-[10px] font-sans text-[#5C5547]">
                           {outlet.area} · {outlet.landmark || "Indore"}
                         </div>
                       </div>
                       {isSelected && (
-                        <div className="w-5 h-5 rounded-full bg-champagne-400 text-obsidian-950 flex items-center justify-center shrink-0">
+                        <div className="w-5 h-5 rounded-full bg-[#7A5B20] text-white flex items-center justify-center shrink-0">
                           <Check className="w-3 h-3 stroke-[3]" />
                         </div>
                       )}
@@ -163,14 +163,14 @@ export function BookingSection() {
             </div>
 
             {/* Active Outlet Details */}
-            <div className="space-y-3 pt-3 border-t border-champagne-500/15 text-xs text-ivory-200/80 font-light">
+            <div className="space-y-3 pt-3 border-t border-[#C8A252]/25 text-xs text-[#3E3A32] font-normal">
               <div className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-champagne-400 shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-[#7A5B20] shrink-0 mt-0.5" />
                 <span className="leading-relaxed">{activeOutlet.address}</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Clock className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span className="text-emerald-300/90 font-medium">{activeOutlet.hours}</span>
+                <Clock className="w-4 h-4 text-emerald-700 shrink-0" />
+                <span className="text-emerald-800 font-semibold">{activeOutlet.hours}</span>
               </div>
             </div>
 
@@ -178,9 +178,9 @@ export function BookingSection() {
             <div className="pt-2 flex flex-col sm:flex-row gap-2.5">
               <a
                 href={`tel:${activeOutlet.phone}`}
-                className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-3 rounded-full text-xs uppercase tracking-wider font-medium text-ivory-100 bg-obsidian-950 border border-champagne-500/30 hover:border-champagne-400 hover:text-white transition-all min-h-[44px]"
+                className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-3 rounded-full text-xs uppercase tracking-wider font-semibold text-[#181613] bg-white/90 border border-[#C8A252]/40 hover:bg-white hover:border-[#C8A252] transition-all min-h-[44px] shadow-sm"
               >
-                <Phone className="w-3.5 h-3.5 text-champagne-400" />
+                <Phone className="w-3.5 h-3.5 text-[#7A5B20]" />
                 <span>Call Studio</span>
               </a>
 
@@ -188,42 +188,42 @@ export function BookingSection() {
                 href={activeOutlet.mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-3 rounded-full text-xs uppercase tracking-wider font-medium text-ivory-100 bg-obsidian-950 border border-champagne-500/30 hover:border-champagne-400 hover:text-white transition-all min-h-[44px]"
+                className="flex-1 inline-flex items-center justify-center gap-2 py-3 px-3 rounded-full text-xs uppercase tracking-wider font-semibold text-[#181613] bg-white/90 border border-[#C8A252]/40 hover:bg-white hover:border-[#C8A252] transition-all min-h-[44px] shadow-sm"
               >
-                <Navigation className="w-3.5 h-3.5 text-champagne-400" />
+                <Navigation className="w-3.5 h-3.5 text-[#7A5B20]" />
                 <span>Directions</span>
-                <ArrowUpRight className="w-3 h-3 text-champagne-400/60" />
+                <ArrowUpRight className="w-3 h-3 text-[#7A5B20]" />
               </a>
             </div>
           </div>
 
           {/* Right Column: Honest Appointment Booking Form */}
-          <div className="lg:col-span-7 rounded-3xl glass-card border border-champagne-500/25 p-6 sm:p-8 md:p-10 bg-surface/50 space-y-6">
+          <div className="lg:col-span-7 rounded-3xl bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#ECE4D6] border border-[#C8A252]/40 p-6 sm:p-8 md:p-10 text-[#161410] shadow-[0_20px_50px_rgba(0,0,0,0.65)] space-y-6">
             <div className="space-y-1">
-              <span className="text-[10px] tracking-widest uppercase text-champagne-400 font-sans">
+              <span className="text-[10px] tracking-widest uppercase text-[#7A5B20] font-bold font-sans">
                 WHATSAPP APPOINTMENT DESK
               </span>
-              <h3 className="font-serif text-2xl text-ivory-50">
+              <h3 className="font-serif text-2xl text-[#110F0C] font-medium">
                 Reserve With Our Concierge
               </h3>
-              <p className="text-xs text-muted font-light leading-relaxed">
+              <p className="text-xs text-[#3E3A32] font-normal leading-relaxed">
                 Fill in your details below. We do not store your data on external servers; this form opens WhatsApp directly with your pre-filled inquiry.
               </p>
             </div>
 
             {isDispatched ? (
               /* Honest Dispatched Feedback Screen */
-              <div className="p-6 sm:p-8 rounded-2xl bg-obsidian-950/80 border border-champagne-400/40 text-center space-y-4 animate-in fade-in">
-                <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center text-emerald-400 mx-auto">
+              <div className="p-6 sm:p-8 rounded-2xl bg-white/90 border border-[#C8A252]/50 text-center space-y-4 animate-in fade-in shadow-md">
+                <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-700 mx-auto">
                   <MessageCircle className="w-6 h-6" />
                 </div>
 
                 <div className="space-y-1">
-                  <h4 className="font-serif text-2xl text-ivory-50">
+                  <h4 className="font-serif text-2xl text-[#110F0C]">
                     Opening WhatsApp With Your Details…
                   </h4>
-                  <p className="text-xs text-muted max-w-md mx-auto leading-relaxed">
-                    Please tap &ldquo;Send&rdquo; inside WhatsApp to dispatch your appointment request to our front desk at <span className="text-champagne-300 font-medium">{activeOutlet.name}</span>.
+                  <p className="text-xs text-[#3E3A32] max-w-md mx-auto leading-relaxed">
+                    Please tap &ldquo;Send&rdquo; inside WhatsApp to dispatch your appointment request to our front desk at <span className="text-[#7A5B20] font-bold">{activeOutlet.name}</span>.
                   </p>
                 </div>
 
@@ -233,16 +233,16 @@ export function BookingSection() {
                     href={dispatchedUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-xs uppercase tracking-wider font-semibold text-obsidian-950 bg-champagne-400 hover:bg-champagne-300 transition-all min-h-[44px]"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-xs uppercase tracking-wider font-semibold text-white bg-[#181613] hover:bg-[#7A5B20] transition-all min-h-[44px] shadow-md"
                   >
                     <span>Tap here if WhatsApp didn&apos;t open</span>
-                    <ArrowUpRight className="w-4 h-4" />
+                    <ArrowUpRight className="w-4 h-4 text-champagne-300" />
                   </a>
 
                   <button
                     type="button"
                     onClick={() => setIsDispatched(false)}
-                    className="w-full sm:w-auto px-4 py-3 rounded-full text-xs uppercase tracking-wider font-light text-muted hover:text-white transition-colors min-h-[44px]"
+                    className="w-full sm:w-auto px-4 py-3 rounded-full text-xs uppercase tracking-wider font-medium text-[#5C5547] hover:text-[#110F0C] transition-colors min-h-[44px]"
                   >
                     Modify Details
                   </button>
@@ -270,9 +270,9 @@ export function BookingSection() {
                   <div className="space-y-1.5">
                     <label
                       htmlFor="booking-name"
-                      className="block text-xs uppercase tracking-wider text-ivory-200 font-sans font-medium"
+                      className="block text-xs uppercase tracking-wider text-[#181613] font-sans font-semibold"
                     >
-                      Full Name <span className="text-champagne-400">*</span>
+                      Full Name <span className="text-[#7A5B20]">*</span>
                     </label>
                     <input
                       id="booking-name"
@@ -284,23 +284,23 @@ export function BookingSection() {
                         if (errors.name) setErrors({ ...errors, name: undefined });
                       }}
                       placeholder="e.g. Vikram Malhotra"
-                      className={`w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border text-sm text-ivory-50 focus:outline-none transition-colors placeholder:text-muted/50 ${
+                      className={`w-full px-4 py-3 rounded-xl bg-white border text-sm text-[#110F0C] focus:outline-none transition-colors placeholder:text-[#8C8372] ${
                         errors.name
                           ? "border-red-500 focus:border-red-400"
-                          : "border-champagne-500/25 focus:border-champagne-400"
+                          : "border-[#C8A252]/40 focus:border-[#C8A252] focus:ring-1 focus:ring-[#C8A252]"
                       }`}
                     />
                     {errors.name && (
-                      <p className="text-[11px] text-red-400 font-sans pt-0.5">{errors.name}</p>
+                      <p className="text-[11px] text-red-600 font-sans pt-0.5">{errors.name}</p>
                     )}
                   </div>
 
                   <div className="space-y-1.5">
                     <label
                       htmlFor="booking-phone"
-                      className="block text-xs uppercase tracking-wider text-ivory-200 font-sans font-medium"
+                      className="block text-xs uppercase tracking-wider text-[#181613] font-sans font-semibold"
                     >
-                      Phone Number <span className="text-champagne-400">*</span>
+                      Phone Number <span className="text-[#7A5B20]">*</span>
                     </label>
                     <input
                       id="booking-phone"
@@ -313,14 +313,14 @@ export function BookingSection() {
                         if (errors.phone) setErrors({ ...errors, phone: undefined });
                       }}
                       placeholder="+91 98765 00000"
-                      className={`w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border text-sm text-ivory-50 focus:outline-none transition-colors placeholder:text-muted/50 ${
+                      className={`w-full px-4 py-3 rounded-xl bg-white border text-sm text-[#110F0C] focus:outline-none transition-colors placeholder:text-[#8C8372] ${
                         errors.phone
                           ? "border-red-500 focus:border-red-400"
-                          : "border-champagne-500/25 focus:border-champagne-400"
+                          : "border-[#C8A252]/40 focus:border-[#C8A252] focus:ring-1 focus:ring-[#C8A252]"
                       }`}
                     />
                     {errors.phone && (
-                      <p className="text-[11px] text-red-400 font-sans pt-0.5">{errors.phone}</p>
+                      <p className="text-[11px] text-red-600 font-sans pt-0.5">{errors.phone}</p>
                     )}
                   </div>
                 </div>
@@ -329,15 +329,15 @@ export function BookingSection() {
                 <div className="space-y-1.5">
                   <label
                     htmlFor="booking-service"
-                    className="block text-xs uppercase tracking-wider text-ivory-200 font-sans font-medium"
+                    className="block text-xs uppercase tracking-wider text-[#181613] font-sans font-semibold"
                   >
-                    Preferred Service <span className="text-champagne-400">*</span>
+                    Preferred Service <span className="text-[#7A5B20]">*</span>
                   </label>
                   <select
                     id="booking-service"
                     value={formData.service}
                     onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-sm text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors cursor-pointer"
+                    className="w-full px-4 py-3 rounded-xl bg-white border border-[#C8A252]/40 text-sm text-[#110F0C] focus:outline-none focus:border-[#C8A252] focus:ring-1 focus:ring-[#C8A252] transition-colors cursor-pointer"
                   >
                     <option value="Haircut">Haircut (from ₹500)</option>
                     <option value="Beard Cutting & Trimming">Beard Cutting & Trimming (from ₹350)</option>
@@ -355,7 +355,7 @@ export function BookingSection() {
                   <div className="space-y-1.5">
                     <label
                       htmlFor="booking-date"
-                      className="block text-xs uppercase tracking-wider text-ivory-200 font-sans font-medium"
+                      className="block text-xs uppercase tracking-wider text-[#181613] font-sans font-semibold"
                     >
                       Preferred Date
                     </label>
@@ -365,14 +365,14 @@ export function BookingSection() {
                       min={new Date().toISOString().split("T")[0]}
                       value={formData.date}
                       onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-sm text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-white border border-[#C8A252]/40 text-sm text-[#110F0C] focus:outline-none focus:border-[#C8A252] focus:ring-1 focus:ring-[#C8A252] transition-colors"
                     />
                   </div>
 
                   <div className="space-y-1.5">
                     <label
                       htmlFor="booking-time"
-                      className="block text-xs uppercase tracking-wider text-ivory-200 font-sans font-medium"
+                      className="block text-xs uppercase tracking-wider text-[#181613] font-sans font-semibold"
                     >
                       Preferred Time
                     </label>
@@ -381,7 +381,7 @@ export function BookingSection() {
                       type="time"
                       value={formData.time}
                       onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-obsidian-950/80 border border-champagne-500/25 text-sm text-ivory-50 focus:outline-none focus:border-champagne-400 transition-colors"
+                      className="w-full px-4 py-3 rounded-xl bg-white border border-[#C8A252]/40 text-sm text-[#110F0C] focus:outline-none focus:border-[#C8A252] focus:ring-1 focus:ring-[#C8A252] transition-colors"
                     />
                   </div>
                 </div>

@@ -48,38 +48,36 @@ export function OutletsSection() {
             return (
               <div
                 key={outlet.id}
-                className={`relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 glass-card group hover:border-champagne-400/50 hover:shadow-[0_12px_40px_rgba(0,0,0,0.85)] ${
-                  isFeatured
-                    ? "border-champagne-500/35 bg-gradient-to-b from-surface/90 to-obsidian-900/95"
-                    : "border-champagne-500/20 bg-surface/60"
+                className={`relative rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#ECE4D6] border border-[#C8A252]/40 hover:border-[#C8A252] text-[#161410] shadow-[0_20px_50px_rgba(0,0,0,0.65)] hover:shadow-[0_25px_60px_rgba(200,162,82,0.25)] hover:-translate-y-1.5 group ${
+                  isFeatured ? "ring-2 ring-[#C8A252]/50" : ""
                 }`}
               >
                 {/* Top Badge */}
-                <div className="flex items-center justify-between gap-2 pb-5 border-b border-champagne-500/15">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-obsidian-950/80 border border-champagne-500/30 text-[10px] tracking-wider uppercase text-champagne-300 font-sans">
-                    <Sparkles className="w-3 h-3 text-champagne-400" />
+                <div className="flex items-center justify-between gap-2 pb-5 border-b border-[#C8A252]/25">
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C8A252]/15 border border-[#C8A252]/35 text-[10px] tracking-wider uppercase text-[#7A5B20] font-sans font-semibold">
+                    <Sparkles className="w-3 h-3 text-[#7A5B20]" />
                     <span>{idx === 0 ? "Flagship Atelier" : `Studio 0${idx + 1}`}</span>
                   </div>
 
-                  <span className="text-xs uppercase font-mono tracking-widest text-champagne-400/70">
+                  <span className="text-xs uppercase font-mono tracking-widest text-[#7A5B20] font-bold">
                     {outlet.area}
                   </span>
                 </div>
 
                 {/* Studio Details */}
                 <div className="py-6 space-y-4">
-                  <h3 className="font-serif text-2xl text-ivory-50 group-hover:text-champagne-300 transition-colors">
+                  <h3 className="font-serif text-2xl text-[#110F0C] group-hover:text-[#7A5B20] transition-colors font-medium">
                     {outlet.name}
                   </h3>
 
-                  <div className="space-y-3 text-xs text-ivory-200/80 font-light">
+                  <div className="space-y-3 text-xs text-[#3E3A32] font-normal">
                     {/* Address with Landmark */}
                     <div className="flex items-start gap-2.5">
-                      <MapPin className="w-4 h-4 text-champagne-400 shrink-0 mt-0.5" />
+                      <MapPin className="w-4 h-4 text-[#7A5B20] shrink-0 mt-0.5" />
                       <div className="leading-relaxed">
                         <span>{outlet.address}</span>
                         {outlet.landmark && (
-                          <span className="block text-[11px] text-muted mt-0.5">
+                          <span className="block text-[11px] text-[#6B6354] mt-0.5 font-medium">
                             Landmark: {outlet.landmark}
                           </span>
                         )}
@@ -88,16 +86,16 @@ export function OutletsSection() {
 
                     {/* Hours */}
                     <div className="flex items-center gap-2.5">
-                      <Clock className="w-4 h-4 text-emerald-400 shrink-0" />
-                      <span className="text-emerald-300/90 font-medium">{outlet.hours}</span>
+                      <Clock className="w-4 h-4 text-emerald-700 shrink-0" />
+                      <span className="text-emerald-800 font-semibold">{outlet.hours}</span>
                     </div>
 
                     {/* Phone */}
                     <div className="flex items-center gap-2.5">
-                      <Phone className="w-4 h-4 text-champagne-400 shrink-0" />
+                      <Phone className="w-4 h-4 text-[#7A5B20] shrink-0" />
                       <a
                         href={`tel:${outlet.phone}`}
-                        className="hover:text-champagne-300 transition-colors font-mono"
+                        className="hover:text-[#7A5B20] transition-colors font-mono font-medium text-[#181613]"
                       >
                         {outlet.phone}
                       </a>
@@ -106,21 +104,21 @@ export function OutletsSection() {
                 </div>
 
                 {/* Actions */}
-                <div className="pt-4 border-t border-champagne-500/15 flex items-center gap-3">
+                <div className="pt-4 border-t border-[#C8A252]/25 flex items-center gap-3">
                   <a
                     href={outlet.mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 py-3 px-3 rounded-full text-xs uppercase tracking-wider font-medium text-ivory-100 bg-obsidian-950/80 border border-champagne-500/30 hover:border-champagne-400 hover:text-white transition-all min-h-[44px]"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 py-3 px-3 rounded-full text-xs uppercase tracking-wider font-semibold text-[#181613] bg-white/80 border border-[#C8A252]/40 hover:bg-white hover:border-[#C8A252] transition-all min-h-[44px] shadow-sm"
                   >
-                    <Navigation className="w-3.5 h-3.5 text-champagne-400" />
+                    <Navigation className="w-3.5 h-3.5 text-[#7A5B20]" />
                     <span>Directions</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 text-champagne-400/60" />
+                    <ArrowUpRight className="w-3.5 h-3.5 text-[#7A5B20]" />
                   </a>
 
                   <a
                     href="#book"
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 py-3 px-3 rounded-full text-xs uppercase tracking-wider font-semibold text-obsidian-950 bg-gradient-to-r from-champagne-200 to-champagne-400 hover:shadow-[0_0_20px_rgba(200,162,82,0.5)] transition-all min-h-[44px]"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 py-3 px-3 rounded-full text-xs uppercase tracking-wider font-semibold text-white bg-[#181613] hover:bg-[#7A5B20] transition-all min-h-[44px] shadow-md active:scale-95"
                   >
                     <span>Reserve</span>
                   </a>

@@ -139,16 +139,16 @@ export function TestimonialsSection() {
         </div>
 
         {/* Testimonial Quote Display with Masked Line Transitions */}
-        <div ref={cardRef} className="rounded-3xl glass-card border border-champagne-500/20 p-6 sm:p-8 md:p-16 relative space-y-8 sm:space-y-10 shadow-[0_20px_60px_rgba(0,0,0,0.7)] backdrop-blur-xl">
+        <div ref={cardRef} className="rounded-3xl bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#ECE4D6] border border-[#C8A252]/40 p-6 sm:p-8 md:p-16 relative space-y-8 sm:space-y-10 shadow-[0_24px_70px_rgba(0,0,0,0.7)] text-[#161410]">
           {/* Gold Quotation Mark Icon */}
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-champagne-500/30 flex items-center justify-center text-champagne-400 bg-surface shadow-inner">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-[#C8A252]/40 flex items-center justify-center text-[#7A5B20] bg-white/80 shadow-inner">
             <Quote className="w-4 h-4 sm:w-5 sm:h-5 rotate-180" />
           </div>
 
           {/* Masked Line Editorial Quote */}
           <div className="min-h-[120px] sm:min-h-[140px] flex items-center overflow-hidden">
             <blockquote
-              className={`font-serif text-lg sm:text-2xl md:text-3xl lg:text-4xl font-light text-ivory-50 leading-[1.3] italic transition-all duration-300 ease-out ${
+              className={`font-serif text-lg sm:text-2xl md:text-3xl lg:text-4xl font-light text-[#110F0C] leading-[1.3] italic transition-all duration-300 ease-out ${
                 isTransitioning ? "opacity-0 translate-y-3 filter blur-sm" : "opacity-100 translate-y-0 filter blur-0"
               }`}
             >
@@ -157,25 +157,25 @@ export function TestimonialsSection() {
           </div>
 
           {/* Client Details & Star Rating */}
-          <div className="pt-6 border-t border-champagne-500/15 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="pt-6 border-t border-[#C8A252]/25 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div
               className={`space-y-1 transition-opacity duration-300 ${
                 isTransitioning ? "opacity-0" : "opacity-100"
               }`}
             >
-              <div className="font-serif text-xl text-champagne-200">
+              <div className="font-serif text-xl sm:text-2xl text-[#7A5B20] font-semibold">
                 {current.clientName}
               </div>
-              <div className="text-xs text-muted font-light tracking-wide">
-                {current.clientRole} · <span className="text-champagne-400/90">{current.service}</span>
+              <div className="text-xs text-[#5C5547] font-normal tracking-wide">
+                {current.clientRole} · <span className="text-[#181613] font-medium">{current.service}</span>
               </div>
             </div>
 
             {/* Rating Stars & Navigation */}
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-1 text-champagne-400">
+              <div className="flex items-center gap-1 text-[#C8A252]">
                 {[...Array(current.rating)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-champagne-400" />
+                  <Star key={i} className="w-4 h-4 fill-[#C8A252]" />
                 ))}
               </div>
 
@@ -186,7 +186,7 @@ export function TestimonialsSection() {
                   onClick={() =>
                     changeIndex(activeIndex > 0 ? activeIndex - 1 : testimonials.items.length - 1)
                   }
-                  className="p-2.5 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 hover:bg-champagne-500/20 transition-all cursor-pointer"
+                  className="p-2.5 rounded-full bg-white/80 border border-[#C8A252]/40 text-[#181613] hover:text-white hover:bg-[#7A5B20] transition-all cursor-pointer shadow-sm active:scale-95"
                   aria-label="Previous testimonial"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -195,7 +195,7 @@ export function TestimonialsSection() {
                   type="button"
                   data-cursor="Next"
                   onClick={() => changeIndex((activeIndex + 1) % testimonials.items.length)}
-                  className="p-2.5 rounded-full glass-panel border border-champagne-500/30 text-champagne-300 hover:text-ivory-50 hover:bg-champagne-500/20 transition-all cursor-pointer"
+                  className="p-2.5 rounded-full bg-white/80 border border-[#C8A252]/40 text-[#181613] hover:text-white hover:bg-[#7A5B20] transition-all cursor-pointer shadow-sm active:scale-95"
                   aria-label="Next testimonial"
                 >
                   <ChevronRight className="w-4 h-4" />
