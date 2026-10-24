@@ -1,6 +1,5 @@
 import dynamic from "next/dynamic";
 import { Navbar } from "@/components/Navbar";
-import { CinematicBackground } from "@/components/CinematicBackground";
 import { CinematicExperience } from "@/components/CinematicExperience";
 import { TheStudio } from "@/components/TheStudio";
 import { MarqueeRibbon } from "@/components/MarqueeRibbon";
@@ -17,6 +16,7 @@ import { LuxuryCursor } from "@/components/LuxuryCursor";
 import { FloatingConcierge } from "@/components/FloatingConcierge";
 import { MobileBottomBar } from "@/components/MobileBottomBar";
 
+import { ScrollCinemaSection } from "@/components/ScrollCinemaSection";
 import { Preloader } from "@/components/Preloader";
 import { StageWrapper } from "@/components/stage/StageWrapper";
 
@@ -38,17 +38,17 @@ export default function Home() {
       {/* 1. Fixed Luxury Transparent / Glass Navigation */}
       <Navbar />
 
-      {/* 2. Persistent 3D R3F Stage (The Single Pair of Master Japanese Shears Walking Through the Salon) */}
+      {/* 2. Persistent 3D R3F Drone World Engine (Procedural Sanctum & Damascus Shears) */}
       <StageWrapper />
 
-      {/* 3. Pinned Hero Cinematic Background Video Scrubber */}
-      <CinematicBackground />
-
-      {/* 4. Dual-Engine Hero: 3D Sculpture for Mobile (<768px) & Editorial Narrative for Desktop (>=768px) */}
+      {/* 3. Hero: 3D Procedural Drone View with High-Fashion Editorial Typography */}
       <CinematicExperience />
 
-      {/* 5. Section 1 — The Studio (Asymmetric editorial layout & heritage) */}
+      {/* 4. Section 1 — The Studio (Asymmetric editorial layout & heritage) */}
       <TheStudio />
+
+      {/* 5. Dedicated Scroll Cinema Transformation Reel (Scrubbed Frame-by-Frame with Viewfinder HUD) */}
+      <ScrollCinemaSection />
 
       {/* 6. Kinetic Typography Marquee Bridge */}
       <MarqueeRibbon />

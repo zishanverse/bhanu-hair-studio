@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { SALON_CONFIG } from "@/config/salon.config";
 import { ArrowUpRight, MapPin, Sparkles } from "lucide-react";
+import { TiltCard } from "@/components/ui/TiltCard";
 
 export function TheStudio() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -254,35 +255,37 @@ export function TheStudio() {
             </div>
           </div>
 
-          {/* Right Column: Architectural Photography with Refined Frame */}
+          {/* Right Column: Architectural Photography with 3D Tilt Frame */}
           <div className="lg:col-span-6 relative mt-4 lg:mt-0">
             <div ref={imageWrapperRef} className="relative z-10">
-              <div
-                data-cursor="Atelier"
-                className="relative rounded-3xl overflow-hidden border border-champagne-500/20 shadow-2xl aspect-[4/5] bg-obsidian-900 group"
-              >
-                <Image
-                  src={theStudio.featuredImage}
-                  alt="Bhanu's The Hair Studio Atelier Interior, Palsikar Colony, Indore"
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  className="object-cover object-center filter brightness-[0.9] contrast-[1.05] transition-transform duration-1000 group-hover:scale-105"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/80 via-transparent to-transparent pointer-events-none" />
+              <TiltCard maxTilt={6} glareOpacity={0.25} className="shadow-2xl">
+                <div
+                  data-cursor="Atelier"
+                  className="relative rounded-3xl overflow-hidden border border-champagne-500/20 aspect-[4/5] bg-obsidian-900 group"
+                >
+                  <Image
+                    src={theStudio.featuredImage}
+                    alt="Bhanu's The Hair Studio Atelier Interior, Palsikar Colony, Indore"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    className="object-cover object-center filter brightness-[0.9] contrast-[1.05] transition-transform duration-1000 group-hover:scale-105"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/80 via-transparent to-transparent pointer-events-none" />
 
-                <div className="absolute bottom-6 left-6 right-6 p-5 rounded-2xl glass-panel border border-champagne-500/25 flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <div className="text-[10px] uppercase tracking-widest text-champagne-300 font-mono">
-                      FLAGSHIP SANCTUARY
+                  <div className="absolute bottom-6 left-6 right-6 p-5 rounded-2xl glass-panel border border-champagne-500/25 flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <div className="text-[10px] uppercase tracking-widest text-champagne-300 font-mono">
+                        FLAGSHIP SANCTUARY
+                      </div>
+                      <div className="font-serif text-sm text-ivory-50 font-light">
+                        Manik Bagh Road, Palsikar Colony, Indore
+                      </div>
                     </div>
-                    <div className="font-serif text-sm text-ivory-50 font-light">
-                      Manik Bagh Road, Palsikar Colony, Indore
-                    </div>
+                    <Sparkles className="w-4 h-4 text-champagne-400" />
                   </div>
-                  <Sparkles className="w-4 h-4 text-champagne-400" />
                 </div>
-              </div>
+              </TiltCard>
             </div>
           </div>
         </div>
@@ -298,6 +301,7 @@ export function TheStudio() {
                 Craft, Considered.
               </h3>
             </div>
+            
             <p className="text-xs text-muted max-w-md font-light leading-relaxed">
               Every salon session at Bhanu&apos;s Palsikar Atelier combines calibrated surgical steel, cranial diagnostics, and couture hair smoothing chemistry.
             </p>
@@ -334,23 +338,24 @@ export function TheStudio() {
                 desc: "Acoustically softened treatment suites with ultrasonic micro-mist therapy for deep scalp wellness.",
               },
             ].map((std) => (
-              <div
-                key={std.num}
-                className="studio-standard-item p-6 rounded-2xl bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#ECE4D6] border border-[#C8A252]/40 hover:border-[#C8A252] transition-all duration-300 space-y-3 shadow-lg hover:shadow-[0_15px_35px_rgba(200,162,82,0.2)] hover:-translate-y-1.5 text-[#161410]"
-              >
-                <div className="flex items-center justify-between text-[10px] font-mono text-[#7A5B20] font-bold">
-                  <span>{std.num} / {std.label}</span>
+              <TiltCard key={std.num} maxTilt={6} glareOpacity={0.16}>
+                <div
+                  className="studio-standard-item w-full h-full p-6 rounded-2xl bg-gradient-to-br from-[#FAF8F5] via-[#F4EFE6] to-[#ECE4D6] border border-[#C8A252]/40 hover:border-[#C8A252] transition-all duration-300 space-y-3 shadow-lg hover:shadow-[0_15px_35px_rgba(200,162,82,0.2)] text-[#161410]"
+                >
+                  <div className="flex items-center justify-between text-[10px] font-mono text-[#7A5B20] font-bold">
+                    <span>{std.num} / {std.label}</span>
+                  </div>
+                  <div className="font-serif text-3xl text-[#7A5B20] font-light">
+                    {std.metric}
+                  </div>
+                  <div className="text-xs uppercase tracking-wider font-semibold text-[#110F0C] font-sans">
+                    {std.title}
+                  </div>
+                  <p className="text-xs text-[#3E3A32] font-normal leading-relaxed">
+                    {std.desc}
+                  </p>
                 </div>
-                <div className="font-serif text-3xl text-[#7A5B20] font-light">
-                  {std.metric}
-                </div>
-                <div className="text-xs uppercase tracking-wider font-semibold text-[#110F0C] font-sans">
-                  {std.title}
-                </div>
-                <p className="text-xs text-[#3E3A32] font-normal leading-relaxed">
-                  {std.desc}
-                </p>
-              </div>
+              </TiltCard>
             ))}
           </div>
         </div>

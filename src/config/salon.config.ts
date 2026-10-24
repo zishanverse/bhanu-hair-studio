@@ -605,7 +605,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         category: "colour",
         categoryLabel: "Hair Colour",
         image: "/images/gallery-2.jpg",
-        aspect: "wide",
+        aspect: "tall",
         description: "Hand-painted warm amber tones on deep espresso roots.",
       },
       {
@@ -623,7 +623,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         category: "treatments",
         categoryLabel: "Treatments",
         image: "/images/gallery-4.jpg",
-        aspect: "square",
+        aspect: "tall",
         description: "Complete cuticle sealing, hair smoothing, and frizz elimination.",
         transformation: {
           beforeImage: "/images/gallery-4.jpg",
@@ -646,7 +646,7 @@ export const SALON_CONFIG: SalonConfiguration = {
         category: "colour",
         categoryLabel: "Bridal & Make-up",
         image: "/images/gallery-6.jpg",
-        aspect: "wide",
+        aspect: "tall",
         description: "High-definition makeup and couture hair ornamentation for grand celebration.",
       },
     ],

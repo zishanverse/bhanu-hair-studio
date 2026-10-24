@@ -24,11 +24,28 @@ export interface StageState {
   // Direct accessor for exploded shears view
   explode: number;
 
-  // Camera
+  // Camera 6DOF & Drone Flight
   camera: {
+    x: number;
     y: number;
     z: number;
+    targetX: number;
+    targetY: number;
+    targetZ: number;
+    roll: number;
     fov: number;
+  };
+
+  // Drone Telemetry & Status for HUD
+  drone: {
+    altitude: number;
+    pitch: number;
+    roll: number;
+    heading: number;
+    waypoint: string;
+    waypointIndex: number;
+    isInspectOpen: boolean;
+    isAudioActive: boolean;
   };
 
   // Glint / Lighting
@@ -78,9 +95,24 @@ export const stageState: StageState = {
     opacity: 1,
   },
   camera: {
+    x: 0,
     y: 0,
     z: 8.5,
+    targetX: 0,
+    targetY: 0,
+    targetZ: 0,
+    roll: 0,
     fov: 38,
+  },
+  drone: {
+    altitude: 18.4,
+    pitch: -5.2,
+    roll: 0,
+    heading: 180,
+    waypoint: "01 // SANCTUM DESCENT",
+    waypointIndex: 1,
+    isInspectOpen: false,
+    isAudioActive: false,
   },
   glint: {
     x: 0,

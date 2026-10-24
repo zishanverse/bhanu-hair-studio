@@ -9,20 +9,47 @@ import { GoldDust } from "./GoldDust";
 import { HairStrands } from "./HairStrands";
 import { GoldRibbon } from "./GoldRibbon";
 import { PearlDroplet } from "./PearlDroplet";
+import { ProceduralSanctum } from "./ProceduralSanctum";
 import { stageState } from "@/lib/stageState";
 import { useStageScroll } from "@/lib/useStageScroll";
 import { usePerfTier } from "@/lib/usePerfTier";
 import { damp } from "maath/easing";
 
-function CameraController() {
+function DroneCameraController() {
+  const currentLookAt = useRef(new THREE.Vector3(0, 0, 0));
+  const targetLookAt = useRef(new THREE.Vector3(0, 0, 0));
+
   useFrame((state, delta) => {
-    damp(state.camera.position, "y", stageState.camera.y, 0.2, delta);
-    damp(state.camera.position, "z", stageState.camera.z, 0.2, delta);
-    if ((state.camera as THREE.PerspectiveCamera).fov !== stageState.camera.fov) {
-      damp(state.camera as THREE.PerspectiveCamera, "fov", stageState.camera.fov, 0.2, delta);
-      state.camera.updateProjectionMatrix();
+    // Subtle mouse sway for organic FPV drone feel
+    const mouseX = state.pointer.x * 0.45;
+    const mouseY = state.pointer.y * 0.3;
+
+    // 1. Position Damping (X, Y, Z)
+    damp(state.camera.position, "x", stageState.camera.x + mouseX, 0.22, delta);
+    damp(state.camera.position, "y", stageState.camera.y + mouseY, 0.22, delta);
+    damp(state.camera.position, "z", stageState.camera.z, 0.22, delta);
+
+    // 2. Dynamic LookAt Targeting
+    targetLookAt.current.set(
+      stageState.camera.targetX,
+      stageState.camera.targetY,
+      stageState.camera.targetZ
+    );
+    currentLookAt.current.lerp(targetLookAt.current, 0.1);
+    state.camera.lookAt(currentLookAt.current);
+
+    // 3. Drone Roll (Z-rotation tilt on banked turns)
+    const targetRoll = stageState.camera.roll - mouseX * 0.05;
+    state.camera.rotation.z = THREE.MathUtils.lerp(state.camera.rotation.z, targetRoll, 0.1);
+
+    // 4. FOV Zoom Transitions
+    const cam = state.camera as THREE.PerspectiveCamera;
+    if (cam.fov !== stageState.camera.fov) {
+      damp(cam, "fov", stageState.camera.fov, 0.2, delta);
+      cam.updateProjectionMatrix();
     }
   });
+
   return null;
 }
 
@@ -77,8 +104,9 @@ export function StageCanvas() {
           toneMappingExposure: 1.25,
         }}
       >
-        <CameraController />
+        <DroneCameraController />
         <StudioLights />
+        <ProceduralSanctum />
         <MasterShears />
         <GoldDust />
         <HairStrands />

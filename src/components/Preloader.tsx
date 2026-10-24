@@ -18,11 +18,14 @@ export function Preloader() {
     const hasVisited = sessionStorage.getItem("bhanu_visited");
     const isReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (hasVisited || isReduced) {
-      return;
+    if (!hasVisited && !isReduced) {
+      setVisible(true);
     }
+  }, []);
 
-    setVisible(true);
+  useEffect(() => {
+    if (!visible) return;
+    if (!lineRef.current || !textRef.current || !containerRef.current) return;
 
     const tl = gsap.timeline({
       onComplete: () => {
@@ -57,14 +60,17 @@ export function Preloader() {
       }, undefined, 0.9)
       .to({}, { duration: 0.5 }); // Hold briefly
 
-    // Fail-safe max timeout 2.3s
+    // Fail-safe max timeout 2.4s
     const timeout = setTimeout(() => {
       sessionStorage.setItem("bhanu_visited", "true");
       setVisible(false);
     }, 2400);
 
-    return () => clearTimeout(timeout);
-  }, []);
+    return () => {
+      clearTimeout(timeout);
+      tl.kill();
+    };
+  }, [visible]);
 
   if (!visible) return null;
 

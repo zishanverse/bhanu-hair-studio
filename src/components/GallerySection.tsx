@@ -5,6 +5,7 @@ import Image from "next/image";
 import { SALON_CONFIG } from "@/config/salon.config";
 import { gsap } from "@/lib/gsap";
 import { X, ZoomIn, ChevronLeft, ChevronRight, SlidersHorizontal, ArrowRight, Sparkles } from "lucide-react";
+import { TiltCard } from "@/components/ui/TiltCard";
 
 export function GallerySection() {
   const { gallery, contact } = SALON_CONFIG;
@@ -234,71 +235,71 @@ export function GallerySection() {
             style={{ scrollSnapType: "x mandatory" }}
           >
             {filteredItems.map((item, index) => {
-              const isWide = item.aspect === "wide";
-
               return (
-                <div
+                <TiltCard
                   key={item.id}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`View look ${index + 1}: ${item.title} (${item.categoryLabel})`}
-                  onClick={() => setActiveLightboxIndex(index)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      setActiveLightboxIndex(index);
-                    }
-                  }}
-                  style={{ scrollSnapAlign: "start" }}
-                  className={`gallery-card-item group relative rounded-2xl sm:rounded-3xl overflow-hidden glass-card border border-champagne-500/20 hover:border-champagne-400/60 transition-all duration-500 cursor-pointer shrink-0 will-change-transform ${
-                    isWide
-                      ? "w-[280px] xs:w-[320px] sm:w-[400px] md:w-[460px] aspect-[16/11]"
-                      : "w-[240px] xs:w-[280px] sm:w-[320px] md:w-[360px] aspect-[4/5]"
-                  } p-5 flex flex-col justify-between transform hover:-translate-y-2 hover:shadow-[0_25px_60px_rgba(0,0,0,0.85)] focus:outline-none focus:ring-2 focus:ring-champagne-400`}
+                  maxTilt={8}
+                  glareOpacity={0.22}
+                  className="shrink-0 w-[240px] xs:w-[280px] sm:w-[320px] md:w-[360px]"
                 >
-                  {/* High-Resolution Hair Imagery with WCAG Alt Text */}
-                  <div className="absolute inset-0 overflow-hidden">
-                    <Image
-                      src={item.image}
-                      alt={`Bhanu's The Hair Studio Atelier Look: ${item.title} (${item.categoryLabel})`}
-                      fill
-                      sizes="(max-width: 640px) 280px, (max-width: 1024px) 360px, 460px"
-                      className="object-cover object-center filter brightness-[0.88] contrast-[1.08] transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </div>
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    aria-label={`View look ${index + 1}: ${item.title} (${item.categoryLabel})`}
+                    onClick={() => setActiveLightboxIndex(index)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setActiveLightboxIndex(index);
+                      }
+                    }}
+                    style={{ scrollSnapAlign: "start" }}
+                    className="gallery-card-item group relative rounded-2xl sm:rounded-3xl overflow-hidden glass-card border border-champagne-500/20 hover:border-champagne-400/60 transition-all duration-500 cursor-pointer w-full aspect-[4/5] p-5 flex flex-col justify-between transform hover:shadow-[0_25px_60px_rgba(0,0,0,0.85)] focus:outline-none focus:ring-2 focus:ring-champagne-400"
+                  >
+                    {/* High-Resolution Hair Imagery with WCAG Alt Text */}
+                    <div className="absolute inset-0 overflow-hidden">
+                      <Image
+                        src={item.image}
+                        alt={`Bhanu's The Hair Studio Atelier Look: ${item.title} (${item.categoryLabel})`}
+                        fill
+                        sizes="(max-width: 640px) 280px, (max-width: 1024px) 360px, 460px"
+                        className="object-cover object-center filter brightness-[0.88] contrast-[1.08] transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </div>
 
-                  {/* Gradient Scrim ensuring 100% Text Legibility */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/95 via-obsidian-950/40 to-obsidian-950/20 pointer-events-none" />
+                    {/* Gradient Scrim ensuring 100% Text Legibility */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-obsidian-950/95 via-obsidian-950/40 to-obsidian-950/20 pointer-events-none" />
 
-                  {/* Top Row: Category Tag & Floating Zoom Icon */}
-                  <div className="relative z-10 flex items-center justify-between w-full">
-                    <span className="text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full bg-obsidian-950/80 border border-champagne-500/30 text-champagne-300 font-sans font-medium backdrop-blur-md">
-                      {item.categoryLabel}
-                    </span>
+                    {/* Top Row: Category Tag & Floating Zoom Icon */}
+                    <div className="relative z-10 flex items-center justify-between w-full">
+                      <span className="text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full bg-obsidian-950/80 border border-champagne-500/30 text-champagne-300 font-sans font-medium backdrop-blur-md">
+                        {item.categoryLabel}
+                      </span>
 
-                    <div className="w-8 h-8 rounded-full glass-panel border border-champagne-500/35 flex items-center justify-center text-champagne-300 group-hover:bg-champagne-400 group-hover:text-obsidian-950 transition-all shadow-md">
-                      <ZoomIn className="w-3.5 h-3.5" />
+                      <div className="w-8 h-8 rounded-full glass-panel border border-champagne-500/35 flex items-center justify-center text-champagne-300 group-hover:bg-champagne-400 group-hover:text-obsidian-950 transition-all shadow-md">
+                        <ZoomIn className="w-3.5 h-3.5" />
+                      </div>
+                    </div>
+
+                    {/* RESTORED CAPTION: Look Title + Description */}
+                    <div className="relative z-10 space-y-1 pt-4">
+                      <h3 className="font-serif text-lg sm:text-xl text-ivory-50 group-hover:text-champagne-300 transition-colors leading-snug drop-shadow-md">
+                        {item.title}
+                      </h3>
+
+                      <p className="text-[11px] text-ivory-200/80 font-light line-clamp-1">
+                        {item.description}
+                      </p>
+
+                      {item.transformation && (
+                        <div className="inline-flex items-center gap-1 text-[9px] uppercase tracking-wider text-champagne-400 pt-0.5">
+                          <Sparkles className="w-2.5 h-2.5" />
+                          <span>Interactive Before / After Available</span>
+                        </div>
+                      )}
                     </div>
                   </div>
-
-                  {/* RESTORED CAPTION: Look Title + Description */}
-                  <div className="relative z-10 space-y-1 pt-4">
-                    <h3 className="font-serif text-lg sm:text-xl text-ivory-50 group-hover:text-champagne-300 transition-colors leading-snug drop-shadow-md">
-                      {item.title}
-                    </h3>
-
-                    <p className="text-[11px] text-ivory-200/80 font-light line-clamp-1">
-                      {item.description}
-                    </p>
-
-                    {item.transformation && (
-                      <div className="inline-flex items-center gap-1 text-[9px] uppercase tracking-wider text-champagne-400 pt-0.5">
-                        <Sparkles className="w-2.5 h-2.5" />
-                        <span>Interactive Before / After Available</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                </TiltCard>
               );
             })}
           </div>
